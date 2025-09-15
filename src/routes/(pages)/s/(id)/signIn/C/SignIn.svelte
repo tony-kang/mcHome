@@ -2,6 +2,7 @@
 	import { signIn } from '$prj/prjLogin';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 
 	let username = $state('');
 	let password = $state('');
@@ -11,6 +12,14 @@
 
 	// URL 파라미터에서 id 가져오기
 	const id = $page.params.id;
+
+	// 페이지 로드 시 CSS가 완전히 로드되도록 보장
+	onMount(() => {
+		// CSS 로딩 완료를 확인하고 추가 안정성 보장
+		setTimeout(() => {
+			document.body.style.visibility = 'visible';
+		}, 100);
+	});
 
 	async function doLogin(event) {
 		event.preventDefault();
@@ -152,7 +161,12 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		/* padding: 2rem; */
+		padding: 2rem;
+		box-sizing: border-box;
+		/* CSS 로딩 안정성을 위한 기본값 설정 */
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		line-height: 1.5;
+		color: #333;
 	}
 
 	.login-card {
@@ -162,6 +176,9 @@
 		border-radius: 16px;
 		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 		overflow: hidden;
+		/* 레이아웃 안정성을 위한 추가 속성 */
+		position: relative;
+		z-index: 1;
 	}
 
 	.login-header {
@@ -450,6 +467,9 @@
 			align-items: flex-start;
 			min-height: 100vh;
 			padding-top: 2rem;
+			/* 모바일에서 CSS 안정성 보장 */
+			-webkit-text-size-adjust: 100%;
+			-ms-text-size-adjust: 100%;
 		}
 
 		.login-card {

@@ -16,13 +16,21 @@
 
 	// 로그인 상태가 변경될 때 사용자 정보 업데이트
 	$effect(() => {
-		if ($g_logedIn) {
-			// console.log('___prj.user',___prj.user);
-			loginUserName = base64Decode(___prj.user.userName) || ___prj.user.userName;
-			apiVersion = ___prj.storage.getItem(___const.API_VERSION); 
-		} else {
+		try {
+			if ($g_logedIn && ___prj.user) {
+				// console.log('___prj.user',___prj.user);
+				loginUserName = base64Decode(___prj.user.userName) || ___prj.user.userName || '';
+				apiVersion = ___prj.storage?.getItem(___const.API_VERSION) || ''; 
+			} else {
+				loginUserName = '';
+				apiVersion = '';
+				userInfoDropdown = false; // 드롭다운도 닫기
+			}
+		} catch (error) {
+			console.error('Header: 로그인 상태 업데이트 오류:', error);
 			loginUserName = '';
 			apiVersion = '';
+			userInfoDropdown = false;
 		}
 	});
 
@@ -39,18 +47,43 @@
 	};
 
 	const handleLogout = () => {
-		// 로그아웃 처리
-        ___prj.storage.clear();
-        ___prj.log.info('prjMain logout(3) - localStorage.clear() ');
-        window.location.href = '/';
+		try {
+			// 로그아웃 처리
+			___prj.storage.clear();
+			___prj.log.info('prjMain logout(3) - localStorage.clear() ');
+			
+			// 상태 초기화
+			loginUserName = '';
+			apiVersion = '';
+			userInfoDropdown = false;
+			
+			// CSS가 완전히 로드되도록 충분한 시간을 두고 리다이렉트
+			setTimeout(() => {
+				// 페이지 전체를 새로고침하여 CSS를 다시 로드
+				window.location.reload();
+			}, 200);
+		} catch (error) {
+			console.error('로그아웃 처리 오류:', error);
+			// 에러 발생 시에도 안전하게 리로드
+			setTimeout(() => {
+				window.location.reload();
+			}, 200);
+		}
 	};
 
 	const openUserDropdown = () => {
-		userInfoDropdown = true;
+		if ($g_logedIn) {
+			userInfoDropdown = true;
+		}
 	};
 
 	const closeUserDropdown = () => {
 		userInfoDropdown = false;
+	};
+
+	// 드롭다운 외부 클릭 시 닫기
+	const handleDropdownClick = (event) => {
+		event.stopPropagation();
 	};
 
 	const gotoMove = (url) => {
@@ -141,8 +174,8 @@
 			<div class="auth-buttons">
 				{#if $g_logedIn}
 					<!-- 로그인된 상태 -->
-					<div class="user-dropdown-container" onmouseover={openUserDropdown} onmouseleave={closeUserDropdown} onfocus={openUserDropdown} onblur={closeUserDropdown} role="button" tabindex="0">
-						<button class="user-dropdown-btn">
+					<div class="user-dropdown-container" onmouseover={openUserDropdown} onmouseleave={closeUserDropdown} onfocus={openUserDropdown} onblur={closeUserDropdown} onkeydown={(e) => e.key === 'Enter' && openUserDropdown()} role="button" tabindex="0">
+						<button class="user-dropdown-btn" onclick={handleDropdownClick}>
 							<span>✨{loginUserName}</span>
 							<svg class="dropdown-arrow" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
@@ -150,7 +183,7 @@
 						</button>
 						
 						{#if userInfoDropdown}
-							<div class="user-dropdown">
+							<div class="user-dropdown" onclick={handleDropdownClick} onkeydown={(e) => e.key === 'Enter' && handleDropdownClick(e)} role="dialog" aria-modal="true" tabindex="-1">
 								<div class="dropdown-content">
 									<div class="user-info-section">
 										<div class="user-name">{loginUserName}</div>
@@ -176,7 +209,7 @@
 									</div> -->
 									<div class="dropdown-menu-buttons">
 										<button class="dropdown-btn" onclick={() => gotoMove('/s/myPage/profile')}>마이페이지</button>   
-										<button class="dropdown-btn" onclick={() => gotoMove(`/blog/blog_2/${___prj.user.userId}`)}>블로그</button>
+										<button class="dropdown-btn" onclick={() => gotoMove(`/blog/blog_2/${___prj.user?.userId || ''}`)}>블로그</button>
 										<button class="dropdown-btn logout" onclick={handleLogout}>로그아웃</button>
 									</div>
 									<div class="version-info">
@@ -188,8 +221,8 @@
 					</div>
 				{:else}
 					<!-- 로그인되지 않은 상태 -->
-					<a href="/s/signIn" class="btn-login">Login</a>
-					<a href="/s/signUp" class="btn-join">Join</a>
+					<a href="/s/signIn" class="btn-login" onclick={() => { userInfoDropdown = false; }}>Login</a>
+					<a href="/s/signUp" class="btn-join" onclick={() => { userInfoDropdown = false; }}>Join</a>
 				{/if}
 			</div>
 
@@ -480,7 +513,7 @@
 		border-radius: 8px;
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 		z-index: 1001;
-		margin-top: 5px;
+		margin-top: 0px;
 	}
 
 	.dropdown-content {
