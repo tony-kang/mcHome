@@ -7,6 +7,14 @@
     import { g_brandLogo, g_logoSizes } from '$prj/prjStore';
     import TermsModal from './TermsModal.svelte';
 
+    // 페이지 로드 시 CSS가 완전히 로드되도록 보장
+    onMount(() => {
+        // CSS 로딩 완료를 확인하고 추가 안정성 보장
+        setTimeout(() => {
+            document.body.style.visibility = 'visible';
+        }, 100);
+    });
+
     // 모달 상태 관리
     let modalState = $state({
         isOpen: false,
@@ -34,8 +42,8 @@
     // 회원 구분 옵션
     const userTypes = [
         { value: 0, label: '선택해 주세요' },
-        { value: 1, label: '일반' },
-        { value: 2, label: '상담사' },
+        // { value: 1, label: '일반' },
+        // { value: 2, label: '상담사' },
         { value: 3, label: '파트너' }
     ];
 
@@ -47,7 +55,7 @@
         user_email: 'hong@gmail.com',
         user_tel: '01012345678',
         user_company: '사용자 회사명',
-        user_type: 1
+        user_type: 3
     });
 
     let agreements = $state({
@@ -391,6 +399,11 @@
 		align-items: center;
 		justify-content: center;
 		padding: 2rem;
+		box-sizing: border-box;
+		/* CSS 로딩 안정성을 위한 기본값 설정 */
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		line-height: 1.5;
+		color: #333;
 	}
 
 	.signup-section {
@@ -411,6 +424,9 @@
 		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 		overflow: hidden;
 		border: 1px solid #e2e8f0;
+		/* 레이아웃 안정성을 위한 추가 속성 */
+		position: relative;
+		z-index: 1;
 	}
 
 	.signup-header {
@@ -644,6 +660,9 @@
 			min-height: calc(100vh - 80px);
 			display: flex;
 			flex-direction: column;
+			/* 모바일에서 CSS 안정성 보장 */
+			-webkit-text-size-adjust: 100%;
+			-ms-text-size-adjust: 100%;
 		}
 
 		.signup-header {

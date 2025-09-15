@@ -186,7 +186,7 @@
 		<!-- 회원가입 링크 -->
 		<div class="signup-section">
 			<p>아직 회원이 아니신가요?</p>
-			<a href="/s/signup" class="signup-button">회원가입</a>
+			<a href="/s/signUp" class="signup-button">회원가입</a>
 		</div>
 	</div>
 </div>
