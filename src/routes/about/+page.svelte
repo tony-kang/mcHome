@@ -16,7 +16,7 @@
 		<div class="container">
 			<div class="hero-content">
 				<h1 class="hero-title">교육을 넘어 경영, 마음으로</h1>
-				<p class="hero-subtitle">마인드코딩</p>
+				<p class="hero-subtitle mt-10">마인드코딩</p>
 				<p class="hero-description">
 					마인드코딩은 단순한 교육회사가 아닙니다.<br>
 					우리는 개인이 타고난 심리재능(PTI:CODE)을 기반으로,<br>
@@ -212,10 +212,16 @@
 	}
 
 	.hero-section {
-		background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+		background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/main/slide/main_slide_5.jpg');
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
 		color: #fff;
 		padding: 100px 0;
 		text-align: center;
+		min-height: 60vh;
+		display: flex;
+		align-items: center;
 	}
 
 	.container {

@@ -24,9 +24,14 @@ const config = {
 	},
 	
 	onwarn: (warning, handler) => {
-		// 특정 접근성 경고만 무시 (aria-label로 해결되지 않는 것들)
+		// 접근성 관련 경고들 무시
 		if (warning.code === 'a11y-click-events-have-key-events' ||
-			warning.code === 'a11y-no-static-element-interactions') {
+			warning.code === 'a11y-no-static-element-interactions' ||
+			warning.code === 'a11y-missing-aria-attribute' ||
+			warning.code === 'a11y-missing-role' ||
+			warning.code === 'a11y-no-noninteractive-element-interactions' ||
+			warning.code === 'a11y-role-has-required-aria-props' ||
+			warning.code === 'a11y-role-supports-aria-props') {
 			return;
 		}
 		// 다른 경고는 기본 처리

@@ -376,8 +376,8 @@
 
 <!-- 상담 문의 모달 -->
 {#if showInquiry && selectedService}
-	<div class="modal-overlay" onclick={closeModals}>
-		<div class="modal-content" onclick={(e) => e.stopPropagation()}>
+	<div class="modal-overlay" onclick={closeModals} onkeydown={(e) => e.key === 'Enter' && closeModals()} role="button" tabindex="0">
+		<div class="modal-content" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.key === 'Enter' && e.stopPropagation()} role="dialog" tabindex="-1">
 			<div class="modal-header">
 				<h3>{selectedService.name} 상담 문의</h3>
 				<button class="modal-close" onclick={closeModals}>×</button>
@@ -385,34 +385,34 @@
 			<div class="modal-body">
 				<div class="inquiry-form">
 					<div class="form-group">
-						<label>이름 *</label>
-						<input type="text" placeholder="이름을 입력해주세요" />
+						<label for="inquiry-name">이름 *</label>
+						<input id="inquiry-name" type="text" placeholder="이름을 입력해주세요" />
 					</div>
 					<div class="form-group">
-						<label>연락처 *</label>
-						<input type="tel" placeholder="연락처를 입력해주세요" />
+						<label for="inquiry-phone">연락처 *</label>
+						<input id="inquiry-phone" type="tel" placeholder="연락처를 입력해주세요" />
 					</div>
 					<div class="form-group">
-						<label>이메일</label>
-						<input type="email" placeholder="이메일을 입력해주세요" />
+						<label for="inquiry-email">이메일</label>
+						<input id="inquiry-email" type="email" placeholder="이메일을 입력해주세요" />
 					</div>
 					<div class="form-group">
-						<label>문의 유형</label>
-						<select>
+						<label for="inquiry-type">문의 유형</label>
+						<select id="inquiry-type">
 							<option value="">문의 유형을 선택해주세요</option>
 							<option value="individual">개인 상담</option>
-							<option value="corporate">기업/조직 상담</option>
+							<!-- <option value="corporate">기업/조직 상담</option> -->
 							<option value="workshop">워크숍/캠프</option>
 							<option value="other">기타</option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label>상담 희망 일시</label>
-						<input type="datetime-local" />
+						<label for="inquiry-datetime">상담 희망 일시</label>
+						<input id="inquiry-datetime" type="datetime-local" />
 					</div>
 					<div class="form-group">
-						<label>문의 내용 *</label>
-						<textarea placeholder="문의하실 내용을 자세히 입력해주세요"></textarea>
+						<label for="inquiry-content">문의 내용 *</label>
+						<textarea id="inquiry-content" placeholder="문의하실 내용을 자세히 입력해주세요"></textarea>
 					</div>
 				</div>
 			</div>
@@ -427,8 +427,8 @@
 
 <!-- 자세히 보기 모달 -->
 {#if showDetail && selectedService}
-	<div class="modal-overlay" onclick={closeModals}>
-		<div class="modal-content detail-modal" onclick={(e) => e.stopPropagation()}>
+	<div class="modal-overlay" onclick={closeModals} onkeydown={(e) => e.key === 'Enter' && closeModals()} role="button" tabindex="0">
+		<div class="modal-content detail-modal" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.key === 'Enter' && e.stopPropagation()} role="button" tabindex="-1">
 			<div class="modal-header">
 				<h3>{selectedService.name}</h3>
 				<button class="modal-close" onclick={closeModals}>×</button>

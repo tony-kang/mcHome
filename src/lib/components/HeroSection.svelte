@@ -3,12 +3,6 @@
 	
 	const slides = [
 		{
-			title: "마인드 코딩",
-			subtitle: "재능경영",
-			description: "마인드코딩은 개인의 심리재능(PTI:CODE)을 기반으로 학습·진로·관계·비즈니스 등 삶의 전 영역을 경영하듯 설계하고 관리하는 맞춤형 성장 플랫폼입니다.",
-			image: "/main/slide/main_slide_5.jpg"
-		},
-		{
 			title: "마음의 영역",
 			subtitle: "심리",
 			description: "사람은 누구나 흔들릴 때가 있습니다. 마인드코딩은 심리재능 코칭과 멘탈 매니지먼트를 통해 스스로의 마음을 이해하고 회복할 수 있도록 돕습니다. 단순한 상담이 아니라, 타고난 재능을 기반으로 한 자기이해와 자기성장의 여정을 함께합니다.",
@@ -191,7 +185,7 @@
 
 	.nav-arrow {
 		position: absolute;
-		top: 50%;
+		top: 10%;
 		transform: translateY(-50%);
 		background: rgba(255, 255, 255, 0.2);
 		border: none;
@@ -278,6 +272,16 @@
 			height: 70vh;
 		}
 
+		.slide-content {
+			margin-top: 80px;
+			align-items: center;
+		}
+
+		.container {
+			margin: 0 auto;
+			padding: 0 15px;
+		}
+
 		.hero-title {
 			font-size: 2.5rem;
 		}
@@ -316,15 +320,23 @@
 		.slide-numbers .current {
 			font-size: 1.5rem;
 		}
-
-		.container {
-			padding: 0 15px;
-		}
 	}
 
 	@media (max-width: 480px) {
+		.hero-section {
+			height: 60vh;
+		}
+
+		.slide-content {
+			margin-top: 60px;
+		}
+
+		.container {
+			padding: 0 10px;
+		}
+
 		.hero-title {
-			font-size: 2rem;
+			font-size: 1.8rem;
 		}
 
 		.hero-subtitle {
