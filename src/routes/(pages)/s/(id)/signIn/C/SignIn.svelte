@@ -6,12 +6,20 @@
 
 	let username = $state('');
 	let password = $state('');
+	let userType = $state('partner'); // general, admin, partner
 	let keepLoggedIn = $state(false);
 	let isLoading = $state(false);
 	let errorMessage = $state('');
 
 	// URL 파라미터에서 id 가져오기
 	const id = $page.params.id;
+
+	// 사용자 타입 옵션
+	const userTypes = [
+		// { value: 'general', label: '일반', icon: '👤' },
+		{ value: 'admin', label: '관리자 로그인', icon: '👨‍💼' },
+		{ value: 'partner', label: '파트너 로그인', icon: '🤝' }
+	];
 
 	// 페이지 로드 시 CSS가 완전히 로드되도록 보장
 	onMount(() => {
@@ -34,8 +42,16 @@
 				return;
 			}
 
+			// 사용자 타입 정보와 함께 로그인 처리
+			const loginData = {
+				username,
+				password,
+				userType,
+				keepLoggedIn
+			};
+
 			// 로그인 성공 시 메인 페이지로 이동
-			signIn(username, password, keepLoggedIn);
+			signIn(username, password, keepLoggedIn, userType);
 		} catch (error) {
 			errorMessage = '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.';
 		} finally {
@@ -52,8 +68,22 @@
 			<a href="/" class="logo-link">
 				<img src="/logo/mc_mindcoding_pattern_1_light.png" alt="마인드코딩" class="logo" />
 			</a>
-			<h1 class="login-title">로그인</h1>
+			<!-- <h1 class="login-title">로그인</h1> -->
 			<p class="login-subtitle">마인드코딩에 오신 것을 환영합니다</p>
+			
+			<!-- 사용자 타입 선택 -->
+			<div class="user-type-selector">
+				{#each userTypes as type}
+					<button 
+						type="button"
+						class="user-type-btn {userType === type.value ? 'active' : ''}"
+						onclick={() => userType = type.value}
+					>
+						<span class="user-type-icon">{type.icon}</span>
+						<span class="user-type-label text-black">{type.label}</span>
+					</button>
+				{/each}
+			</div>
 		</div>
 
 		<!-- 로그인 폼 -->
@@ -66,12 +96,20 @@
 				{/if}
 
 				<div class="form-group">
-					<label for="username" class="form-label">아이디 또는 이메일</label>
+					<label for="username" class="form-label">
+						{#if userType === 'admin'}
+							관리자 아이디
+						{:else if userType === 'partner'}
+							파트너 아이디
+						{:else}
+							아이디 또는 이메일
+						{/if}
+					</label>
 					<input
 						id="username"
 						type="text"
 						bind:value={username}
-						placeholder="아이디 또는 이메일을 입력하세요"
+						placeholder={userType === 'admin' ? '관리자 아이디를 입력하세요' : userType === 'partner' ? '파트너 아이디를 입력하세요' : '아이디 또는 이메일을 입력하세요'}
 						class="form-input"
 						autocomplete="username"
 						required
@@ -206,7 +244,57 @@
 	.login-subtitle {
 		color: #718096;
 		font-size: 1rem;
-		margin: 0;
+		margin: 0 0 1.5rem 0;
+	}
+
+	/* 사용자 타입 선택기 */
+	.user-type-selector {
+		display: flex;
+		gap: 0.5rem;
+		justify-content: center;
+		margin-top: 1rem;
+	}
+
+	.user-type-btn {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 5px 10px;
+		border: 2px solid rgba(90, 83, 83, 0.3);
+		border-radius: 8px;
+		background: rgba(255, 255, 255, 0.1);
+		color: white;
+		font-size: 0.75rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		backdrop-filter: blur(10px);
+		min-width: 80px;
+	}
+
+	.user-type-btn:hover {
+		background: rgba(255, 255, 255, 0.2);
+		border-color: rgba(255, 255, 255, 0.5);
+		transform: translateY(-1px);
+	}
+
+	.user-type-btn.active {
+		background: rgba(255, 255, 255, 0.3);
+		border-color: rgba(255, 255, 255, 0.8);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	}
+
+	.user-type-icon {
+		font-size: 1.5rem;
+		line-height: 1;
+	}
+
+	.user-type-label {
+		margin-top: 5px;
+		font-size: 1rem;
+		line-height: 1;
+		text-align: center;
 	}
 
 	.login-form-wrapper {
@@ -495,6 +583,22 @@
 			color: rgba(255, 255, 255, 0.9);
 		}
 
+		.user-type-selector {
+			flex-direction: row;
+			gap: 0.5rem;
+			margin-top: 1rem;
+		}
+
+		.user-type-btn {
+			min-width: 90px;
+			padding: 0.6rem 0.8rem;
+			border: 1px solid rgba(90, 83, 83, 0.3);
+		}
+
+		.user-type-label {
+			font-size: 0.85rem;
+		}
+
 		.login-form-wrapper {
 			padding: 1.5rem;
 			background: white;
@@ -556,6 +660,15 @@
 		.form-input {
 			font-size: 16px; /* 작은 화면에서도 16px 유지 */
 			padding: 0.875rem 1rem;
+		}
+
+		.user-type-btn {
+			min-width: 80px;
+			padding: 0.5rem 0.6rem;
+		}
+
+		.user-type-label {
+			font-size: 1rem;
 		}
 	}
 </style>
