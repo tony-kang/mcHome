@@ -171,18 +171,93 @@
     async function loadTermsContent() {
         try {
             const response = await fetch('/terms/terms.html');
-            termsContent = await response.text();
+            if (response.ok) {
+                termsContent = await response.text();
+            } else {
+                // 기본 약관 내용 (로드 실패시)
+                termsContent = `
+                    <div style="padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #000000; background-color: #ffffff; line-height: 1.6;">
+                        <h2 style="color: #000000;">마인드코딩 이용약관</h2>
+                        <p style="color: #333333;">시행일자: 2024년 1월 1일</p>
+                        <h3 style="color: #000000;">제1조 (목적)</h3>
+                        <p>이 약관은 마인드코딩이 제공하는 심리재능 기반 성장 플랫폼 서비스의 이용과 관련하여 회사와 이용자 간의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.</p>
+                        <h3 style="color: #000000;">제2조 (서비스 제공)</h3>
+                        <p>회사는 다음과 같은 서비스를 제공합니다:</p>
+                        <ul>
+                            <li>PTI:CODE 심리재능 검사 서비스</li>
+                            <li>개인별 맞춤형 성장 로드맵 제공</li>
+                            <li>심리재능 기반 코칭 및 상담 서비스</li>
+                            <li>학습진로 및 관계소통 지원</li>
+                            <li>비즈니스 성과 향상 컨설팅</li>
+                        </ul>
+                        <h3 style="color: #000000;">제3조 (회원가입)</h3>
+                        <p>이용자는 회사가 정한 가입 양식에 따라 회원정보를 기입한 후 이 약관에 동의한다는 의사표시를 함으로서 회원가입을 신청합니다.</p>
+                        <h3 style="color: #000000;">제4조 (개인정보보호)</h3>
+                        <p>회사는 이용자의 개인정보 수집시 서비스제공을 위하여 필요한 범위에서 최소한의 개인정보를 수집하며, 개인정보 처리방침에 따라 안전하게 보호합니다.</p>
+                        <p style="margin-top: 30px; color: #333333;">
+                            문의: 서울특별시 강남구 선릉로92길 28 4층 4279호 | 대표번호: 1661-6876
+                        </p>
+                    </div>
+                `;
+            }
         } catch (error) {
             console.error('이용약관 로드 실패:', error);
+            // 에러 발생시 기본 내용 사용
+            termsContent = `
+                <div style="padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                    <h2>마인드코딩 이용약관</h2>
+                    <p>약관 내용을 불러올 수 없습니다. 나중에 다시 시도해주세요.</p>
+                    <p>문의: 1661-6876</p>
+                </div>
+            `;
         }
     }
 
     async function loadPrivacyContent() {
         try {
             const response = await fetch('/terms/privacy.html');
-            privacyContent = await response.text();
+            if (response.ok) {
+                privacyContent = await response.text();
+            } else {
+                // 기본 개인정보처리방침 내용 (로드 실패시)
+                privacyContent = `
+                    <div style="padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #000000; background-color: #ffffff; line-height: 1.6;">
+                        <h2 style="color: #000000;">개인정보 처리방침</h2>
+                        <p style="color: #333333;">시행일자: 2024년 1월 1일</p>
+                        <h3 style="color: #000000;">제1조 (개인정보의 처리목적)</h3>
+                        <p>마인드코딩은 다음의 목적을 위하여 개인정보를 처리합니다:</p>
+                        <ul>
+                            <li>회원 가입 및 관리</li>
+                            <li>서비스 제공 (PTI:CODE 검사, 코칭, 상담 등)</li>
+                            <li>고충처리</li>
+                            <li>마케팅 및 광고</li>
+                        </ul>
+                        <h3 style="color: #000000;">제2조 (개인정보의 처리 및 보유기간)</h3>
+                        <p>개인정보는 회원 탈퇴 시까지 보유·이용되며, 법령에 따라 별도 보관이 필요한 경우 해당 기간까지 보관합니다.</p>
+                        <h3 style="color: #000000;">제3조 (처리하는 개인정보의 항목)</h3>
+                        <ul>
+                            <li><strong>필수항목</strong>: 이름, 아이디, 비밀번호, 이메일, 휴대폰번호</li>
+                            <li><strong>선택항목</strong>: 직업, 관심분야, 회사명</li>
+                            <li><strong>자동수집항목</strong>: IP주소, 쿠키, 서비스 이용 기록</li>
+                        </ul>
+                        <h3 style="color: #000000;">제4조 (개인정보의 안전성 확보조치)</h3>
+                        <p>개인정보의 암호화, 접근 통제, 취급 직원 최소화 등의 조치를 통해 개인정보를 안전하게 보호합니다.</p>
+                        <p style="margin-top: 30px; color: #333333;">
+                            개인정보보호책임자: 김마인드 | 연락처: privacy@mindcoding.co.kr, 1661-6876
+                        </p>
+                    </div>
+                `;
+            }
         } catch (error) {
             console.error('개인정보처리방침 로드 실패:', error);
+            // 에러 발생시 기본 내용 사용
+            privacyContent = `
+                <div style="padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                    <h2>개인정보 처리방침</h2>
+                    <p>개인정보 처리방침 내용을 불러올 수 없습니다. 나중에 다시 시도해주세요.</p>
+                    <p>문의: 1661-6876</p>
+                </div>
+            `;
         }
     }
 

@@ -14,16 +14,16 @@
             ></button>
 
             <!-- 모달 컨텐츠 -->
-            <div class="relative bg-theme rounded-lg shadow-theme w-full max-w-2xl">
+            <div class="relative bg-white rounded-lg shadow-lg w-full max-w-2xl">
                 <!-- 헤더 -->
-                <div class="flex items-center justify-between p-4 border-b border-theme">
-                    <h3 class="text-xl font-semibold text-theme">
+                <div class="flex items-center justify-between p-4 border-b border-gray-200">
+                    <h3 class="text-xl font-semibold text-black">
                         {title}
                     </h3>
                     <!-- svelte-ignore a11y_consider_explicit_label -->
                     <button 
                         onclick={onClose}
-                        class="text-theme hover:text-primary"
+                        class="text-gray-600 hover:text-gray-800"
                     >
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -32,15 +32,15 @@
                 </div>
 
                 <!-- 본문 -->
-                <div class="p-6 max-h-[60vh] overflow-y-auto text-theme terms-modal-content">
+                <div class="p-6 max-h-[60vh] overflow-y-auto text-black terms-modal-content">
                     {@html content}
                 </div>
 
                 <!-- 푸터 -->
-                <div class="flex justify-end p-4 border-t border-theme">
+                <div class="flex justify-end p-4 border-t border-gray-200">
                     <button
                         onclick={onClose}
-                        class="px-4 py-2 bg-primary text-white rounded hover:bg-primary-hover"
+                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                     >
                         확인
                     </button>
@@ -51,54 +51,62 @@
 {/if}
 
 <style>
-    :global(.text-theme) {
-        color: var(--text-color);
-    }
-
-    :global(.bg-theme) {
-        background-color: var(--bg-color);
-    }
-
-    :global(.border-theme) {
-        border-color: var(--border-color);
-    }
-
-    :global(.shadow-theme) {
-        box-shadow: 0 2px 10px var(--shadow-color);
-    }
-
     /* 약관 내용 스타일링 */
     :global(.terms-modal-content) {
         line-height: 1.6;
+        color: #000000 !important;
+        background-color: #ffffff !important;
+    }
+
+    :global(.terms-modal-content h1) {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #000000 !important;
     }
 
     :global(.terms-modal-content h2) {
         font-size: 1.5rem;
         font-weight: 600;
         margin-bottom: 1.5rem;
+        color: #000000 !important;
     }
 
     :global(.terms-modal-content h3) {
         font-size: 1.2rem;
         font-weight: 600;
         margin: 1.5rem 0 1rem;
+        color: #000000 !important;
     }
 
     :global(.terms-modal-content p) {
         margin-bottom: 1rem;
+        color: #000000 !important;
     }
 
     :global(.terms-modal-content ul) {
         list-style-type: disc;
         margin-left: 1.5rem;
         margin-bottom: 1rem;
+        color: #000000 !important;
     }
 
     :global(.terms-modal-content li) {
         margin-bottom: 0.5rem;
+        color: #000000 !important;
+    }
+
+    :global(.terms-modal-content strong) {
+        color: #000000 !important;
+        font-weight: 600;
     }
 
     :global(.terms-modal-content section) {
         margin-bottom: 2rem;
+    }
+
+    /* 모든 텍스트 요소에 명시적 검정색 적용 */
+    :global(.terms-modal-content *) {
+        color: #000000 !important;
     }
 </style> 
