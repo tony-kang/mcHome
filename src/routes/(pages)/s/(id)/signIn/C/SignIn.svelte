@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
+	import { loginWithKakao, logoutFromKakao, isKakaoLoggedIn, getKakaoUserInfo, initKakaoSDK } from '$lib/utils/kakaoLogin.js';
 
 	let username = $state('');
 	let password = $state('');
@@ -22,11 +23,25 @@
 	];
 
 	// 페이지 로드 시 CSS가 완전히 로드되도록 보장
-	onMount(() => {
+	onMount(async () => {
 		// CSS 로딩 완료를 확인하고 추가 안정성 보장
 		setTimeout(() => {
 			document.body.style.visibility = 'visible';
 		}, 100);
+		
+		// 카카오 SDK 초기화
+		try {
+			await initKakaoSDK();
+			console.log('카카오 SDK 초기화 완료');
+		} catch (error) {
+			console.error('카카오 SDK 초기화 실패:', error);
+		}
+		
+		// 카카오 로그인 상태 확인
+		if (isKakaoLoggedIn()) {
+			const kakaoUser = getKakaoUserInfo();
+			console.log('카카오 로그인 상태:', kakaoUser);
+		}
 	});
 
 	async function doLogin(event) {
@@ -54,6 +69,34 @@
 			signIn(username, password, keepLoggedIn, userType);
 		} catch (error) {
 			errorMessage = '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.';
+		} finally {
+			isLoading = false;
+		}
+	}
+
+	// 카카오 로그인 함수
+	async function handleKakaoLogin() {
+		try {
+			isLoading = true;
+			errorMessage = '';
+			await loginWithKakao();
+		} catch (error) {
+			errorMessage = '카카오 로그인에 실패했습니다.';
+			console.error('카카오 로그인 에러:', error);
+		} finally {
+			isLoading = false;
+		}
+	}
+
+	// 구글 로그인 함수 (향후 구현)
+	async function handleGoogleLogin() {
+		try {
+			isLoading = true;
+			errorMessage = '';
+			alert('구글 로그인은 아직 구현되지 않았습니다.');
+		} catch (error) {
+			errorMessage = '구글 로그인에 실패했습니다.';
+			console.error('구글 로그인 에러:', error);
 		} finally {
 			isLoading = false;
 		}
@@ -164,20 +207,38 @@
 					<span>또는</span>
 				</div>
 				<div class="social-buttons">
-					<button type="button" class="social-button kakao">
+					<button 
+						type="button" 
+						class="social-button kakao"
+						onclick={handleKakaoLogin}
+						disabled={isLoading}
+					>
 						<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
 							<path d="M10 0C4.477 0 0 3.582 0 8c0 2.889 1.889 5.43 4.7 6.929l-1.2 4.4c-.1.4.3.7.7.5l5.1-3.4c.5.1 1 .1 1.5.1 5.523 0 10-3.582 10-8S15.523 0 10 0z" fill="currentColor"/>
 						</svg>
-						카카오로 로그인
+						{#if isLoading}
+							로그인 중...
+						{:else}
+							카카오로 로그인
+						{/if}
 					</button>
-					<button type="button" class="social-button google">
+					<button 
+						type="button" 
+						class="social-button google"
+						onclick={handleGoogleLogin}
+						disabled={isLoading}
+					>
 						<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
 							<path d="M19.6 10.23c0-.82-.1-1.42-.25-2.05H10v3.72h5.5c-.15.96-.74 2.21-2.13 2.95v2.66h3.46c2.02-1.85 3.19-4.58 3.19-7.79z" fill="#4285F4"/>
 							<path d="M10 20c2.7 0 4.96-.89 6.61-2.41l-3.46-2.66c-.9.6-2.07.95-3.15.95-2.43 0-4.5-1.64-5.24-3.85H1.34v2.74C2.98 17.55 6.21 20 10 20z" fill="#34A853"/>
 							<path d="M4.76 11.93c-.22-.6-.35-1.25-.35-1.93s.13-1.33.35-1.93V5.33H1.34C.61 6.85 0 8.57 0 10.5s.61 3.65 1.34 5.17l3.42-2.74z" fill="#FBBC05"/>
 							<path d="M10 3.98c1.44 0 2.7.49 3.71 1.45l2.78-2.78C14.96.99 12.7 0 10 0 6.21 0 2.98 2.45 1.34 5.33l3.42 2.74C5.5 5.62 7.57 3.98 10 3.98z" fill="#EA4335"/>
 						</svg>
-						구글로 로그인
+						{#if isLoading}
+							로그인 중...
+						{:else}
+							구글로 로그인
+						{/if}
 					</button>
 				</div>
 			</div>
@@ -488,6 +549,11 @@
 	.social-button:hover {
 		border-color: #cbd5e0;
 		background: #f7fafc;
+	}
+
+	.social-button:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
 	}
 
 	.social-button.kakao {
