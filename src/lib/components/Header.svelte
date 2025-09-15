@@ -656,7 +656,7 @@
 	}
 
 	.mobile-nav-list li {
-		margin-bottom: 15px;
+		margin-bottom: 0px;
 	}
 
 	.mobile-nav-list a,
@@ -718,7 +718,6 @@
 
 	/* Mobile Auth Buttons */
 	.mobile-auth-buttons {
-		margin-top: 20px;
 		padding-top: 20px;
 		padding-bottom: 20px;
 		border-top: 1px solid #e5e5e5;

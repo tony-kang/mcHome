@@ -3,6 +3,9 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [sveltekit()],
+	css: {
+		postcss: './postcss.config.js'
+	},
 
 	// Node.js 모듈을 브라우저에서 외부화
 	define: {

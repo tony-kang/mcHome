@@ -12,40 +12,42 @@
 
 <main class="about-page">
 	<!-- Hero Section -->
-	<section class="hero-section">
-		<div class="container">
-			<div class="hero-content">
-				<h1 class="hero-title">교육을 넘어 경영, 마음으로</h1>
-				<p class="hero-subtitle mt-10">마인드코딩</p>
-				<p class="hero-description">
-					마인드코딩은 단순한 교육회사가 아닙니다.<br>
-					우리는 개인이 타고난 심리재능(PTI:CODE)을 기반으로,<br>
-					학습·진로·관계·비즈니스 등 삶의 전 영역을 경영하듯 설계하고 관리하는 맞춤형 성장 플랫폼입니다.
-				</p>
+	<section class="relative min-h-[60vh] flex items-center justify-center bg-cover bg-center bg-no-repeat py-24" 
+		style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/main/slide/main_slide_5.jpg');">
+		<div class="container max-w-6xl mx-auto px-5">
+			<div class="w-full h-full">
+				<div class="text-white">
+					<h1 class="absolute top-10 left-5 text-3xl md:text-3xl lg:text-4xl font-bold mb-5 leading-tight">교육을 넘어 경영, 마음으로</h1>
+					<p class="absolute top-22 left-5 text-md md:text-lg lg:text-xl leading-relaxed opacity-75">
+						마인드코딩은 단순한 교육회사가 아닙니다.<br>
+						우리는 개인이 타고난 심리재능(PTI:CODE)을 기반으로,<br>
+						학습·진로·관계·비즈니스 등 삶의 전 영역을 경영하듯 설계하고 관리하는 맞춤형 성장 플랫폼입니다.
+					</p>
+				</div>
 			</div>
 		</div>
 	</section>
 
 	<!-- Story Section -->
-	<section class="story-section">
-		<div class="container">
-			<div class="section-header">
-				<h2>스토리</h2>
+	<section class="py-20 bg-gray-50">
+		<div class="container max-w-6xl mx-auto px-5">
+			<div class="text-center mb-16">
+				<h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">스토리</h2>
 			</div>
 			
-			<div class="story-content">
-				<div class="story-item">
-					<h3>왜 마인드코딩인가?</h3>
-					<p>
+			<div class="grid md:grid-cols-2 gap-12">
+				<div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+					<h3 class="text-2xl font-bold text-gray-800 mb-6">왜 마인드코딩인가?</h3>
+					<p class="text-gray-600 leading-relaxed">
 						모든 사람은 마음속에 고유한 코드(Code)를 품고 태어납니다.<br>
 						이 코드는 기질·기능·재능을 통해 드러나며, 평생 성장의 길을 결정합니다.<br>
 						마인드코딩은 그 숨겨진 코드를 해석하여, 개인의 생애주기에 맞는 성장 로드맵을 설계하고 실현합니다.
 					</p>
 				</div>
 
-				<div class="story-item">
-					<h3>우리가 하는 일</h3>
-					<p>
+				<div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+					<h3 class="text-2xl font-bold text-gray-800 mb-6">우리가 하는 일</h3>
+					<p class="text-gray-600 leading-relaxed">
 						마인드코딩의 시작은 PTI:CODE 검사입니다.<br>
 						모든 사람은 마음속에 자신만의 코드(CODE)를 품고 태어나며, 이 코드를 해석하는 순간부터 성장의 방향이 분명해집니다.<br>
 						PTI:CODE 검사는 심리기질과 심리기능 그리고 심리재능을 정밀하게 진단하여, 개인이 어떤 방식으로 배우고, 어떤 관계 속에서 힘을 발휘하며, 어떤 환경에서 성과를 내는지를 보여줍니다.
@@ -56,42 +58,42 @@
 	</section>
 
 	<!-- Four Areas Section -->
-	<section class="areas-section">
-		<div class="container">
-			<div class="section-header">
-				<h2>네 가지 영역</h2>
-				<p>검사를 통해 드러난 결과는 곧 네 가지 영역으로 이어집니다.</p>
+	<section class="py-20 bg-white">
+		<div class="container max-w-6xl mx-auto px-5">
+			<div class="text-center mb-16">
+				<h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">네 가지 영역</h2>
+				<p class="text-xl text-gray-600 max-w-3xl mx-auto">검사를 통해 드러난 결과는 곧 네 가지 영역으로 이어집니다.</p>
 			</div>
 
-			<div class="areas-grid">
-				<div class="area-card">
-					<div class="area-icon">🧠</div>
-					<h3>심리 (마음의 영역)</h3>
-					<p>
+			<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+				<div class="bg-gradient-to-br from-blue-50 to-indigo-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+					<div class="text-6xl mb-6 text-center">🧠</div>
+					<h3 class="text-xl font-bold text-gray-800 mb-4 text-center">심리 (마음의 영역)</h3>
+					<p class="text-gray-600 leading-relaxed text-sm">
 						사람은 누구나 흔들릴 때가 있습니다. 마인드코딩은 심리재능 코칭과 멘탈 매니지먼트를 통해 스스로의 마음을 이해하고 회복할 수 있도록 돕습니다. 단순한 상담이 아니라, 타고난 재능을 기반으로 한 자기이해와 자기성장의 여정을 함께합니다.
 					</p>
 				</div>
 
-				<div class="area-card">
-					<div class="area-icon">📚</div>
-					<h3>학습 (배움과 진로의 영역)</h3>
-					<p>
+				<div class="bg-gradient-to-br from-green-50 to-emerald-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+					<div class="text-6xl mb-6 text-center">📚</div>
+					<h3 class="text-xl font-bold text-gray-800 mb-4 text-center">학습 (배움과 진로의 영역)</h3>
+					<p class="text-gray-600 leading-relaxed text-sm">
 						학생에게는 자신에게 맞는 학습 전략을 찾는 것이, 성인에게는 진로와 경력의 길을 설계하는 것이 핵심 과제입니다. 마인드코딩은 학습 성향을 분석하고, 진로와 계열을 제시하며, 입시와 관련한 컨설팅을 통해 생애주기에 맞는 학습 로드맵을 제공합니다.
 					</p>
 				</div>
 
-				<div class="area-card">
-					<div class="area-icon">🤝</div>
-					<h3>관계 (소통의 영역)</h3>
-					<p>
+				<div class="bg-gradient-to-br from-purple-50 to-violet-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+					<div class="text-6xl mb-6 text-center">🤝</div>
+					<h3 class="text-xl font-bold text-gray-800 mb-4 text-center">관계 (소통의 영역)</h3>
+					<p class="text-gray-600 leading-relaxed text-sm">
 						가정에서는 부모와 자녀가 더 잘 이해하고 소통할 수 있도록, 학교와 조직에서는 협력과 리더십이 살아나도록 돕습니다. 관계는 재능이 발휘되는 무대이기에, 마인드코딩은 심리재능을 바탕으로 관계를 경영하는 새로운 방식을 제안합니다.
 					</p>
 				</div>
 
-				<div class="area-card">
-					<div class="area-icon">💼</div>
-					<h3>비즈니스 (성과의 영역)</h3>
-					<p>
+				<div class="bg-gradient-to-br from-orange-50 to-amber-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+					<div class="text-6xl mb-6 text-center">💼</div>
+					<h3 class="text-xl font-bold text-gray-800 mb-4 text-center">비즈니스 (성과의 영역)</h3>
+					<p class="text-gray-600 leading-relaxed text-sm">
 						개인의 커리어 관리에서부터 기업의 성과와 조직문화 혁신까지, 마인드코딩은 재능경영의 관점으로 접근합니다. 직장인에게는 커리어 매니지먼트를, 기업에게는 성과·조직·리더십 솔루션을 제공하여, 변화하는 시대에 맞는 성장 전략을 실현합니다.
 					</p>
 				</div>
@@ -100,16 +102,16 @@
 	</section>
 
 	<!-- Mission & Vision Section -->
-	<section class="mission-vision-section">
-		<div class="container">
-			<div class="mv-grid">
-				<div class="mv-card mission">
-					<h3>미션 (MISSION)</h3>
-					<p>"우리는 사람의 심리재능을 선물로 여기고, 그 가능성을 현실 속에서 성장시켜 시대와 공동체에 기여하는 인재를 양성한다."</p>
+	<section class="py-20 bg-gradient-to-br from-blue-600 to-purple-700">
+		<div class="container max-w-6xl mx-auto px-5">
+			<div class="grid md:grid-cols-2 gap-12">
+				<div class="bg-white/10 backdrop-blur-sm p-10 rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300">
+					<h3 class="text-3xl font-bold text-white mb-6">미션 (MISSION)</h3>
+					<p class="text-lg text-white/90 leading-relaxed italic">"우리는 사람의 심리재능을 선물로 여기고, 그 가능성을 현실 속에서 성장시켜 시대와 공동체에 기여하는 인재를 양성한다."</p>
 				</div>
-				<div class="mv-card vision">
-					<h3>비전 (VISION)</h3>
-					<p>"심리재능은 시대의 언어다. 우리는 그 언어를 통해 개인의 가능성을 키우고, 함께 성장하는 미래를 만든다."</p>
+				<div class="bg-white/10 backdrop-blur-sm p-10 rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300">
+					<h3 class="text-3xl font-bold text-white mb-6">비전 (VISION)</h3>
+					<p class="text-lg text-white/90 leading-relaxed italic">"심리재능은 시대의 언어다. 우리는 그 언어를 통해 개인의 가능성을 키우고, 함께 성장하는 미래를 만든다."</p>
 				</div>
 			</div>
 		</div>
@@ -222,6 +224,23 @@
 		min-height: 60vh;
 		display: flex;
 		align-items: center;
+		position: relative;
+	}
+
+	.hero-content {
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
+
+	.hero-text-container {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		max-width: 800px;
+		padding: 0 20px;
 	}
 
 	.container {
@@ -233,15 +252,11 @@
 	.hero-title {
 		font-size: 3.5rem;
 		font-weight: 700;
-		margin: 0 0 20px 0;
-		line-height: 1.2;
 	}
 
 	.hero-subtitle {
 		font-size: 2rem;
 		font-weight: 300;
-		margin: 0 0 30px 0;
-		opacity: 0.9;
 	}
 
 	.hero-description {
@@ -504,6 +519,10 @@
 
 	/* Responsive Design */
 	@media (max-width: 768px) {
+		.hero-text-container {
+			padding: 0 15px;
+		}
+
 		.hero-title {
 			font-size: 2.5rem;
 		}
@@ -544,6 +563,10 @@
 	@media (max-width: 480px) {
 		.hero-section {
 			padding: 60px 0;
+		}
+
+		.hero-text-container {
+			padding: 0 10px;
 		}
 
 		.hero-title {
