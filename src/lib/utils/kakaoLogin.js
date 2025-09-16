@@ -424,47 +424,6 @@ export async function authenticatedFetch(url, options = {}) {
 }
 
 /**
- * 로그아웃 처리 (서버 + 클라이언트)
- */
-export async function handleLogout() {
-    try {
-        // 서버 로그아웃 요청
-        const token = getJwtToken();
-        if (token) {
-            await fetch('/api/auth/logout', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-        }
-    } catch (error) {
-        console.error('서버 로그아웃 실패:', error);
-    }
-    
-    // 클라이언트 로그아웃 처리
-    await logoutFromKakao();
-    
-    // 세션 스토리지 정리
-    sessionStorage.removeItem('currentUser');
-    sessionStorage.removeItem('jwt_token');
-    sessionStorage.removeItem('kakaoUser');
-    
-    // 전역 상태 초기화
-    if (window.___prj && window.___prj.user) {
-        window.___prj.user.isLoggedIn = false;
-    }
-    
-    if (window.$g_logedIn !== undefined) {
-        window.$g_logedIn = false;
-    }
-    
-    // 메인 페이지로 리다이렉트
-    window.location.href = '/';
-}
-
-/**
  * URL에서 인가코드 추출
  */
 export function getAuthorizationCodeFromUrl() {
