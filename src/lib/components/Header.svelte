@@ -47,28 +47,13 @@
 	};
 
 	const handleLogout = () => {
-		try {
-			// 로그아웃 처리
-			___prj.storage.clear();
-			___prj.log.info('prjMain logout(3) - localStorage.clear() ');
-			
-			// 상태 초기화
-			loginUserName = '';
-			apiVersion = '';
-			userInfoDropdown = false;
-			
-			// CSS가 완전히 로드되도록 충분한 시간을 두고 리다이렉트
-			setTimeout(() => {
-				// 페이지 전체를 새로고침하여 CSS를 다시 로드
-				window.location.reload();
-			}, 200);
-		} catch (error) {
-			console.error('로그아웃 처리 오류:', error);
-			// 에러 발생 시에도 안전하게 리로드
-			setTimeout(() => {
-				window.location.reload();
-			}, 200);
-		}
+		___prj.storage.clear();
+		___prj.log.info('prjMain logout(3) - localStorage.clear() ');
+
+		alert('로그아웃 완료');
+		
+		// 상태 초기화
+		window.location.href = '/';
 	};
 
 	const openUserDropdown = () => {
