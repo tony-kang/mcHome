@@ -17,7 +17,7 @@
 
 	// 사용자 타입 옵션
 	const userTypes = [
-		// { value: 'general', label: '일반', icon: '👤' },
+		{ value: 'general', label: '일반', icon: '👤' },
 		{ value: 'admin', label: '관리자 로그인', icon: '👨‍💼' },
 		{ value: 'partner', label: '파트너 로그인', icon: '🤝' }
 	];
@@ -322,7 +322,7 @@
 		align-items: center;
 		gap: 0.25rem;
 		padding: 5px 10px;
-		border: 2px solid rgba(90, 83, 83, 0.3);
+		border: 2px solid rgba(252, 250, 250, 0.3);
 		border-radius: 8px;
 		background: rgba(255, 255, 255, 0.1);
 		color: white;

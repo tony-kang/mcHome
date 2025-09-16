@@ -889,8 +889,8 @@
 	.modal-footer {
 		display: flex;
 		justify-content: flex-end;
-		gap: 15px;
-		padding: 20px 30px;
+		gap: 5px;
+		padding: 5px 5px;
 		border-top: 1px solid #e9ecef;
 		flex-shrink: 0;
 		background: #fff;
@@ -899,14 +899,13 @@
 
 	.modal-footer .btn-primary,
 	.modal-footer .btn-secondary {
-		padding: 12px 24px;
+		padding: 5px 5px;
 		border: none;
 		border-radius: 6px;
 		font-size: 16px;
 		font-weight: 500;
 		cursor: pointer;
 		transition: all 0.3s ease;
-		min-width: 120px;
 	}
 
 	.modal-footer .btn-primary {
@@ -941,7 +940,7 @@
 	.form-group {
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
+		gap: 2px;
 	}
 
 	.form-group label {
@@ -953,7 +952,7 @@
 	.form-group input,
 	.form-group select,
 	.form-group textarea {
-		padding: 12px 16px;
+		padding: 8px 8px;
 		border: 2px solid #e9ecef;
 		border-radius: 8px;
 		font-size: 14px;
@@ -969,7 +968,7 @@
 
 	.form-group textarea {
 		resize: vertical;
-		min-height: 120px;
+		min-height: 100px;
 	}
 
 	/* 서비스 상세 정보 스타일 */
@@ -1104,10 +1103,6 @@
 			flex-direction: column;
 			align-items: flex-start;
 			gap: 10px;
-		}
-
-		.modal-footer {
-			flex-direction: column;
 		}
 
 		.modal-footer button {

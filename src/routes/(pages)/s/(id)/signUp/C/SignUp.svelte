@@ -42,7 +42,7 @@
     // 회원 구분 옵션
     const userTypes = [
         { value: 0, label: '선택해 주세요' },
-        // { value: 1, label: '일반' },
+        { value: 1, label: '일반' },
         // { value: 2, label: '상담사' },
         { value: 3, label: '파트너' }
     ];
@@ -55,7 +55,7 @@
         user_email: 'hong@gmail.com',
         user_tel: '01012345678',
         user_company: '사용자 회사명',
-        user_type: 3
+        user_type: 1
     });
 
     let agreements = $state({
