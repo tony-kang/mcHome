@@ -8,9 +8,11 @@
 	import '../app.css';
 
 	let { children } = $props();
+	let prjInit = $state(false);
 
 	onMount(async () => {
 		await ___prj.init();
+		prjInit = true;
 
 		console.log('g_logedIn', $g_logedIn);
 	});
@@ -21,5 +23,11 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 </svelte:head>
-
-{@render children()}
+{#if prjInit}
+	{@render children()}
+{:else}
+	<div class="loading-container">
+		<div class="loading-spinner"></div>
+		<p>사용자 정보를 불러오는 중...</p>
+	</div>
+{/if}
