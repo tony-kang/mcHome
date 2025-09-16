@@ -889,8 +889,8 @@
 	.modal-footer {
 		display: flex;
 		justify-content: flex-end;
-		gap: 5px;
-		padding: 5px 5px;
+		gap: 10px;
+		padding: 15px;
 		border-top: 1px solid #e9ecef;
 		flex-shrink: 0;
 		background: #fff;
@@ -911,6 +911,7 @@
 	.modal-footer .btn-primary {
 		background: #007bff;
 		color: #fff;
+		padding: 5px 10px;
 	}
 
 	.modal-footer .btn-primary:hover {
@@ -922,6 +923,7 @@
 		background: #f8f9fa;
 		color: #333;
 		border: 2px solid #e9ecef;
+		padding: 5px 10px;
 	}
 
 	.modal-footer .btn-secondary:hover {
@@ -1084,7 +1086,7 @@
 
 		.modal-header,
 		.modal-footer {
-			padding: 20px;
+			padding: 15px;
 		}
 
 		.modal-body {
