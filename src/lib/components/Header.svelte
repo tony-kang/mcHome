@@ -193,8 +193,7 @@
 										{/if}
 									</div> -->
 									<div class="dropdown-menu-buttons">
-										<button class="dropdown-btn" onclick={() => gotoMove('/s/myPage/profile')}>마이페이지</button>   
-										<button class="dropdown-btn" onclick={() => gotoMove(`/blog/blog_2/${___prj.user?.userId || ''}`)}>블로그</button>
+										<button class="dropdown-btn" onclick={() => gotoMove('/s/myPage')}>마이페이지</button>   
 										<button class="dropdown-btn logout" onclick={handleLogout}>로그아웃</button>
 									</div>
 									<div class="version-info">
@@ -299,8 +298,7 @@
 								{/if}
 							</div>
 							<div>
-								<button class="mobile-action-btn" onclick={() => gotoMove('/s/myPage/profile')}>마이페이지</button>
-								<button class="mobile-action-btn" onclick={() => gotoMove(`/blog/blog_2/${___prj.user.userId}`)}>블로그</button>
+								<button class="mobile-action-btn" onclick={() => gotoMove('/s/myPage')}>마이페이지</button>
 								<button class="mobile-action-btn logout" onclick={handleLogout}>로그아웃</button>
 							</div>
 							<div class="mobile-version-info">WEB : {___prj.version} -----  API : {apiVersion}</div>
