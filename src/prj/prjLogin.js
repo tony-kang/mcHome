@@ -8,8 +8,8 @@ import { g_logedIn } from './prjStore';
 import { goto } from '$app/navigation';
 import axios from 'axios';
 
-async function signIn(id, pw, keepLoggedIn = false) {
-    ___prj.log.dev('로그인 시작', id, pw);
+async function signIn(id, pw, keepLoggedIn = false, userType = 0) {
+    ___prj.log.dev('로그인 시작', id, pw, userType, keepLoggedIn);
     
     const loginApi = axios.create({ baseURL: ___prj.apiUrl });   //별도의 axios 객체를 생성하여 baseURL을 지정함
     try {
@@ -20,6 +20,8 @@ async function signIn(id, pw, keepLoggedIn = false) {
             username: id,
             password: pw,
             curDeviceLogin: false,
+            userType: userType,
+            keepLoggedIn: keepLoggedIn,
             accessToken: accessToken,   // 정상적인 Logout이 아닌 경우에는 accessToken이 있을 수 있음
             //현재기기에서의 로그인을 강제하는 경우 true, 
             // false이면 중복로그인을 금지하는 경우에 중복로그인을 검사하여 응답을 받아서 true로 만들어서 다시 로그인시킴
