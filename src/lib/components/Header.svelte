@@ -205,8 +205,8 @@
 					</div>
 				{:else}
 					<!-- 로그인되지 않은 상태 -->
-					<a href="/s/signIn" class="btn-login" onclick={() => { userInfoDropdown = false; }}>Login</a>
-					<a href="/s/signUp" class="btn-join" onclick={() => { userInfoDropdown = false; }}>Join</a>
+					<a href="/s/signIn" class="btn-login" onclick={() => { userInfoDropdown = false; }}>로그인</a>
+					<a href="/s/signUp" class="btn-join" onclick={() => { userInfoDropdown = false; }}>파트너 회원가입</a>
 				{/if}
 			</div>
 
@@ -305,8 +305,8 @@
 						</div>
 					{:else}
 						<!-- 로그인되지 않은 상태 -->
-						<a href="/s/signIn" class="mobile-btn-login">Login</a>
-						<a href="/s/signUp" class="mobile-btn-join">Join</a>
+						<a href="/s/signIn" class="mobile-btn-login">로그인</a>
+						<a href="/s/signUp" class="mobile-btn-join">파트너 회원가입</a>
 					{/if}
 				</div>
 			</nav>
