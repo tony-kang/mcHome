@@ -243,11 +243,6 @@
 		padding: 0 20px;
 	}
 
-	.container {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 0 20px;
-	}
 
 	.hero-title {
 		font-size: 3.5rem;
@@ -555,9 +550,6 @@
 			padding: 30px 20px;
 		}
 
-		.container {
-			padding: 0 15px;
-		}
 	}
 
 	@media (max-width: 480px) {

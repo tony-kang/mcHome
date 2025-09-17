@@ -494,11 +494,6 @@
 		background: #f8f9fa;
 	}
 
-	.container {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 0 20px;
-	}
 
 	.section-header {
 		text-align: center;
@@ -763,9 +758,6 @@
 			gap: 20px;
 		}
 
-		.container {
-			padding: 0 15px;
-		}
 
 		.cta-section {
 			padding: 40px 20px;

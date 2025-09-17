@@ -331,12 +331,6 @@
 			padding-top: 80px;
 		}
 
-		.container {
-			width: 100%;
-			padding: 0 !important;
-			max-width: 100% !important;
-			margin: 0 !important;
-		}
 
 		.idsearch-card {
 			border-radius: 0;
@@ -409,25 +403,5 @@
 		.idsearch-title {
 			font-size: 1.5rem;
 		}
-	}
-
-	/* 글로벌 스타일 오버라이드 */
-	:global(.idsearch-section .container) {
-		padding: 0 !important;
-		max-width: 100% !important;
-		margin: 0 !important;
-	}
-
-	:global(.container) {
-		padding: 0 !important;
-		max-width: 100% !important;
-		margin: 0 !important;
-	}
-
-	:global(html),
-	:global(body) {
-		overflow-x: hidden !important;
-		width: 100% !important;
-		max-width: 100% !important;
 	}
 </style>

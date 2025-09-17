@@ -185,11 +185,6 @@
 		text-align: center;
 	}
 
-	.container {
-		max-width: 1000px;
-		margin: 0 auto;
-		padding: 0 20px;
-	}
 
 	.hero-title {
 		font-size: 3.5rem;
@@ -310,8 +305,5 @@
 			font-size: 1.5rem;
 		}
 
-		.container {
-			padding: 0 15px;
-		}
 	}
 </style>

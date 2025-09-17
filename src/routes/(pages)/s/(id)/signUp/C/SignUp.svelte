@@ -721,12 +721,6 @@
 			padding-top: 80px;
 		}
 
-		.container {
-			width: 100%;
-			padding: 0 !important;
-			max-width: 100% !important;
-			margin: 0 !important;
-		}
 
 		.signup-card {
 			border-radius: 0;
@@ -791,25 +785,5 @@
 		.form-section h3 {
 			font-size: 1.125rem;
 		}
-	}
-
-	/* 글로벌 스타일 오버라이드 */
-	:global(.signup-section .container) {
-		padding: 0 !important;
-		max-width: 100% !important;
-		margin: 0 !important;
-	}
-
-	:global(.container) {
-		padding: 0 !important;
-		max-width: 100% !important;
-		margin: 0 !important;
-	}
-
-	:global(html),
-	:global(body) {
-		overflow-x: hidden !important;
-		width: 100% !important;
-		max-width: 100% !important;
 	}
 </style>

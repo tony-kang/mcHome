@@ -54,18 +54,6 @@ img {
 	padding: 0 20px;
 }
 
-.text-center {
-	text-align: center;
-}
-
-.text-left {
-	text-align: left;
-}
-
-.text-right {
-	text-align: right;
-}
-
 /* Responsive Typography */
 @media (max-width: 768px) {
 	html {

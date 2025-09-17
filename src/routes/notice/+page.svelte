@@ -378,11 +378,6 @@ PTI:CODE는 개인의 심리재능을 정밀하게 진단하여 맞춤형 성장
 		text-align: center;
 	}
 
-	.container {
-		max-width: 1000px;
-		margin: 0 auto;
-		padding: 0 20px;
-	}
 
 	.hero-title {
 		font-size: 3.5rem;
@@ -681,8 +676,5 @@ PTI:CODE는 개인의 심리재능을 정밀하게 진단하여 맞춤형 성장
 			flex-wrap: wrap;
 		}
 
-		.container {
-			padding: 0 15px;
-		}
 	}
 </style>

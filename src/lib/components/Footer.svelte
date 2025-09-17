@@ -63,11 +63,6 @@
 		padding: 60px 0 20px;
 	}
 
-	.container {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 0 20px;
-	}
 
 	.footer-content {
 		display: grid;
@@ -175,9 +170,6 @@
 			gap: 30px;
 		}
 
-		.container {
-			padding: 0 15px;
-		}
 
 		.company-info p {
 			font-size: 13px;

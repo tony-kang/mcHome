@@ -147,12 +147,6 @@
 		align-items: top;
 	}
 
-	.container {
-		max-width: 1200px;
-		margin: 200px auto 0 auto;
-		padding: 0 20px;
-		width: 100%;
-	}
 
 	.hero-text {
 		color: #fff;
@@ -277,10 +271,6 @@
 			align-items: center;
 		}
 
-		.container {
-			margin: 0 auto;
-			padding: 0 15px;
-		}
 
 		.hero-title {
 			font-size: 2.5rem;
@@ -331,9 +321,6 @@
 			margin-top: 60px;
 		}
 
-		.container {
-			padding: 0 10px;
-		}
 
 		.hero-title {
 			font-size: 1.8rem;

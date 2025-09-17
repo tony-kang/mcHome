@@ -325,11 +325,6 @@
 		z-index: 1000;
 	}
 
-	.container {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 0 20px;
-	}
 
 	.header-content {
 		display: flex;
@@ -919,9 +914,6 @@
 			display: block;
 		}
 
-		.container {
-			padding: 0 15px;
-		}
 
 		.header-content {
 			height: 60px;

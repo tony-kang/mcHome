@@ -292,11 +292,6 @@
 		border-bottom: 1px solid #e9ecef;
 	}
 
-	.container {
-		max-width: 1000px;
-		margin: 0 auto;
-		padding: 0 20px;
-	}
 
 	.breadcrumb {
 		display: flex;
@@ -600,8 +595,5 @@
 			flex-direction: column;
 		}
 
-		.container {
-			padding: 0 15px;
-		}
 	}
 </style>

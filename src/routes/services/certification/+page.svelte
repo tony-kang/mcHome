@@ -243,11 +243,6 @@
 		text-align: center;
 	}
 
-	.container {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 0 20px;
-	}
 
 	.hero-title {
 		font-size: 3.5rem;
@@ -685,8 +680,5 @@
 			align-items: center;
 		}
 
-		.container {
-			padding: 0 15px;
-		}
 	}
 </style>
