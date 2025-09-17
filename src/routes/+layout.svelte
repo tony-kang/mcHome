@@ -3,7 +3,7 @@
 	import ___prj from '$prj/prjMain';
 	import ___const from '$prj/lib/i_const';
 	import { g_logedIn, g_theme } from '$prj/prjStore';
-
+	import { SvelteToast } from '@zerodevx/svelte-toast';
 	import favicon from '$lib/assets/favicon.svg';
 	import '../app.css';
 
@@ -23,6 +23,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 </svelte:head>
+<SvelteToast />
 {#if prjInit}
 	{@render children()}
 {:else}
