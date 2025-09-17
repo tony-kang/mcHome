@@ -153,10 +153,10 @@
                 ...formData,
                 user_marketing: agreements.marketing
             };
-            ___prj.log.dev('회원가입 API', apiPath, _para, _data);
-            const r = await ___prj.api.post('/v1/user', 'signup.partner', _para, _data);
+
+            const r = await ___prj.api.post('/s/user', 'signup.partner', _para, _data);
             ___prj.log.dev('회원가입 API 응답', r);
-            if (r.data.result === ___const.OK) {
+            if (r.data.result === ___const.OK){
                 alert('회원가입이 완료되었습니다.');
                 goto('/s/signIn');
             }

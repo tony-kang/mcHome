@@ -7,7 +7,7 @@
 
 	let username = $state('');
 	let password = $state('');
-	let userType = $state('partner'); // general, admin, partner
+	let userType = $state(3); // general, admin, partner
 	let keepLoggedIn = $state(false);
 	let isLoading = $state(false);
 	let errorMessage = $state('');
@@ -17,10 +17,14 @@
 
 	// 사용자 타입 옵션
 	const userTypes = [
-		{ value: 'general', label: '일반', icon: '👤' },
-		{ value: 'admin', label: '관리자 로그인', icon: '👨‍💼' },
-		{ value: 'partner', label: '파트너 로그인', icon: '🤝' }
+		{ text: 'general', value: 0, label: '일반', icon: '👤' },
+		{ text: 'admin', value: 1, label: '관리자 로그인', icon: '👨‍💼' },
+		{ text: 'partner', value: 3, label: '파트너 로그인', icon: '🤝' }
 	];
+
+	function getUserType(userType) {
+		return userTypes.find(type => type.value === userType)?.value;
+	}
 
 	// 페이지 로드 시 CSS가 완전히 로드되도록 보장
 	onMount(async () => {
@@ -61,7 +65,7 @@
 			const loginData = {
 				username,
 				password,
-				userType,
+				userType : getUserType(userType),
 				keepLoggedIn
 			};
 
