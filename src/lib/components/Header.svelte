@@ -178,8 +178,8 @@
 										{#if ___prj.user.cLevel}
 											<div class="stat-item">코칭레벨 <span class="stat-value">{___prj.user.cLevel}</span></div>
 										{/if}
-										<div class="stat-item">충전 포인트<span class="stat-value">{___toCurrency(___prj.user.bizPoint ?? 0)}</span></div>
-										<div class="stat-item">보너스 포인트<span class="stat-value">{___toCurrency(___prj.user.bonusPoint ?? 0)}</span></div>
+										<!-- <div class="stat-item">충전 포인트<span class="stat-value">{___toCurrency(___prj.user.bizPoint ?? 0)}</span></div>
+										<div class="stat-item">보너스 포인트<span class="stat-value">{___toCurrency(___prj.user.bonusPoint ?? 0)}</span></div> -->
 									</div>
 									<!-- <div class="user-level">
 										{#if ___isInArray(___prj.user.pLevel, [___const.P_ADMIN])}
