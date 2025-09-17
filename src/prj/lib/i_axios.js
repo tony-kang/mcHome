@@ -126,7 +126,8 @@ const i_axios = {
         // API 요청 전에 인터셉터를 등록하여 access token 갱신
         // 불필요한 오버헤드를 없애기 위해 요청전에는 Token만료를 체크하지 않는다.
         // ------------------------------------------------------------------------------------------------
-        const noTokenApi = [ '/s/blog', '/s/xxxx' ];
+        const noTokenApi = [ '/s/blog' ];
+        const noTokenApiCmd = [ 'signup.partner' ];
         this.api.interceptors.request.use(
             (config) => {
                 const accessToken = ___localStorage.getItem(___const.A_TOKEN);
@@ -136,8 +137,10 @@ const i_axios = {
                     //console.log('interceptors.request : Authorization 토큰 추가 ');
                 } else if (noTokenApi.some(path => config.url.endsWith(path))) {
                     //console.log(`No Token`);
+                } else if (noTokenApiCmd.some(cmd => config.data.ctrl.cmd)) {
+                    //console.log(`No Token`);
                 } else {
-                    console.log('interceptors.request : Access token이 없습니다. config = ', config.ctrl);
+                    console.log('interceptors.request : Access token이 없습니다. config.data.ctrl = ', config.data.ctrl);
                     alert('다시 로그인 해주세요.');
                     window.location.href = '/';
                     return Promise.reject(new Error('Access token이 없습니다.'));
