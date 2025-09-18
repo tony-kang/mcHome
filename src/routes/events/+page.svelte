@@ -62,6 +62,7 @@
 <Footer />
 
 <style>
+	/* CSS 모듈 방식 - 더 깔끔하고 유지보수하기 좋음 */
 	.events-page {
 		margin-top: 70px;
 	}
@@ -72,7 +73,6 @@
 		padding: 100px 0;
 		text-align: center;
 	}
-
 
 	.hero-title {
 		font-size: 3.5rem;
@@ -111,14 +111,14 @@
 		margin-bottom: 30px;
 	}
 
-	.coming-soon-content h2 {
+	.coming-soon-content :global(h2) {
 		font-size: 2.5rem;
 		font-weight: 700;
 		color: #333;
 		margin: 0 0 20px 0;
 	}
 
-	.coming-soon-content p {
+	.coming-soon-content :global(p) {
 		font-size: 1.2rem;
 		color: #666;
 		margin: 0 0 50px 0;
@@ -145,14 +145,14 @@
 		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 	}
 
-	.feature h3 {
+	.feature :global(h3) {
 		font-size: 1.3rem;
 		font-weight: 600;
 		color: #333;
 		margin: 0 0 15px 0;
 	}
 
-	.feature p {
+	.feature :global(p) {
 		font-size: 1rem;
 		color: #666;
 		margin: 0;
@@ -214,7 +214,7 @@
 			font-size: 1rem;
 		}
 
-		.coming-soon-content h2 {
+		.coming-soon-content :global(h2) {
 			font-size: 2rem;
 		}
 
@@ -226,6 +226,5 @@
 			flex-direction: column;
 			align-items: center;
 		}
-
 	}
 </style>

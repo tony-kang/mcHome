@@ -18,7 +18,7 @@
 			<div class="w-full h-full">
 				<div class="text-white">
 					<h1 class="absolute top-10 left-5 text-3xl md:text-3xl lg:text-4xl font-bold mb-5 leading-tight">교육을 넘어 경영, 마음으로</h1>
-					<p class="absolute top-22 left-5 text-md md:text-lg lg:text-xl leading-relaxed opacity-75">
+					<p class="absolute top-22 left-5 text-md leading-relaxed opacity-75">
 						마인드코딩은 단순한 교육회사가 아닙니다.<br>
 						우리는 개인이 타고난 심리재능(PTI:CODE)을 기반으로,<br>
 						학습·진로·관계·비즈니스 등 삶의 전 영역을 경영하듯 설계하고 관리하는 맞춤형 성장 플랫폼입니다.
@@ -62,7 +62,7 @@
 		<div class="container max-w-6xl mx-auto px-5">
 			<div class="text-center mb-16">
 				<h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">네 가지 영역</h2>
-				<p class="text-xl text-gray-600 max-w-3xl mx-auto">검사를 통해 드러난 결과는 곧 네 가지 영역으로 이어집니다.</p>
+				<p class="text-xl text-gray-600 mx-auto">검사를 통해 드러난 결과는 곧 네 가지 영역으로 이어집니다.</p>
 			</div>
 
 			<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">

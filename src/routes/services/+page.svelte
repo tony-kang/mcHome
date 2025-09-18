@@ -195,6 +195,7 @@
 <Footer />
 
 <style>
+	/* CSS 모듈 방식 - 더 깔끔하고 유지보수하기 좋음 */
 	.services-page {
 		margin-top: 70px;
 	}
@@ -205,7 +206,6 @@
 		padding: 100px 0;
 		text-align: center;
 	}
-
 
 	.hero-title {
 		font-size: 3.5rem;
@@ -258,14 +258,14 @@
 		margin-bottom: 20px;
 	}
 
-	.service-card h3 {
+	.service-card :global(h3) {
 		font-size: 1.5rem;
 		font-weight: 600;
 		color: #333;
 		margin: 0 0 10px 0;
 	}
 
-	.service-card p {
+	.service-card :global(p) {
 		color: #666;
 		margin: 0 0 20px 0;
 	}
@@ -295,7 +295,7 @@
 		margin-bottom: 60px;
 	}
 
-	.section-header h2 {
+	.section-header :global(h2) {
 		font-size: 2.5rem;
 		font-weight: 700;
 		color: #333;
@@ -317,7 +317,7 @@
 		margin-bottom: 50px;
 	}
 
-	.pti-description p {
+	.pti-description :global(p) {
 		font-size: 1.1rem;
 		line-height: 1.8;
 		color: #555;
@@ -339,14 +339,14 @@
 		border-top: 4px solid #007bff;
 	}
 
-	.target-group h4 {
+	.target-group :global(h4) {
 		font-size: 1.1rem;
 		font-weight: 600;
 		color: #333;
 		margin: 0 0 8px 0;
 	}
 
-	.target-group p {
+	.target-group :global(p) {
 		font-size: 0.9rem;
 		color: #666;
 		margin: 0;
@@ -388,7 +388,7 @@
 		font-size: 2rem;
 	}
 
-	.category-header h3 {
+	.category-header :global(h3) {
 		font-size: 1.3rem;
 		font-weight: 600;
 		margin: 0;
@@ -398,20 +398,20 @@
 		padding: 30px;
 	}
 
-	.category-content ul {
+	.category-content :global(ul) {
 		list-style: none;
 		margin: 0;
 		padding: 0;
 	}
 
-	.category-content li {
+	.category-content :global(li) {
 		padding: 8px 0;
 		border-bottom: 1px solid #eee;
 		color: #555;
 		font-size: 0.95rem;
 	}
 
-	.category-content li:last-child {
+	.category-content :global(li:last-child) {
 		border-bottom: none;
 	}
 
@@ -422,13 +422,13 @@
 		text-align: center;
 	}
 
-	.cta-content h2 {
+	.cta-content :global(h2) {
 		font-size: 2.5rem;
 		font-weight: 700;
 		margin: 0 0 20px 0;
 	}
 
-	.cta-content p {
+	.cta-content :global(p) {
 		font-size: 1.2rem;
 		margin: 0 0 40px 0;
 		opacity: 0.9;
