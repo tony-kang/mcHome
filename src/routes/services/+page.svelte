@@ -53,12 +53,12 @@
 					<p>소통 & 협력 프로그램</p>
 					<a href="/services/relationship" class="service-link">자세히 보기</a>
 				</div>
-				<div class="service-card">
+				<!-- <div class="service-card">
 					<div class="service-icon">💼</div>
 					<h3>비즈니스</h3>
 					<p>커리어 & 조직 컨설팅</p>
 					<a href="/services/business" class="service-link">자세히 보기</a>
-				</div>
+				</div> -->
 			</div>
 		</div>
 	</section>
@@ -76,7 +76,7 @@
 						PTI(Psychometric Talent Inventory)는 개인이 타고난 심리기질·심리기능·심리재능을 종합적으로 진단하는 심리재능 진단 도구입니다.
 					</p>
 					<p>
-						사람은 누구나 고유한 심리코드(Code)를 가지고 태어나며, PTI는 이 코드를 해석하여 학습, 진로, 관계, 비즈니스 등 삶의 전 영역에서 활용할 수 있는 맞춤형 성장 전략을 제시합니다.
+						사람은 누구나 고유한 심리코드(CODE)를 가지고 태어나며, PTI는 이 코드를 해석하여 학습, 진로, 관계, 비즈니스 등 삶의 전 영역에서 활용할 수 있는 맞춤형 성장 전략을 제시합니다.
 					</p>
 				</div>
 				<div class="pti-targets">
@@ -309,7 +309,7 @@
 	}
 
 	.pti-content {
-		max-width: 1000px;
+		/* max-width: 1000px; */
 		margin: 0 auto;
 	}
 
@@ -335,7 +335,8 @@
 		padding: 20px;
 		border-radius: 12px;
 		text-align: center;
-		border-left: 4px solid #007bff;
+		border: 1px solid #007bff;
+		border-top: 4px solid #007bff;
 	}
 
 	.target-group h4 {
