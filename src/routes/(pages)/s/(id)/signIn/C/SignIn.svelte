@@ -36,15 +36,15 @@
 		// 카카오 SDK 초기화
 		try {
 			await initKakaoSDK();
-			console.log('카카오 SDK 초기화 완료');
+			console.log('카카오 SDK 초기화 완료(SignIn)');
 		} catch (error) {
-			console.error('카카오 SDK 초기화 실패:', error);
+			console.error('카카오 SDK 초기화 실패(SignIn):', error);
 		}
 		
 		// 카카오 로그인 상태 확인
 		if (isKakaoLoggedIn()) {
 			const kakaoUser = getKakaoUserInfo();
-			console.log('카카오 로그인 상태:', kakaoUser);
+			console.log('카카오 로그인 상태(SignIn):', kakaoUser);
 		}
 	});
 
@@ -57,7 +57,7 @@
 			// 실제 로그인 로직은 여기에 구현
 			// 임시로 간단한 검증만 수행
 			if (!username || !password) {
-				errorMessage = '아이디와 비밀번호를 입력해주세요.';
+				errorMessage = '아이디와 비밀번호를 입력해주세요.(SignIn)';
 				return;
 			}
 
@@ -72,7 +72,7 @@
 			// 로그인 성공 시 메인 페이지로 이동
 			signIn(username, password, keepLoggedIn, userType);
 		} catch (error) {
-			errorMessage = '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.';
+			errorMessage = '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.(SignIn)';
 		} finally {
 			isLoading = false;
 		}
