@@ -450,7 +450,7 @@
 	}
 
 	.ceo-content {
-		max-width: 800px;
+		/* max-width: 800px; */
 		margin: 0 auto;
 	}
 

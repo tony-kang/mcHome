@@ -4,6 +4,7 @@
 	import ___localStorage from '$prj/lib/i_localStorage';
 	import ___encDec from '$prj/lib/i_encDec';
 	import { toastAlert } from '$prj/lib/i_alert';
+    import ___prjConst from '$src/prj/prjConst';
 
 	let currentCategory = $state('all');
 	let currentType = $state('individual');
@@ -563,9 +564,11 @@
 			<div class="cta-content">
 				<h3>나만의 심리재능을 발견하고 싶다면?</h3>
 				<p>PTI:CODE 검사로 시작하는 맞춤형 성장 여정</p>
-				<div class="cta-buttons">
-					<button class="btn-primary">검사 시작하기</button>
-					<button class="btn-secondary">무료 상담 신청</button>
+				
+				<div class="flex items-center justify-center gap-5">
+					<span>검사코드를 부여 받으셨나요?</span>
+					<button class="btn-primary" onclick={() => window.open(___prjConst.COMPANY.TEST_SITE_URL, '_blank')}>검사 시작하기</button>
+					<!-- <button class="btn-secondary">검사를 위한 상담 신청</button> -->
 				</div>
 			</div>
 		</div>
@@ -1039,12 +1042,6 @@
 		font-size: 1.1rem;
 		margin: 0 0 30px 0;
 		opacity: 0.9;
-	}
-
-	.cta-buttons {
-		display: flex;
-		gap: 15px;
-		justify-content: center;
 	}
 
 	.btn-primary,

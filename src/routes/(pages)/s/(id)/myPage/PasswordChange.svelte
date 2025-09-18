@@ -42,7 +42,7 @@
         
         try {
             // 실제 API 호출 (___prj.api 사용)
-            const result = await ___prj.api.post('', 'user.changePassword', null, {
+            const result = await ___prj.api.post('/s/user', 'update.password', null, {
                 currentPassword: currentPassword,
                 newPassword: newPassword
             });
