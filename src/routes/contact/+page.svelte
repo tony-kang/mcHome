@@ -53,7 +53,7 @@
 	</section>
 
 	<!-- Contact Form -->
-	<section class="contact-form-section">
+	<!-- <section class="contact-form-section">
 		<div class="container">
 			<div class="form-container">
 				<div class="form-header">
@@ -92,7 +92,7 @@
 					</div>
 					
 					<div class="form-group">
-						<label for="target">대상</label>
+						<label for="target">상담 대상</label>
 						<select id="target" name="target">
 							<option value="">선택해주세요</option>
 							<option value="infant">영유아</option>
@@ -123,7 +123,7 @@
 				</form>
 			</div>
 		</div>
-	</section>
+	</section> -->
 
 	<!-- FAQ Section -->
 	<section class="faq-section">
