@@ -4,6 +4,7 @@
 
     import ___const from '$prj/lib/i_const';
     import ___prj from '$prj/prjMain';
+    import ___prjConst from '$prj/prjConst';
     import { g_brandLogo, g_logoSizes } from '$prj/prjStore';
     import TermsModal from './TermsModal.svelte';
 
@@ -172,7 +173,15 @@
             const response = await fetch('/terms.html');
 			console.log(response);
             if (response.ok) {
-                termsContent = await response.text();
+				const termsFileData = await response.text();
+				termsContent = `
+				<div style="padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #000000; background-color: #ffffff; line-height: 1.6;">
+					${termsFileData}
+					<p style="margin-top: 30px; color: #333333;">
+						문의: ${___prjConst.COMPANY.NEW_ADDRESS} | 대표번호: ${___prjConst.COMPANY.TEL}<br>
+						이메일: ${___prjConst.COMPANY.EMAIL} | 웹사이트: ${___prjConst.COMPANY.WEB_SITE_URL}
+					</p>
+				</div>`;
             }
         } catch (error) {
             console.error('이용약관 로드 실패:', error);
@@ -183,7 +192,16 @@
         try {
             const response = await fetch('/privacy.html');
             if (response.ok) {
-                privacyContent = await response.text();
+                const privacyFileData = await response.text();
+				privacyContent = `
+				<div style="padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #000000; background-color: #ffffff; line-height: 1.6;">
+					${privacyFileData}
+					<p style="margin-top: 30px; color: #333333;">
+						${___prjConst.PRIVACY_OFFICER.POSITION}: ${___prjConst.PRIVACY_OFFICER.NAME}<br>
+						연락처: ${___prjConst.PRIVACY_OFFICER.EMAIL}, ${___prjConst.PRIVACY_OFFICER.TEL}<br>
+						주소: ${___prjConst.COMPANY.NEW_ADDRESS}
+					</p>
+				</div>`;
             }
         } catch (error) {
             console.error('개인정보처리방침 로드 실패:', error);

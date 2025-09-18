@@ -139,11 +139,11 @@
 						<p>회사는 개인정보 처리에 관한 업무를 총괄해서 책임지고, 개인정보 처리와 관련한 정보주체의 불만처리 및 피해구제 등을 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다:</p>
 						<div class="contact-info">
 							<div class="contact-item">
-								<h3>개인정보 보호책임자</h3>
-								<p>성명: 박제희</p>
-								<p>직책: 대표이사</p>
-								<p>연락처: {___prjConst.COMPANY.COUNSELING_TEL}</p>
-								<p>이메일: {___prjConst.COMPANY.PRIVACY_EMAIL}</p>
+								<h3>{___prjConst.PRIVACY_OFFICER.POSITION}</h3>
+								<p>성명: {___prjConst.PRIVACY_OFFICER.NAME}</p>
+								<p>직책: {___prjConst.PRIVACY_OFFICER.POSITION}</p>
+								<p>연락처: {___prjConst.PRIVACY_OFFICER.TEL}</p>
+								<p>이메일: {___prjConst.PRIVACY_OFFICER.EMAIL}</p>
 							</div>
 						</div>
 					</div>

@@ -23,7 +23,7 @@
 					<p>사업자번호 : {___prjConst.COMPANY.BUSINESS_NUMBER}</p>
 					<p>통신판매업신고 : {___prjConst.COMPANY.E_COMMERCE_NUMBER}</p>
 					<p>출판사신고 : {___prjConst.COMPANY.PUBLISHER_NUMBER}</p>
-					<p>{___prjConst.COMPANY.OLD_ADDRESS}</p>
+					<p>{___prjConst.COMPANY.NEW_ADDRESS}</p>
 					<p><a href="https://bizno.net/?area=&query={___prjConst.COMPANY.BUSINESS_NUMBER}" class="business-link">사업자정보확인</a></p>
 				</div>
 			</div>
