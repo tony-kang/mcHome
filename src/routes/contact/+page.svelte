@@ -1,6 +1,7 @@
 <script>
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import ___prjConst from '$prj/prjConst';
 </script>
 
 <svelte:head>
@@ -33,13 +34,13 @@
 					<div class="contact-icon">📞</div>
 					<h3>전화 상담</h3>
 					<p>평일 09:00 - 18:00</p>
-					<a href="tel:02-1234-5678" class="contact-link">02-1234-5678</a>
+					<a href="tel:{___prjConst.COMPANY.COUNSELING_TEL}" class="contact-link">{___prjConst.COMPANY.COUNSELING_TEL}</a>
 				</div>
 				<div class="contact-card">
 					<div class="contact-icon">📧</div>
 					<h3>이메일 문의</h3>
 					<p>24시간 접수 가능</p>
-					<a href="mailto:info@mindcoding.co.kr" class="contact-link">info@mindcoding.co.kr</a>
+					<a href="mailto:{___prjConst.COMPANY.EMAIL}" class="contact-link">{___prjConst.COMPANY.EMAIL}</a>
 				</div>
 				<div class="contact-card">
 					<div class="contact-icon">💬</div>

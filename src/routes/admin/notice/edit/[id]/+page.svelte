@@ -3,6 +3,7 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import HtmlEditor from '$src/prj/C/htmlEditor/HtmlEditor.svelte';
 	import { page } from '$app/stores';
+	import ___prjConst from '$prj/prjConst';
 	
 	let title = '';
 	let content = '';
@@ -41,7 +42,7 @@
 				<li>실생활 적용 가능한 구체적 가이드</li>
 			</ul>
 			
-			<p>더 자세한 내용은 고객센터(02-1234-5678)로 문의해주시기 바랍니다.</p>
+			<p>더 자세한 내용은 고객센터(${___prjConst.COMPANY.COUNSELING_TEL})로 문의해주시기 바랍니다.</p>
 		`,
 		category: "service",
 		important: true,

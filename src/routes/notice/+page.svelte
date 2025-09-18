@@ -1,6 +1,7 @@
 <script>
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import ___prjConst from '$prj/prjConst';
 
 	let selectedCategory = $state('all');
 	let searchQuery = $state('');
@@ -24,7 +25,7 @@ PTI:CODE는 개인의 심리재능을 정밀하게 진단하여 맞춤형 성장
 
 검사는 온라인으로 진행되며 약 30-40분 정도 소요됩니다. 검사 완료 후 전문가가 결과를 분석하여 상담을 통해 맞춤형 성장 전략을 제시합니다.
 
-더 자세한 내용은 고객센터(02-1234-5678)로 문의해주시기 바랍니다.
+더 자세한 내용은 고객센터(${___prjConst.COMPANY.COUNSELING_TEL})로 문의해주시기 바랍니다.
 
 감사합니다.`,
 			category: "service",
@@ -113,7 +114,7 @@ PTI:CODE는 개인의 심리재능을 정밀하게 진단하여 맞춤형 성장
 - 패키지 상담 (3회): 250,000원
 - 패키지 상담 (5회): 400,000원
 
-문의: 고객센터 02-1234-5678`,
+문의: 고객센터 ${___prjConst.COMPANY.COUNSELING_TEL}`,
 			category: "service",
 			date: "2024-01-08",
 			views: 650,

@@ -127,7 +127,6 @@
 							<div class="dropdown-menu" style="min-width: 200px;">
 								<div class="dropdown-section">
 									<ul>
-										<li><a href="/contact">상담 신청</a></li>
 										<li><a href="/contact/counseling">나의 문의사항</a></li>
 										<li><a href="/faq">자주묻는 질문</a></li>
 										<li><a href="/privacy">개인정보처리방침</a></li>

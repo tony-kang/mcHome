@@ -1,5 +1,7 @@
 <script>
-		const footerLinks = {
+	import ___prjConst from '$prj/prjConst';
+	
+	const footerLinks = {
 		services: [
 			{ name: '워크샵', url: '/services/workshop' },
 			{ name: '학습캠프', url: '/services/learning-camp' },
@@ -17,12 +19,12 @@
 			<div class="footer-section">
 				<h4>마인드코딩</h4>
 				<div class="company-info">
-					<p>대표번호 : 1661-6876</p>
-					<p>사업자번호 : 788-88-01558</p>
-					<p>통신판매업신고 : 2022-광주동구-0289호</p>
-					<p>출판사신고 : 2022-000015호</p>
-					<p>서울특별시 강남구 선릉로92길 28 4층 4279호(이전 주소)</p>
-					<p><a href="https://bizno.net/?area=&query=788-88-01558" class="business-link">사업자정보확인</a></p>
+					<p>대표번호 : {___prjConst.COMPANY.TEL}</p>
+					<p>사업자번호 : {___prjConst.COMPANY.BUSINESS_NUMBER}</p>
+					<p>통신판매업신고 : {___prjConst.COMPANY.E_COMMERCE_NUMBER}</p>
+					<p>출판사신고 : {___prjConst.COMPANY.PUBLISHER_NUMBER}</p>
+					<p>{___prjConst.COMPANY.OLD_ADDRESS}</p>
+					<p><a href="https://bizno.net/?area=&query={___prjConst.COMPANY.BUSINESS_NUMBER}" class="business-link">사업자정보확인</a></p>
 				</div>
 			</div>
 
@@ -130,22 +132,6 @@
 		color: #007bff;
 	}
 
-	.isms-cert {
-		background: rgba(255, 255, 255, 0.05);
-		padding: 20px;
-		border-radius: 8px;
-	}
-
-	.cert-info p {
-		margin: 0 0 8px 0;
-		font-size: 13px;
-		line-height: 1.4;
-		color: #ccc;
-	}
-
-	.cert-info strong {
-		color: #fff;
-	}
 
 	.footer-bottom {
 		border-top: 1px solid #555;
@@ -179,9 +165,6 @@
 			font-size: 13px;
 		}
 
-		.cert-info p {
-			font-size: 12px;
-		}
 
 		.copyright {
 			font-size: 11px;
@@ -197,20 +180,12 @@
 			gap: 25px;
 		}
 
-		.isms-cert {
-			padding: 15px;
-		}
-
 		.company-info p {
 			font-size: 12px;
 		}
 
 		.footer-links a {
 			font-size: 12px;
-		}
-
-		.cert-info p {
-			font-size: 11px;
 		}
 	}
 </style>

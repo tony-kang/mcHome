@@ -2,6 +2,7 @@
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import { page } from '$app/stores';
+	import ___prjConst from '$prj/prjConst';
 
 	// 공지사항 데이터 (실제로는 API에서 가져올 데이터)
 	const notices = [
@@ -41,7 +42,7 @@
 					<li>개인별 맞춤 상담 제공</li>
 				</ol>
 				
-				<p>더 자세한 내용은 고객센터(02-1234-5678)로 문의해주시기 바랍니다.</p>
+				<p>더 자세한 내용은 고객센터(${___prjConst.COMPANY.COUNSELING_TEL})로 문의해주시기 바랍니다.</p>
 				
 				<p>감사합니다.</p>
 			`,
@@ -157,7 +158,7 @@
 					<li>패키지 상담 (5회): 400,000원</li>
 				</ul>
 				
-				<p>문의: 고객센터 02-1234-5678</p>
+				<p>문의: 고객센터 ${___prjConst.COMPANY.COUNSELING_TEL}</p>
 			`,
 			category: "service",
 			date: "2024-01-08",

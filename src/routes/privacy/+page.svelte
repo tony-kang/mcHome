@@ -1,6 +1,7 @@
 <script>
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import ___prjConst from '$prj/prjConst';
 </script>
 
 <svelte:head>
@@ -141,8 +142,8 @@
 								<h3>개인정보 보호책임자</h3>
 								<p>성명: 박제희</p>
 								<p>직책: 대표이사</p>
-								<p>연락처: 02-1234-5678</p>
-								<p>이메일: privacy@mindcoding.co.kr</p>
+								<p>연락처: {___prjConst.COMPANY.COUNSELING_TEL}</p>
+								<p>이메일: {___prjConst.COMPANY.PRIVACY_EMAIL}</p>
 							</div>
 						</div>
 					</div>

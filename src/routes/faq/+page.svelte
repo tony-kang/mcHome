@@ -1,6 +1,7 @@
 <script>
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import ___prjConst from '$prj/prjConst';
 
 	let openFaq = $state(null);
 
@@ -128,7 +129,7 @@
 				<p>원하는 답변을 찾지 못하셨다면 언제든지 문의해주세요.</p>
 				<div class="contact-buttons">
 					<a href="/contact" class="btn-primary">상담 신청</a>
-					<a href="tel:02-1234-5678" class="btn-secondary">전화 문의</a>
+					<a href="tel:{___prjConst.COMPANY.COUNSELING_TEL}" class="btn-secondary">전화 문의</a>
 				</div>
 			</div>
 		</div>

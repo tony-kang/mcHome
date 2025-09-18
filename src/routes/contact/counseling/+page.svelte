@@ -3,8 +3,8 @@
 	import ___prj from '$prj/prjMain';
 	import ___const from '$prj/lib/i_const';
 	import { g_logedIn, g_theme } from '$prj/prjStore';
-	import { toastAlert } from '$prj/lib/i_alert';
-	import ___axios from '$prj/lib/i_axios';
+	import { toastAlert, toastError } from '$prj/lib/i_alert';
+	import { ___date } from '$prj/lib/i_telepasi';
 
 	let isLoaded = $state(false);
 	let userInfo = $state(null);
@@ -15,21 +15,21 @@
 
 	// 문의 조회 폼
 	let inquiryForm = $state({
-		email: '',
-		phone: '',
-		password: ''
+		c_email: 'blue@blue.com',
+		c_phone: '010-1234-5678',
+		c_pw: ''
 	});
 
 	// 문의 수정 폼
 	let editForm = $state({
-		id: '',
+		no: 0,
 		name: '',
-		email: '',
-		phone: '',
+		c_email: '',
+		c_phone: '',
 		content: '',
 		type: '',
-		datetime: '',
-		password: ''
+		c_date: '',
+		c_pw: ''
 	});
 
 	let editingInquiry = $state(null);
@@ -39,44 +39,39 @@
 			userInfo = ___prj.user;
 		}
 		isLoaded = true;
-		
-		// 폼 필드 초기화 보장
-		setTimeout(() => {
-			inquiryForm = { email: '', phone: '', password: '' };
-		}, 100);
 	});
 
 	// 문의사항 불러오기
 	async function loadInquiries() {
-		if (!inquiryForm.email && !inquiryForm.phone) {
-			toastAlert('이메일 또는 전화번호를 입력해주세요.');
+		if (!inquiryForm.c_email || !inquiryForm.c_phone) {
+			toastError('이메일 또는 전화번호를 입력해주세요.');
 			return;
 		}
 
-		if (!inquiryForm.password) {
-			toastAlert('비밀번호를 입력해주세요.');
+		if (!inquiryForm.c_pw) {
+			toastError('비밀번호를 입력해주세요.');
 			return;
 		}
 
 		loading = true;
 		try {
-			const response = await ___axios.post('/api/inquiry/list', {
-				email: inquiryForm.email,
-				phone: inquiryForm.phone,
-				password: inquiryForm.password
-			});
+			const r = await ___prj.api.post('/s/system', 'counselling.inquiry.list', {
+				c_email: inquiryForm.c_email,
+				c_phone: inquiryForm.c_phone,
+				c_pw: inquiryForm.c_pw
+			},null);
 
-			if (response.data.success) {
-				inquiryList = response.data.data || [];
+			if (r.data.result === ___const.OK) {
+				inquiryList = r.data.content;
 				showInquiryList = true;
 				toastAlert(`${inquiryList.length}개의 문의사항을 찾았습니다.`);
 			} else {
-				toastAlert(response.data.message || '문의사항을 찾을 수 없습니다.');
+				toastError('문의사항을 찾을 수 없습니다.');
 				inquiryList = [];
 			}
 		} catch (error) {
 			console.error('문의사항 조회 오류:', error);
-			toastAlert('문의사항 조회 중 오류가 발생했습니다.');
+			toastError('문의사항 조회 중 오류가 발생했습니다.');
 			inquiryList = [];
 		} finally {
 			loading = false;
@@ -85,34 +80,40 @@
 
 	// 문의사항 수정
 	async function updateInquiry() {
-		if (!editForm.name || !editForm.phone || !editForm.content) {
-			toastAlert('필수 항목을 모두 입력해주세요.');
+		if (!editForm.name || !editForm.c_phone || !editForm.content) {
+			toastError('필수 항목을 모두 입력해주세요.');
+			return;
+		}
+
+		if (!editForm.c_pw) {
+			toastError('수정을 위한 비밀번호를 입력해주세요.');
 			return;
 		}
 
 		loading = true;
 		try {
-			const response = await ___axios.put(`/api/inquiry/${editForm.id}`, {
+			const r = await ___prj.api.post('/s/system', 'update.counselling.inquiry',null, {
+				no: editForm.no,
 				name: editForm.name,
-				email: editForm.email,
-				phone: editForm.phone,
+				c_email: editForm.c_email,
+				c_phone: editForm.c_phone,
 				content: editForm.content,
 				type: editForm.type,
-				datetime: editForm.datetime,
-				password: editForm.password
+				c_date: editForm.c_date,
+				c_pw: editForm.c_pw
 			});
 
-			if (response.data.success) {
+			if (r.data.result === ___const.OK) {
 				toastAlert('문의사항이 수정되었습니다.');
 				editingInquiry = null;
 				// 목록 새로고침
 				await loadInquiries();
 			} else {
-				toastAlert(response.data.message || '수정에 실패했습니다.');
+				toastError(r.data.message || '수정에 실패했습니다.');
 			}
 		} catch (error) {
 			console.error('문의사항 수정 오류:', error);
-			toastAlert('수정 중 오류가 발생했습니다.');
+			toastError('수정 중 오류가 발생했습니다.');
 		} finally {
 			loading = false;
 		}
@@ -121,15 +122,24 @@
 	// 수정 모드 시작
 	function startEdit(inquiry) {
 		editingInquiry = inquiry;
+		
+		// datetime-local input을 위한 날짜 포맷 변환
+		let formattedDate = '';
+		if (inquiry.c_date) {
+			const date = new Date(inquiry.c_date);
+			// ISO 형식으로 변환 (YYYY-MM-DDTHH:MM)
+			formattedDate = date.toISOString().slice(0, 16);
+		}
+		
 		editForm = {
-			id: inquiry.id,
+			no: inquiry.no,
 			name: inquiry.name,
-			email: inquiry.email,
-			phone: inquiry.phone,
+			c_email: inquiry.c_email,
+			c_phone: inquiry.c_phone,
 			content: inquiry.content,
-			type: inquiry.type,
-			datetime: inquiry.datetime,
-			password: ''
+			type: inquiry.type || '',
+			c_date: formattedDate,
+			c_pw: ''
 		};
 	}
 
@@ -137,14 +147,14 @@
 	function cancelEdit() {
 		editingInquiry = null;
 		editForm = {
-			id: '',
+			no: 0,
 			name: '',
-			email: '',
-			phone: '',
+			c_email: '',
+			c_phone: '',
 			content: '',
 			type: '',
-			datetime: '',
-			password: ''
+			c_date: '',
+			c_pw: ''
 		};
 	}
 
@@ -210,16 +220,18 @@
 						<p>이메일 또는 전화번호와 비밀번호를 입력해주세요</p>
 					</div>
 					
-					<div class="search-form" autocomplete="off">
+					<div class="search-form" autocomplete="off" data-form-type="other">
 						<div class="form-group">
 							<label for="search-email">이메일</label>
 							<input
 								id="search-email"
 								type="text"
 								placeholder="이메일을 입력해주세요"
-								bind:value={inquiryForm.email}
+								bind:value={inquiryForm.c_email}
 								autocomplete="off"
 								spellcheck="false"
+								data-form-type="other"
+								data-lpignore="true"
 							/>
 						</div>
 						
@@ -229,9 +241,11 @@
 								id="search-phone"
 								type="tel"
 								placeholder="전화번호를 입력해주세요"
-								bind:value={inquiryForm.phone}
+								bind:value={inquiryForm.c_phone}
 								autocomplete="off"
 								spellcheck="false"
+								data-form-type="other"
+								data-lpignore="true"
 							/>
 						</div>
 						
@@ -241,9 +255,10 @@
 								id="search-password"
 								type="password"
 								placeholder="문의 작성 시 입력한 비밀번호"
-								bind:value={inquiryForm.password}
-								autocomplete="off"
+								bind:value={inquiryForm.c_pw}
+								autocomplete="new-password"
 								spellcheck="false"
+								data-form-type="other"
 							/>
 						</div>
 						
@@ -261,13 +276,25 @@
 			{:else}
 				<!-- 문의 목록 -->
 				<div class="inquiry-list-section">
-					<div class="list-header">
-						<h2>문의사항 목록</h2>
-						<div class="list-actions">
+					<div class="flex justify-between items-center bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-8">
+						<h2 class="text-3xl font-semibold m-0">문의사항 목록</h2>
+						<div class="flex gap-3">
 							<button class="btn-secondary" onclick={() => {
 								showInquiryList = false;
 								inquiryList = [];
-								inquiryForm = { email: '', phone: '', password: '' };
+								// 폼 초기화
+								inquiryForm = { c_email: '', c_phone: '', c_pw: '' };
+								
+								// DOM에서 직접 input 값 초기화
+								setTimeout(() => {
+									const emailInput = document.getElementById('search-email');
+									const phoneInput = document.getElementById('search-phone');
+									const passwordInput = document.getElementById('search-password');
+									
+									if (emailInput) emailInput.value = '';
+									if (phoneInput) phoneInput.value = '';
+									if (passwordInput) passwordInput.value = '';
+								}, 100);
 							}}>
 								새로 조회하기
 							</button>
@@ -284,15 +311,15 @@
 						<div class="inquiry-list">
 							{#each inquiryList as inquiry, index}
 								<div class="inquiry-item">
-									{#if editingInquiry && editingInquiry.id === inquiry.id}
+									{#if editingInquiry && editingInquiry.no === inquiry.no}
 										<!-- 수정 모드 -->
 										<div class="edit-form">
-											<div class="edit-header">
-												<h3>문의사항 수정</h3>
+											<div class="flex justify-between items-center mb-6">
+												<h3 class="text-xl font-semibold text-gray-900 m-0">문의사항 수정</h3>
 												<button class="btn-cancel" onclick={cancelEdit}>취소</button>
 											</div>
 											
-											<div class="form-grid" autocomplete="off">
+											<div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-3" autocomplete="off">
 												<div class="form-group">
 													<label for="edit-name">이름 *</label>
 													<input
@@ -309,9 +336,10 @@
 													<input
 														id="edit-email"
 														type="text"
-														bind:value={editForm.email}
+														bind:value={editForm.c_email}
 														autocomplete="off"
 														spellcheck="false"
+														disabled
 													/>
 												</div>
 												
@@ -320,9 +348,10 @@
 													<input
 														id="edit-phone"
 														type="tel"
-														bind:value={editForm.phone}
+														bind:value={editForm.c_phone}
 														autocomplete="off"
 														spellcheck="false"
+														disabled
 													/>
 												</div>
 												
@@ -341,7 +370,7 @@
 													<input
 														id="edit-datetime"
 														type="datetime-local"
-														bind:value={editForm.datetime}
+														bind:value={editForm.c_date}
 														autocomplete="off"
 													/>
 												</div>
@@ -352,13 +381,13 @@
 														id="edit-password"
 														type="password"
 														placeholder="수정을 위한 비밀번호"
-														bind:value={editForm.password}
+														bind:value={editForm.c_pw}
 														autocomplete="off"
 														spellcheck="false"
 													/>
 												</div>
 												
-												<div class="form-group full-width">
+												<div class="form-group md:col-span-2">
 													<label for="edit-content">문의 내용 *</label>
 													<textarea
 														id="edit-content"
@@ -368,7 +397,7 @@
 												</div>
 											</div>
 											
-											<div class="edit-actions">
+											<div class="flex gap-3 justify-end">
 												<button class="btn-secondary" onclick={cancelEdit}>취소</button>
 												<button 
 													class="btn-primary" 
@@ -382,47 +411,40 @@
 									{:else}
 										<!-- 조회 모드 -->
 										<div class="inquiry-content">
-											<div class="inquiry-header">
+											<div class="flex justify-between items-start mb-2">
 												<div class="inquiry-info">
-													<h3>{inquiry.name}</h3>
-													<div class="inquiry-meta">
-														<span class="inquiry-date">{formatDate(inquiry.createdAt)}</span>
-														<span class="inquiry-type">{getTypeLabel(inquiry.type)}</span>
-														<span 
-															class="inquiry-status"
-															style="color: {getStatusColor(inquiry.status)}"
-														>
-															{getStatusLabel(inquiry.status)}
-														</span>
+													<h3 class="text-xl font-semibold text-gray-900 mb-2">{inquiry.name}</h3>
+													<div class="flex gap-4 flex-wrap">
+														<span class="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">{___date(inquiry.reg_date)}</span>
 													</div>
 												</div>
-												<div class="inquiry-actions">
+												<div class="flex gap-2">
 													<button class="btn-edit" onclick={() => startEdit(inquiry)}>
 														✏️ 수정
 													</button>
 												</div>
 											</div>
 											
-											<div class="inquiry-details">
-												<div class="detail-row">
-													<span class="detail-label">연락처:</span>
-													<span class="detail-value">{inquiry.phone}</span>
+											<div class="bg-gray-50 rounded-lg py-5 px-2">
+												<div class="flex items-start justify-start gap-1 md:gap-3 mb-2">
+													<span class="font-bold text-gray-700 min-w-0 md:min-w-24 text-sm text-right">연락처 :</span>
+													<span class="text-gray-600 flex-1">{inquiry.c_phone}</span>
 												</div>
-												{#if inquiry.email}
-													<div class="detail-row">
-														<span class="detail-label">이메일:</span>
-														<span class="detail-value">{inquiry.email}</span>
+												{#if inquiry.c_email}
+													<div class="flex items-start justify-start gap-1 md:gap-3 mb-2">
+														<span class="font-bold text-gray-700 min-w-0 md:min-w-24 text-sm text-right">이메일 :</span>
+														<span class="text-gray-600 flex-1">{inquiry.c_email}</span>
 													</div>
 												{/if}
-												{#if inquiry.datetime}
-													<div class="detail-row">
-														<span class="detail-label">상담 희망 일시:</span>
-														<span class="detail-value">{formatDate(inquiry.datetime)}</span>
+												{#if inquiry.c_date}
+													<div class="flex items-start justify-start gap-1 md:gap-3 mb-2">
+														<span class="font-bold text-gray-700 min-w-0 md:min-w-24 text-sm text-right">상담 희망 일시 :</span>
+														<span class="text-gray-600 flex-1">{formatDate(inquiry.c_date)}</span>
 													</div>
 												{/if}
-												<div class="detail-row">
-													<span class="detail-label">문의 내용:</span>
-													<div class="detail-content">{inquiry.content}</div>
+												<div class="flex items-start justify-start gap-1 md:gap-3">
+													<span class="font-bold text-gray-700 min-w-0 md:min-w-24 text-sm text-right">문의 내용 :</span>
+													<div class="text-gray-700 leading-relaxed whitespace-pre-wrap flex-1" style="max-height: 200px; overflow-y: auto;">{@html inquiry.content.replace(/\n/g, '<br />')}</div>
 												</div>
 											</div>
 										</div>
@@ -441,7 +463,7 @@
 	.counseling-page {
 		min-height: 100vh;
 		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		padding: 120px 0 60px;
+		padding: 40px 0 40px;
 	}
 
 	.container {
@@ -500,13 +522,9 @@
 		padding: 40px;
 	}
 
-	.form-group {
-		margin-bottom: 24px;
-	}
-
 	.form-group label {
 		display: block;
-		margin-bottom: 8px;
+		margin-bottom: 4px;
 		font-weight: 600;
 		color: #374151;
 		font-size: 0.95rem;
@@ -530,6 +548,13 @@
 		outline: none;
 		border-color: #48bb78;
 		box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+	}
+
+	.form-group input:disabled,
+	.form-group select:disabled,
+	.form-group textarea:disabled {
+		background-color: #ddd;
+		cursor: not-allowed;
 	}
 
 	.form-actions {
@@ -611,25 +636,6 @@
 		overflow: hidden;
 	}
 
-	.list-header {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		color: white;
-		padding: 30px;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-
-	.list-header h2 {
-		font-size: 1.8rem;
-		font-weight: 600;
-		margin: 0;
-	}
-
-	.list-actions {
-		display: flex;
-		gap: 12px;
-	}
 
 	.empty-state {
 		text-align: center;
@@ -670,115 +676,19 @@
 		padding: 30px;
 	}
 
-	.inquiry-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		margin-bottom: 20px;
-	}
 
-	.inquiry-info h3 {
-		font-size: 1.3rem;
-		font-weight: 600;
-		color: #111827;
-		margin-bottom: 8px;
-	}
 
-	.inquiry-meta {
-		display: flex;
-		gap: 16px;
-		flex-wrap: wrap;
-	}
-
-	.inquiry-meta span {
-		font-size: 0.9rem;
-		color: #6b7280;
-		background: #f3f4f6;
-		padding: 4px 8px;
-		border-radius: 4px;
-	}
-
-	.inquiry-actions {
-		display: flex;
-		gap: 8px;
-	}
-
-	.inquiry-details {
-		background: #f9fafb;
-		border-radius: 8px;
-		padding: 20px;
-	}
-
-	.detail-row {
-		margin-bottom: 12px;
-		display: flex;
-		align-items: flex-start;
-		gap: 12px;
-	}
-
-	.detail-row:last-child {
-		margin-bottom: 0;
-	}
-
-	.detail-label {
-		font-weight: 600;
-		color: #374151;
-		min-width: 100px;
-		font-size: 0.9rem;
-	}
-
-	.detail-value {
-		color: #6b7280;
-		flex: 1;
-	}
-
-	.detail-content {
-		color: #374151;
-		line-height: 1.6;
-		white-space: pre-wrap;
-		flex: 1;
-	}
 
 	.edit-form {
 		padding: 30px;
 		background: #f9fafb;
 	}
 
-	.edit-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 24px;
-	}
-
-	.edit-header h3 {
-		font-size: 1.3rem;
-		font-weight: 600;
-		color: #111827;
-		margin: 0;
-	}
-
-	.form-grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 20px;
-		margin-bottom: 24px;
-	}
-
-	.form-group.full-width {
-		grid-column: 1 / -1;
-	}
-
-	.edit-actions {
-		display: flex;
-		gap: 12px;
-		justify-content: flex-end;
-	}
 
 	/* 반응형 디자인 */
 	@media (max-width: 768px) {
 		.counseling-page {
-			padding: 100px 0 40px;
+			padding: 40px 0 40px;
 		}
 
 		.container {
@@ -799,42 +709,10 @@
 			padding: 20px;
 		}
 
-		.card-header,
-		.list-header {
+		.card-header {
 			padding: 20px;
 		}
 
-		.list-header {
-			flex-direction: column;
-			gap: 16px;
-			align-items: stretch;
-		}
 
-		.inquiry-header {
-			flex-direction: column;
-			gap: 16px;
-		}
-
-		.inquiry-meta {
-			flex-direction: column;
-			gap: 8px;
-		}
-
-		.form-grid {
-			grid-template-columns: 1fr;
-		}
-
-		.edit-actions {
-			flex-direction: column;
-		}
-
-		.detail-row {
-			flex-direction: column;
-			gap: 4px;
-		}
-
-		.detail-label {
-			min-width: auto;
-		}
 	}
 </style>
