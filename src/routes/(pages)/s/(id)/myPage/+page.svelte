@@ -1,13 +1,13 @@
 <script>
     import { onMount } from 'svelte';
-	import ___prj from '$prj/prjMain';
+    import ___prj from '$prj/prjMain';
 	import ___const from '$prj/lib/i_const';
+	import ___localStorage from '$prj/lib/i_localStorage';
 	import { g_logedIn, g_theme } from '$prj/prjStore';
-	import GeneralUserProfile from './GeneralUserProfile.svelte';
-	import PartnerProfile from './PartnerProfile.svelte';
 	import PasswordChange from './PasswordChange.svelte';
     import ___encDec from '$prj/lib/i_encDec';
     import { toastAlert } from '$prj/lib/i_alert';
+    import { goto } from '$app/navigation';
 
     let showPasswordChange = $state(false);
     let userInfo = $state(null);
@@ -58,10 +58,14 @@
                         <p class="welcome-subtitle">마인드코딩에 오신 것을 환영합니다</p>
                     </div>
                 </div>
-                <div class="header-right">
+                <div class="header-right flex items-center justify-center gap-2">
                     <button class="btn-password-change" onclick={togglePasswordChange}>
                         <span class="btn-icon">🔐</span>
                         비밀번호 변경
+                    </button>
+                    <button class="btn-password-change" onclick={goto('/s/myPage/revenue')}>
+                        <span class="btn-icon">💰</span>
+                        수익 정산
                     </button>
                 </div>
             </div>
@@ -101,7 +105,6 @@
                 </div>
             </div>
         </div>
-
         <!-- 파트너 정보 섹션 -->
         {#if (userInfo.userType === 3) }
         <div class="partner-info-card">
@@ -109,7 +112,7 @@
                 <div class="header-left">
                     <div class="card-icon">🤝</div>
                     <div>
-                        <h2>파트너 정보</h2>
+                        <h2>파트너 링크정보</h2>
                         <p class="welcome-subtitle">마인드코딩에서 제공하는 URL을 링크하여 수익을 얻어보세요</p>
                     </div>
                 </div>
@@ -143,8 +146,8 @@
                 </div>
                 <div class="counselor-input-group">
                     <div class="input-wrapper">
-                        <label>상담사 ID</label>
-                        <input type="text" class="counselor-input" bind:value={counselorId} placeholder="상담사 ID 입력" />
+                        <label for="counselor-input">상담사 ID</label>
+                        <input id="counselor-input" type="text" class="counselor-input" bind:value={counselorId} placeholder="상담사 ID 입력" />
                         <button class="apply-btn" onclick={() => { 
                             encodedCounselorUrl = encodedPartnerUrl + `&pC=${___encDec.telepasiEncrypt(counselorId)}`; 
                             // console.log(encodedCounselorUrl);
@@ -213,12 +216,6 @@
         gap: 20px;
     }
 
-    .welcome-section h1 {
-        margin: 0 0 10px 0;
-        color: #ffffff;
-        font-size: 2.2rem;
-        font-weight: 700;
-    }
 
     .welcome-subtitle {
         margin: 0;
@@ -254,7 +251,7 @@
     }
 
     /* 카드 스타일 */
-    .user-info-card, .partner-info-card {
+    .user-info-card, .partner-info-card, .stored-params-card {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border-radius: 20px;
         padding: 30px;
@@ -559,15 +556,12 @@
             gap: 20px;
         }
 
-        .welcome-section h1 {
-            font-size: 1.8rem;
-        }
 
         .welcome-subtitle {
             font-size: 1rem;
         }
 
-        .user-info-card, .partner-info-card {
+        .user-info-card, .partner-info-card, .stored-params-card {
             padding: 20px;
         }
 
@@ -589,7 +583,7 @@
             justify-content: center;
         }
 
-        .user-info-grid {
+        .user-info-grid, .stored-params-grid {
             grid-template-columns: 1fr;
             gap: 15px;
         }
@@ -619,9 +613,6 @@
     }
 
     @media (max-width: 480px) {
-        .welcome-section h1 {
-            font-size: 1.5rem;
-        }
 
         .card-header h2 {
             font-size: 1.5rem;

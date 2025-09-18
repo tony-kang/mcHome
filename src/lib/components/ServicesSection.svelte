@@ -1,11 +1,66 @@
 <script>
-	let currentCategory = 'all';
-	let currentType = 'individual';
+	import { onMount } from 'svelte';
+	import ___prj from '$prj/prjMain';
+	import ___localStorage from '$prj/lib/i_localStorage';
+	import ___encDec from '$prj/lib/i_encDec';
+	import { toastAlert } from '$prj/lib/i_alert';
+
+	let currentCategory = $state('all');
+	let currentType = $state('individual');
 	
 	// 모달 상태
 	let showInquiry = $state(false);
 	let showDetail = $state(false);
 	let selectedService = $state(null);
+
+	// URL 파라미터 상태
+	let partnerId = $state('');
+	let counselorId = $state('');
+	let storedUrlParams = $state(null);
+
+	// 문의 폼 데이터 상태
+	let inquiryForm = $state({
+		name: '강강강',
+		phone: '010-1234-5678',
+		email: 'blue@blue.com',
+		type: 'individual',
+		datetime: '2025-09-18T10:00',
+		content: '고1 진로 상담 원합니다.',
+		password: '' // 수정/상태확인용 비밀번호
+	});
+
+	// 임시 토큰 및 수정 관련 상태
+	let tempInquiryToken = $state('');
+	let inquirySubmitted = $state(false);
+	let showPasswordModal = $state(false);
+	let editPassword = $state('');
+
+	// 테스트 모드 설정 (실제 서비스에서는 false로 변경)
+	const isTestMode = true;
+	const storageDuration = isTestMode ? 5 : 24; // 테스트: 5분, 운영: 24시간
+
+	onMount(() => {
+		// 저장된 URL 파라미터 확인
+		storedUrlParams = ___localStorage.urlParams.getParams();
+		if (storedUrlParams) {
+			//console.log('ServicesSection - 저장된 URL 파라미터:', $state.snapshot(storedUrlParams));
+			
+			// 파라미터가 있으면 변수에 할당
+			if (storedUrlParams.pP) {
+				partnerId = ___encDec.telepasiDecrypt(storedUrlParams.pP);
+			}
+			if (storedUrlParams.pC) {
+				counselorId = ___encDec.telepasiDecrypt(storedUrlParams.pC);
+			}
+
+			// console.log('ServicesSection - 복원된 파트너/상담사 정보:', partnerId, counselorId);
+			
+			// 파라미터가 복원되었음을 알림
+			if (partnerId || counselorId) {
+				toastAlert('저장된 파트너/상담사 정보가 복원되었습니다.');
+			}
+		}
+	});
 
 	const categories = [
 		{ id: 'all', label: '전체' },
@@ -35,6 +90,8 @@
 	function showInquiryModal(service) {
 		selectedService = service;
 		showInquiry = true;
+		// 폼 초기화
+		resetInquiryForm();
 	}
 
 	function showDetailModal(service) {
@@ -45,13 +102,122 @@
 	function closeModals() {
 		showInquiry = false;
 		showDetail = false;
+		showPasswordModal = false;
 		selectedService = null;
+		inquirySubmitted = false;
+		tempInquiryToken = '';
+		editPassword = '';
+		// 폼 초기화
+		resetInquiryForm();
+	}
+
+	function submitInquiry() {
+		// 필수 필드 검증
+		if (!inquiryForm.name.trim()) {
+			toastAlert('이름을 입력해주세요.');
+			return;
+		}
+		if (!inquiryForm.phone.trim()) {
+			toastAlert('연락처를 입력해주세요.');
+			return;
+		}
+		if (!inquiryForm.content.trim()) {
+			toastAlert('문의 내용을 입력해주세요.');
+			return;
+		}
+		if (!inquiryForm.password.trim()) {
+			toastAlert('수정/상태확인 비밀번호를 입력해주세요.');
+			return;
+		}
+		if (inquiryForm.password.length < 4 || inquiryForm.password.length > 20) {
+			toastAlert('비밀번호는 4-20자 사이로 입력해주세요.');
+			return;
+		}
+
+		// API 호출 데이터 구성
+		const inquiryData = {
+			partner: storedUrlParams,
+			inquery: {
+				serviceName: selectedService?.name || '',
+				serviceId: selectedService?.id || '',
+				serviceType: inquiryForm.type,
+				name: inquiryForm.name.trim(),
+				phone: inquiryForm.phone.trim(),
+				email: inquiryForm.email.trim(),
+				datetime: inquiryForm.datetime,
+				content: inquiryForm.content.trim(),
+				password: inquiryForm.password.trim(), // 수정/상태확인용 비밀번호
+				partnerId: partnerId,
+				counselorId: counselorId
+			}
+		};
+
+		console.log('문의 데이터 전송:', inquiryData);
+
+		// API 호출
+		___prj.api.post('/s/system', 'counselling.inquiry', null, inquiryData)
+			.then(response => {
+				console.log('문의 전송 성공:', response);
+				
+				// 임시 토큰 생성 및 저장
+				tempInquiryToken = generateTempToken();
+				inquirySubmitted = true;
+				
+				toastAlert('문의가 성공적으로 전송되었습니다. 수정이 필요하시면 비밀번호를 입력해주세요.');
+			})
+			.catch(error => {
+				console.error('문의 전송 실패:', error);
+				toastAlert('문의 전송에 실패했습니다. 다시 시도해주세요.');
+			});
+	}
+
+	function resetInquiryForm() {
+		inquiryForm = {
+			name: '강강강',
+			phone: '010-1234-5678',
+			email: 'blue@blue.com',
+			type: 'individual',
+			datetime: '2025-09-18T10:00',
+			content: '고1 진로 상담 원합니다.',
+			password: '' // 비밀번호는 초기화
+		};
+	}
+
+	// 비밀번호 확인 함수
+	function verifyPassword() {
+		if (!editPassword.trim()) {
+			toastAlert('비밀번호를 입력해주세요.');
+			return;
+		}
+		
+		// 여기서는 간단히 저장된 비밀번호와 비교 (실제로는 서버에서 확인)
+		if (editPassword === inquiryForm.password) {
+			toastAlert('비밀번호가 확인되었습니다. 수정 모드로 전환됩니다.');
+			showPasswordModal = false;
+			inquirySubmitted = false;
+			editPassword = '';
+		} else {
+			toastAlert('비밀번호가 일치하지 않습니다.');
+		}
+	}
+
+	// 비밀번호 모달 열기
+	function openPasswordModal() {
+		showPasswordModal = true;
+		editPassword = '';
+	}
+
+	// 임시 토큰 생성 함수
+	function generateTempToken() {
+		return 'temp_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
 	}
 
 	function switchToInquiryModal() {
 		showDetail = false;
 		// selectedService는 유지하고 상담 문의 모달만 열기
 		showInquiry = true;
+		// 폼 초기화
+		resetInquiryForm();
 	}
 
 	function switchToDetailModal() {
@@ -296,7 +462,7 @@
 		items = items.filter(item => item.type === currentType);
 		
 		filteredServices = items;
-		console.log('Filtered services:', items.length, currentCategory, currentType);
+		//console.log('Filtered services:', items.length, currentCategory, currentType);
 	}
 
 	// 초기 로드 및 상태 변화 시 필터링 업데이트
@@ -311,6 +477,38 @@
 			<h2>마인드코딩 서비스</h2>
 			<p>심리재능을 기반으로 한 네 가지 영역의 맞춤형 성장 솔루션</p>
 		</div>
+
+		<!-- 저장된 URL 파라미터 정보 표시 -->
+		{#if storedUrlParams && (storedUrlParams.pP || storedUrlParams.pC)}
+		<div class="stored-params-banner">
+			<div class="params-content">
+				<div class="params-info">
+					<span class="params-icon">💾</span>
+					<div class="params-text">
+						<span class="params-title">저장된 파트너/상담사 정보가 복원되었습니다</span>
+						<div class="params-details">
+							{#if storedUrlParams.pP}
+								<span class="param-item">파트너: {storedUrlParams.pP}</span>
+							{/if}
+							{#if storedUrlParams.pC}
+								<span class="param-item">상담사: {storedUrlParams.pC}</span>
+							{/if}
+						</div>
+					</div>
+				</div>
+				<button class="params-close" onclick={() => {
+					___localStorage.urlParams.clearParams();
+					___localStorage.cookies.deleteCookie('url_params');
+					storedUrlParams = null;
+					partnerId = '';
+					counselorId = '';
+					toastAlert('저장된 파라미터가 삭제되었습니다.');
+				}}>
+					×
+				</button>
+			</div>
+		</div>
+		{/if}
 
 		<!-- Type Filter -->
 		<!-- <div class="type-filter">
@@ -386,40 +584,101 @@
 				<div class="inquiry-form">
 					<div class="form-group">
 						<label for="inquiry-name">이름 *</label>
-						<input id="inquiry-name" type="text" placeholder="이름을 입력해주세요" />
-					</div>
-					<div class="form-group">
-						<label for="inquiry-phone">연락처 *</label>
-						<input id="inquiry-phone" type="tel" placeholder="연락처를 입력해주세요" />
+						<input 
+							id="inquiry-name" 
+							type="text" 
+							placeholder="이름을 입력해주세요" 
+							bind:value={inquiryForm.name}
+						/>
 					</div>
 					<div class="form-group">
 						<label for="inquiry-email">이메일</label>
-						<input id="inquiry-email" type="email" placeholder="이메일을 입력해주세요" />
+						<input 
+							id="inquiry-email" 
+							type="email" 
+							placeholder="이메일을 입력해주세요" 
+							bind:value={inquiryForm.email}
+						/>
 					</div>
-					<div class="form-group">
-						<label for="inquiry-type">문의 유형</label>
-						<select id="inquiry-type">
-							<option value="">문의 유형을 선택해주세요</option>
-							<option value="individual">개인 상담</option>
-							<!-- <option value="corporate">기업/조직 상담</option> -->
-							<option value="workshop">워크숍/캠프</option>
-							<option value="other">기타</option>
-						</select>
+					<div class="form-row">
+						<div class="form-group">
+							<label for="inquiry-phone">연락처 *</label>
+							<input 
+								id="inquiry-phone" 
+								type="tel" 
+								placeholder="연락처를 입력해주세요" 
+								bind:value={inquiryForm.phone}
+							/>
+						</div>
+						<div class="form-group">
+							<label for="inquiry-datetime">상담 희망 일시</label>
+							<input 
+								id="inquiry-datetime" 
+								type="datetime-local" 
+								bind:value={inquiryForm.datetime}
+							/>
+						</div>
 					</div>
-					<div class="form-group">
-						<label for="inquiry-datetime">상담 희망 일시</label>
-						<input id="inquiry-datetime" type="datetime-local" />
+					<div class="form-row">
+						<div class="form-group">
+							<label for="inquiry-type">문의 유형</label>
+							<select id="inquiry-type" bind:value={inquiryForm.type}>
+								<option value="">문의 유형을 선택해주세요</option>
+								<option value="individual">개인 상담</option>
+								<!-- <option value="corporate">기업/조직 상담</option> -->
+								<option value="workshop">워크숍/캠프</option>
+								<option value="other">기타</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="inquiry-password">수정 비밀번호 *</label>
+							<input 
+								id="inquiry-password" 
+								type="password" 
+								placeholder="수정 비밀번호 (4-20자)" 
+								bind:value={inquiryForm.password}
+							/>
+						</div>
 					</div>
 					<div class="form-group">
 						<label for="inquiry-content">문의 내용 *</label>
-						<textarea id="inquiry-content" placeholder="문의하실 내용을 자세히 입력해주세요"></textarea>
+						<textarea 
+							id="inquiry-content" 
+							placeholder="문의하실 내용을 자세히 입력해주세요"
+							bind:value={inquiryForm.content}
+						></textarea>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn-secondary" onclick={closeModals}>취소</button>
-				<button class="btn-secondary" onclick={switchToDetailModal}>자세히 보기</button>
-				<button class="btn-primary">상담 신청하기</button>
+				{#if inquirySubmitted}
+					<!-- 문의 제출 후 수정 옵션 -->
+					<div class="inquiry-success-full">
+						<div class="success-content">
+							<div class="success-message">
+								<span class="success-icon">✅</span>
+								<span>문의가 성공적으로 전송되었습니다!</span>								
+							</div>
+							<div class="temp-token-info flex items-center justify-between gap-2">
+								<small>수정 토큰: <code>{tempInquiryToken}</code></small>
+								<button class="btn-edit" onclick={() => {
+									inquirySubmitted = false;
+									toastAlert('수정 모드로 전환되었습니다.');
+								}}>
+									✏️ 수정하기
+								</button>
+							</div>
+						</div>
+						<div class="close-button-container">
+							<button class="btn-secondary" onclick={closeModals}>닫기</button>
+						</div>
+					</div>
+				{:else}
+					<!-- 일반 문의 폼 -->
+					<button class="btn-secondary" onclick={closeModals}>취소</button>
+					<button class="btn-secondary" onclick={switchToDetailModal}>자세히 보기</button>
+					<button class="btn-primary" onclick={submitInquiry}>상담 신청하기</button>
+				{/if}
 			</div>
 		</div>
 	</div>
@@ -488,6 +747,37 @@
 	</div>
 {/if}
 
+<!-- 비밀번호 확인 모달 -->
+{#if showPasswordModal}
+<div class="modal-overlay" onclick={closeModals} onkeydown={(e) => e.key === 'Escape' && closeModals()} role="dialog" aria-modal="true" tabindex="-1">
+	<div class="modal" onclick={(e) => e.stopPropagation()} role="button" tabindex="0" onkeydown={(e) => e.key === 'Enter' && e.stopPropagation()}>
+		<div class="modal-header">
+			<h3>비밀번호 확인</h3>
+			<button class="modal-close" onclick={() => showPasswordModal = false}>×</button>
+		</div>
+		<div class="modal-body">
+			<div class="password-verify-form">
+				<p class="verify-notice">문의 수정을 위해 비밀번호를 입력해주세요.</p>
+				<div class="form-group">
+					<label for="edit-password">수정 비밀번호 *</label>
+					<input 
+						id="edit-password" 
+						type="password" 
+						placeholder="수정 비밀번호를 입력해주세요" 
+						bind:value={editPassword}
+						onkeydown={(e) => e.key === 'Enter' && verifyPassword()}
+					/>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn-secondary" onclick={() => showPasswordModal = false}>취소</button>
+			<button class="btn-primary" onclick={verifyPassword}>확인</button>
+		</div>
+	</div>
+</div>
+{/if}
+
 <style>
 	.services-section {
 		padding: 80px 0;
@@ -507,6 +797,95 @@
 		margin: 0 0 15px 0;
 	}
 
+	/* 저장된 파라미터 배너 스타일 */
+	.stored-params-banner {
+		background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+		border-radius: 16px;
+		padding: 20px;
+		margin-bottom: 40px;
+		box-shadow: 0 8px 32px rgba(72, 187, 120, 0.2);
+		animation: slideInDown 0.5s ease-out;
+	}
+
+	.params-content {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 20px;
+	}
+
+	.params-info {
+		display: flex;
+		align-items: center;
+		gap: 15px;
+		flex: 1;
+	}
+
+	.params-icon {
+		font-size: 2rem;
+		color: white;
+	}
+
+	.params-text {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.params-title {
+		color: white;
+		font-size: 1.1rem;
+		font-weight: 600;
+	}
+
+	.params-details {
+		display: flex;
+		gap: 20px;
+		flex-wrap: wrap;
+	}
+
+	.param-item {
+		color: rgba(255, 255, 255, 0.9);
+		font-size: 0.9rem;
+		background: rgba(255, 255, 255, 0.15);
+		padding: 4px 12px;
+		border-radius: 20px;
+		backdrop-filter: blur(10px);
+	}
+
+	.params-close {
+		background: rgba(255, 255, 255, 0.2);
+		color: white;
+		border: none;
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		cursor: pointer;
+		font-size: 18px;
+		font-weight: bold;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.3s ease;
+		backdrop-filter: blur(10px);
+	}
+
+	.params-close:hover {
+		background: rgba(255, 255, 255, 0.3);
+		transform: scale(1.1);
+	}
+
+	@keyframes slideInDown {
+		from {
+			opacity: 0;
+			transform: translateY(-20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
 	.section-header p {
 		font-size: 1.1rem;
 		color: #666;
@@ -515,34 +894,6 @@
 		line-height: 1.6;
 	}
 
-	.type-filter {
-		display: flex;
-		justify-content: center;
-		margin-bottom: 30px;
-		gap: 10px;
-	}
-
-	.type-button {
-		padding: 12px 24px;
-		border: 2px solid #007bff;
-		background: #fff;
-		color: #007bff;
-		border-radius: 25px;
-		font-size: 16px;
-		font-weight: 500;
-		cursor: pointer;
-		transition: all 0.3s ease;
-	}
-
-	.type-button.active {
-		background: #007bff;
-		color: #fff;
-	}
-
-	.type-button:hover:not(.active) {
-		background: #007bff;
-		color: #fff;
-	}
 
 	.category-filter {
 		display: flex;
@@ -739,15 +1090,28 @@
 			font-size: 2rem;
 		}
 
-		.type-filter {
-			flex-direction: column;
-			align-items: center;
+		.stored-params-banner {
+			padding: 15px;
+			margin-bottom: 30px;
 		}
 
-		.type-button {
-			width: 100%;
-			max-width: 300px;
+		.params-content {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 15px;
 		}
+
+		.params-info {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 10px;
+		}
+
+		.params-details {
+			flex-direction: column;
+			gap: 10px;
+		}
+
 
 		.category-filter {
 			justify-content: center;
@@ -782,6 +1146,39 @@
 	@media (max-width: 480px) {
 		.section-header h2 {
 			font-size: 1.8rem;
+		}
+
+		.stored-params-banner {
+			padding: 12px;
+			margin-bottom: 25px;
+		}
+
+		.params-title {
+			font-size: 1rem;
+		}
+
+		.param-item {
+			font-size: 0.8rem;
+			padding: 3px 10px;
+		}
+
+		.form-row {
+			flex-direction: column;
+			gap: 15px;
+		}
+
+		.form-row .form-group {
+			flex: none;
+		}
+
+		.inquiry-success-full {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 15px;
+		}
+
+		.close-button-container {
+			align-self: center;
 		}
 
 		.service-card {
@@ -931,6 +1328,17 @@
 		gap: 20px;
 	}
 
+	.form-row {
+		display: flex;
+		gap: 15px;
+		align-items: flex-end;
+	}
+
+	.form-row .form-group {
+		flex: 1;
+	}
+
+
 	.form-group {
 		display: flex;
 		flex-direction: column;
@@ -963,6 +1371,99 @@
 	.form-group textarea {
 		resize: vertical;
 		min-height: 100px;
+	}
+
+
+	/* 문의 성공 및 수정 옵션 스타일 */
+	.inquiry-success-full {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 20px;
+		width: 100%;
+	}
+
+	.success-content {
+		flex: 1;
+		background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+		border-radius: 12px;
+		padding: 20px;
+		color: white;
+	}
+
+	.close-button-container {
+		flex-shrink: 0;
+	}
+
+	.success-message {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-bottom: 15px;
+		font-size: 1.1rem;
+		font-weight: 600;
+	}
+
+	.success-icon {
+		font-size: 1.3rem;
+	}
+
+	.btn-edit {
+		background: rgba(255, 255, 255, 0.2);
+		color: white;
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		padding: 8px 16px;
+		border-radius: 6px;
+		cursor: pointer;
+		font-size: 0.9rem;
+		font-weight: 500;
+		transition: all 0.3s ease;
+		display: flex;
+		align-items: center;
+		gap: 5px;
+	}
+
+	.btn-edit:hover {
+		background: rgba(255, 255, 255, 0.3);
+		border-color: rgba(255, 255, 255, 0.5);
+		transform: translateY(-1px);
+	}
+
+	.temp-token-info {
+		border-top: 1px solid rgba(255, 255, 255, 0.2);
+		padding-top: 10px;
+	}
+
+	.temp-token-info small {
+		color: rgba(255, 255, 255, 0.8);
+		font-size: 0.8rem;
+	}
+
+	.temp-token-info code {
+		background: rgba(0, 0, 0, 0.2);
+		padding: 2px 6px;
+		border-radius: 4px;
+		font-family: 'Courier New', monospace;
+		font-size: 0.75rem;
+		word-break: break-all;
+	}
+
+	/* 비밀번호 확인 모달 스타일 */
+	.password-verify-form {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	.verify-notice {
+		margin: 0;
+		color: #666;
+		font-size: 1rem;
+		text-align: center;
+		padding: 15px;
+		background: #f8f9fa;
+		border-radius: 8px;
+		border-left: 4px solid #007bff;
 	}
 
 	/* 서비스 상세 정보 스타일 */

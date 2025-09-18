@@ -128,6 +128,7 @@
 								<div class="dropdown-section">
 									<ul>
 										<li><a href="/contact">상담 신청</a></li>
+										<li><a href="/contact/counseling">나의 문의사항</a></li>
 										<li><a href="/faq">자주묻는 질문</a></li>
 										<li><a href="/privacy">개인정보처리방침</a></li>
 										<li><a href="/terms">이용약관</a></li>
@@ -254,6 +255,7 @@
 						{#if mobileOpenSubMenu === 'Support'}
 							<ul class="mobile-dropdown-menu">
 								<li><a href="/contact">상담 신청</a></li>
+								<li><a href="/contact/counseling">나의 문의사항</a></li>
 								<li><a href="/faq">자주묻는 질문</a></li>
 								<li><a href="/privacy">개인정보처리방침</a></li>
 								<li><a href="/terms">이용약관</a></li>
@@ -418,8 +420,7 @@
 	}
 
 	.btn-login,
-	.btn-join,
-	.btn-sitemap {
+	.btn-join {
 		padding: 8px 16px;
 		text-decoration: none;
 		border-radius: 4px;
@@ -444,11 +445,6 @@
 
 	.btn-join:hover {
 		background: #0056b3;
-	}
-
-	.btn-sitemap {
-		color: #666;
-		font-size: 12px;
 	}
 
 	.user-dropdown-container {
@@ -533,31 +529,6 @@
 		font-weight: 500;
 	}
 
-	.user-level {
-		margin-bottom: 12px;
-	}
-
-	.level-badge {
-		display: inline-block;
-		padding: 2px 8px;
-		border-radius: 4px;
-		font-size: 11px;
-		font-weight: 500;
-		color: white;
-		margin-bottom: 4px;
-	}
-
-	.level-badge.admin {
-		background: #28a745;
-	}
-
-	.level-badge.maintenance {
-		background: #17a2b8;
-	}
-
-	.level-badge.developer {
-		background: #6f42c1;
-	}
 
 	.dropdown-menu {
 		margin-bottom: 12px;
@@ -601,30 +572,6 @@
 		border-color: #c82333;
 	}
 
-	.dropdown-item {
-		display: block;
-		width: 100%;
-		padding: 8px 0;
-		background: none;
-		border: none;
-		text-align: left;
-		color: #333;
-		font-size: 14px;
-		cursor: pointer;
-		transition: color 0.3s ease;
-	}
-
-	.dropdown-item:hover {
-		color: #007bff;
-	}
-
-	.dropdown-item.logout {
-		color: #dc3545;
-	}
-
-	.dropdown-item.logout:hover {
-		color: #c82333;
-	}
 
 	.version-info {
 		padding-top: 12px;
@@ -739,8 +686,7 @@
 	}
 
 	.mobile-btn-login,
-	.mobile-btn-join,
-	.mobile-btn-sitemap {
+	.mobile-btn-join {
 		padding: 8px 16px;
 		border-radius: 20px;
 		text-decoration: none;
@@ -772,17 +718,6 @@
 	.mobile-btn-join:hover {
 		background: #5a67d8;
 		border-color: #5a67d8;
-	}
-
-	.mobile-btn-sitemap {
-		color: #666;
-		border-color: #ccc;
-		background: transparent;
-	}
-
-	.mobile-btn-sitemap:hover {
-		background: #f5f5f5;
-		border-color: #999;
 	}
 
 	.mobile-user-info {
@@ -854,12 +789,6 @@
 		background: #6f42c1;
 	}
 
-	.mobile-user-actions {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-		width: 100%;
-	}
 
 	.mobile-action-btn {
 		padding: 10px 16px;
