@@ -49,7 +49,7 @@
 
 					<!-- Right Column - Content -->
 					<div class="w-full lg:w-1/2 space-y-6">
-						<div class="hover:shadow-xl transition-shadow duration-300">
+						<div class="">
 							<h3 class="text-xl font-bold mb-3" style="color:#c3a316;">* 교육을 넘어 경영, 마음으로???</h3>
 							<p class="text-gray-600 leading-relaxed text-sm">
 								우리는 개인이 타고난 심리재능(PTI:CODE)을 기반으로,<br>
@@ -57,7 +57,7 @@
 							</p>
 						</div>
 
-						<div class="hover:shadow-xl transition-shadow duration-300">
+						<div class="">
 							<h3 class="text-xl font-bold mb-3" style="color:#c3a316;">* 우리가 하는 일</h3>
 							<p class="text-gray-600 leading-relaxed text-sm">
 								마인드코딩의 시작은 PTI:CODE 검사입니다.<br>
@@ -99,7 +99,7 @@
 
 					<!-- Right Column - Content -->
 					<div class="w-full lg:w-1/2 space-y-6">
-						<div class="hover:shadow-xl transition-shadow duration-300">
+						<div class="">
 							<h3 class="text-xl font-bold mb-3" style="color:#c3a316;">* 둘째, 학습(배움과 진로의 영역)입니다.</h3>
 							<p class="text-gray-600 leading-relaxed text-sm">
 								학생에게는 자신에게 맞는 학습 전략을 찾는 것이, 성인에게는 진로와 경력의 길을 설계하는 것이 핵심 과제입니다.<br>
@@ -107,7 +107,7 @@
 							</p>
 						</div>
 
-						<div class="hover:shadow-xl transition-shadow duration-300">
+						<div class="">
 							<h3 class="text-xl font-bold mb-3" style="color:#c3a316;">* 셋째, 관계(소통의 영역)입니다.</h3>
 							<p class="text-gray-600 leading-relaxed text-sm">
 								가정에서는 부모와 자녀가 더 잘 이해하고 소통할 수 있도록, 학교와 조직에서는 협력과 리더십이 살아나도록 돕습니다.<br>
@@ -115,7 +115,7 @@
 							</p>
 						</div>
 
-						<div class="hover:shadow-xl transition-shadow duration-300">
+						<div class="">
 							<h3 class="text-xl font-bold mb-3" style="color:#c3a316;">* 넷째, 비즈니스(성과의 영역)입니다.</h3>
 							<p class="text-gray-600 leading-relaxed text-sm">
 								개인의 커리어 관리에서부터 기업의 성과와 조직문화 혁신까지, 마인드코딩은 심리재능경영의 관점으로 접근합니다.<br>
