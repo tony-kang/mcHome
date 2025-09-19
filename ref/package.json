@@ -1,0 +1,73 @@
+{
+  "name": "database-comparison-tool",
+  "version": "1.0.0",
+  "description": "두 데이터베이스의 구조를 비교하여 차이점을 찾는 도구",
+  "main": "database_comparison.js",
+  "type": "module",
+  "scripts": {
+    "start": "node database_comparison.js",
+    "compare": "node simple_db_compare.js",
+    "extract": "node extract_schema.js",
+    "migrate": "node generate_migration.js",
+    "test": "node test_comparison.js",
+    "help": "echo '사용 가능한 명령어: start, compare, extract, migrate, test'"
+  },
+  "keywords": [
+    "database",
+    "comparison",
+    "schema",
+    "mysql",
+    "postgresql",
+    "sql",
+    "migration",
+    "diff"
+  ],
+  "author": "MindCoding",
+  "license": "MIT",
+  "dependencies": {
+    "mysql2": "^3.6.5",
+    "pg": "^8.11.3",
+    "commander": "^11.1.0",
+    "chalk": "^4.1.2",
+    "ora": "^5.4.1",
+    "table": "^6.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "bin": {
+    "db-compare": "./database_comparison.js",
+    "db-extract": "./extract_schema.js",
+    "db-simple-compare": "./simple_db_compare.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mindcoding/database-comparison-tool"
+  },
+  "bugs": {
+    "url": "https://github.com/mindcoding/database-comparison-tool/issues"
+  },
+  "homepage": "https://github.com/mindcoding/database-comparison-tool#readme",
+  "files": [
+    "database_comparison.js",
+    "simple_db_compare.js",
+    "extract_schema.js",
+    "DATABASE_COMPARISON_README.md"
+  ],
+  "preferGlobal": true,
+  "config": {
+    "mysql": {
+      "port": 3306,
+      "charset": "utf8mb4",
+      "timezone": "UTC"
+    },
+    "postgresql": {
+      "port": 5432,
+      "timezone": "UTC"
+    }
+  }
+}
