@@ -3,22 +3,34 @@
 	
 	const slides = [
 		{
-			title: "마음의 영역",
-			subtitle: "심리",
-			description: "사람은 누구나 흔들릴 때가 있습니다. 마인드코딩은 심리재능 코칭과 멘탈 매니지먼트를 통해 스스로의 마음을 이해하고 회복할 수 있도록 돕습니다. 단순한 상담이 아니라, 타고난 재능을 기반으로 한 자기이해와 자기성장의 여정을 함께합니다.",
+			guide: "Transforming your life , MINDCODING",
+			title: "내 삶을 바꾸는 마음솔루션,<br>마인드코딩",
+			description: "",
 			image: "/main/slide/main_slide_1.jpg"
 		},
 		{
-			title: "배움과 진로의 영역",
-			subtitle: "학습",
-			description: "학생에게는 자신에게 맞는 학습 전략을 찾는 것이, 성인에게는 진로와 경력의 길을 설계하는 것이 핵심 과제입니다. 마인드코딩은 학습 성향을 분석하고, 진로와 계열을 제시하며, 입시와 관련한 컨설팅을 통해 생애주기에 맞는 학습 로드맵을 제공합니다.",
+			guide: "내 마음의 성장지도",
+			title: "심리재능CODE!",
+			description: "",
 			image: "/main/slide/main_slide_2.jpg"
 		},
 		{
-			title: "소통의 영역",
-			subtitle: "관계",
-			description: "가정에서는 부모와 자녀가 더 잘 이해하고 소통할 수 있도록, 학교와 조직에서는 협력과 리더십이 살아나도록 돕습니다. 관계는 재능이 발휘되는 무대이기에, 마인드코딩은 심리재능을 바탕으로 관계를 경영하는 새로운 방식을 제안합니다.",
+			guide: "성적을넘어 가능성을열다",
+			title: "학습진로CODE!",
+			description: "",
 			image: "/main/slide/main_slide_3.jpg"
+		},
+		{
+			guide: "마음을 잇다, 사람을 잇다",
+			title: "관계소통CODE!",
+			description: "",
+			image: "/main/slide/main_slide_4.jpg"
+		},
+		{
+			guide: "나만의 성공방정식",
+			title: "비즈니스CODE!",
+			description: "",
+			image: "/main/slide/main_slide_5.jpg"
 		}
 	];
 
@@ -36,7 +48,7 @@
 
 	// Auto slide
 	setInterval(() => {
-		nextSlide();
+		//nextSlide();
 	}, 5000);
 </script>
 
@@ -47,9 +59,9 @@
 				<div class="slide-content">
 					<div class="container">
 						<div class="hero-text">
-							<h1 class="hero-title">『 {slide.title} 』</h1>
-							<h2 class="hero-subtitle">{slide.subtitle}</h2>
-							<p class="hero-description">{slide.description}</p>
+							<h1 class="guide-text">{@html slide.guide}</h1>
+							<h2 class="hero-title">{@html slide.title}</h2>
+							<p class="hero-description">{@html slide.description}</p>
 						</div>
 					</div>
 				</div>
@@ -92,7 +104,7 @@
 <style>
 	.hero-section {
 		position: relative;
-		height: 100vh;
+		height: 70vh;
 		overflow: hidden;
 		margin-top: 70px; /* Header height */
 	}
@@ -143,7 +155,7 @@
 		z-index: 2;
 		height: 100%;
 		display: flex;
-		margin-top: 250px;
+		margin-top: 200px;
 		align-items: top;
 	}
 
@@ -153,19 +165,18 @@
 		max-width: 600px;
 	}
 
-	.hero-title {
-		font-size: 4rem;
+	.guide-text {
+		font-size: 1.5rem;
 		font-weight: 700;
-		margin: 0 0 20px 0;
+		margin: 0 0 25px 0;
 		line-height: 1.2;
 		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 	}
 
-	.hero-subtitle {
-		font-size: 1.8rem;
+	.hero-title {
+		font-size: 3rem;
 		font-weight: 700;
-		margin: 0 0 15px 0;
-		line-height: 1.4;
+		line-height: 1.3;
 		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 	}
 
@@ -276,7 +287,7 @@
 			font-size: 2.5rem;
 		}
 
-		.hero-subtitle {
+		.hero-title {
 			font-size: 1.2rem;
 		}
 
@@ -326,7 +337,7 @@
 			font-size: 1.8rem;
 		}
 
-		.hero-subtitle {
+		.hero-title {
 			font-size: 1rem;
 		}
 
