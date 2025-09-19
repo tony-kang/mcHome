@@ -27,7 +27,7 @@
 					<img src="/main/mc_bar.png" alt="마인드코딩" class="w-[60px]">
 				</div>
 
-				<div class="flex flex-col lg:flex-row items-start gap-12 min-h-[600px]">
+				<div class="flex flex-col lg:flex-row items-start gap-12">
 					<!-- Left Column - Logo and Description -->
 					<div class="w-full lg:w-1/2 flex flex-col justify-between h-full">
 						<div class="flex flex-col items-center mb-8">
@@ -136,7 +136,7 @@
 						<!-- MISSION Section -->
 						<div class="flex justify-start items-center gap-4 mb-4">
 							<img src="/main/mc_arrow.png" alt="마인드코딩" class="w-[30px]">
-							<h2 class="text-2xl md:text-3xl font-bold text-gray-800">MISSION</h2>
+							<h2 class="text-xl md:text-2xl font-bold text-gray-800">MISSION</h2>
 							<img src="/main/mc_bar.png" alt="마인드코딩" class="w-[60px]">
 						</div>
 						<div class="mb-8">
@@ -150,7 +150,7 @@
 						<!-- VISION Section -->
 						<div class="flex justify-start items-center gap-4 mb-4">
 							<img src="/main/mc_arrow.png" alt="마인드코딩" class="w-[30px]">
-							<h2 class="text-2xl md:text-3xl font-bold text-gray-800">VISION</h2>
+							<h2 class="text-xl md:text-2xl font-bold text-gray-800">VISION</h2>
 							<img src="/main/mc_bar.png" alt="마인드코딩" class="w-[60px]">
 						</div>
 						<div class="mb-8">
