@@ -87,7 +87,7 @@
 							</p>
 						</div>
 						
-						<div class="p-6">
+						<div class="">
 							<h3 class="text-xl font-bold mb-3" style="color:#c3a316;">* 첫째, 심리(마음의 영역)입니다.</h3>
 							<p class="text-gray-600 leading-relaxed text-sm">
 								사람은 누구나 흔들릴 때가 있습니다.<br>
