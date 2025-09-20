@@ -1,6 +1,7 @@
 <script>
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import KakaoChannel from '$lib/components/KakaoChannel.svelte';
 	import ___prjConst from '$prj/prjConst';
 </script>
 
@@ -30,11 +31,11 @@
 	<section class="contact-info">
 		<div class="container">
 			<div class="contact-grid">
-				<div class="contact-card">
+				<div class="contact-card primary-card">
 					<div class="contact-icon">📞</div>
 					<h3>전화 상담</h3>
-					<p>평일 09:00 - 18:00</p>
-					<a href="tel:{___prjConst.COMPANY.COUNSELING_TEL}" class="contact-link">{___prjConst.COMPANY.COUNSELING_TEL}</a>
+					<p>평일 09:00 - 18:00<br><small>가장 빠른 상담 방법</small></p>
+					<a href="tel:{___prjConst.COMPANY.COUNSELING_TEL}" class="contact-link phone-link">{___prjConst.COMPANY.COUNSELING_TEL}</a>
 				</div>
 				<div class="contact-card">
 					<div class="contact-icon">📧</div>
@@ -43,10 +44,14 @@
 					<a href="mailto:{___prjConst.COMPANY.EMAIL}" class="contact-link">{___prjConst.COMPANY.EMAIL}</a>
 				</div>
 				<div class="contact-card">
-					<div class="contact-icon">💬</div>
-					<h3>카카오톡 상담</h3>
-					<p>실시간 상담 가능</p>
-					<a href="#" class="contact-link">카카오톡 채널</a>
+					<div class="contact-icon">📱</div>
+					<h3>카카오톡 채널</h3>
+					<p>공지사항 및 소식 확인</p>
+					<div class="kakao-channel-wrapper">
+						<a href="http://pf.kakao.com/_xeznUn" target="_blank" class="kakao-direct-link">
+							채널 구독하기
+						</a>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -236,6 +241,42 @@
 		transform: translateY(-5px);
 	}
 
+	.primary-card {
+		border: 2px solid #007bff;
+		position: relative;
+	}
+
+	.primary-card::before {
+		content: "추천";
+		position: absolute;
+		top: -10px;
+		right: 20px;
+		background: #007bff;
+		color: white;
+		padding: 5px 15px;
+		border-radius: 20px;
+		font-size: 12px;
+		font-weight: 600;
+	}
+
+	.phone-link {
+		background: #007bff;
+		color: white !important;
+		padding: 10px 20px;
+		border-radius: 8px;
+		display: inline-block;
+		text-decoration: none;
+		font-weight: 600;
+		transition: all 0.3s ease;
+	}
+
+	.phone-link:hover {
+		background: #0056b3;
+		transform: scale(1.05);
+		text-decoration: none;
+		color: white !important;
+	}
+
 	.contact-icon {
 		font-size: 3rem;
 		margin-bottom: 20px;
@@ -262,6 +303,46 @@
 
 	.contact-link:hover {
 		text-decoration: underline;
+	}
+
+	.kakao-channel-wrapper {
+		margin-top: 10px;
+	}
+
+	.kakao-channel-wrapper :global(.kakao-channel-btn) {
+		width: 100%;
+		justify-content: center;
+	}
+
+	.kakao-direct-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		padding: 12px 20px;
+		background: #FEE500;
+		color: #3C1E1E;
+		text-decoration: none;
+		border-radius: 8px;
+		font-weight: 600;
+		font-size: 16px;
+		transition: all 0.3s ease;
+		border: none;
+		cursor: pointer;
+	}
+
+	.kakao-direct-link:hover {
+		background: #FFD700;
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(254, 229, 0, 0.3);
+		text-decoration: none;
+		color: #3C1E1E;
+	}
+
+	.kakao-direct-link:before {
+		content: "💬";
+		margin-right: 8px;
+		font-size: 18px;
 	}
 
 	.contact-form-section {
