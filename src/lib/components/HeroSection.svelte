@@ -155,7 +155,7 @@
 		z-index: 2;
 		height: 100%;
 		display: flex;
-		margin-top: 200px;
+		margin-top: 270px;
 		align-items: top;
 	}
 
@@ -174,7 +174,7 @@
 	}
 
 	.hero-title {
-		font-size: 3rem;
+		font-size: 2.8rem;
 		font-weight: 700;
 		line-height: 1.3;
 		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
