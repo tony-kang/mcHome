@@ -327,15 +327,15 @@
 		}
 
 		.slide-content {
-			margin-top: 150px;
+			margin-top: 180px;
 		}
 
 		.guide-text {
-			font-size: 0.9rem;
+			font-size: 0.8rem;
 		}
 
 		.hero-title {
-			font-size: 1.8rem;
+			font-size: 1.6rem;
 		}
 
 		.hero-description {
