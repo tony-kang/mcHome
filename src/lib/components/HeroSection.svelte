@@ -274,21 +274,19 @@
 	/* Responsive Design */
 	@media (max-width: 768px) {
 		.hero-section {
-			height: 70vh;
+			height: 80vh;
 		}
 
 		.slide-content {
-			margin-top: 80px;
-			align-items: center;
+			margin-top: 120px;
 		}
 
-
-		.hero-title {
-			font-size: 2.5rem;
-		}
-
-		.hero-title {
+		.guide-text {
 			font-size: 1.2rem;
+		}
+
+		.hero-title {
+			font-size: 2.3rem;
 		}
 
 		.hero-description {
@@ -325,20 +323,19 @@
 
 	@media (max-width: 480px) {
 		.hero-section {
-			height: 60vh;
+			height: 50vh;
 		}
 
 		.slide-content {
-			margin-top: 60px;
+			margin-top: 150px;
 		}
 
+		.guide-text {
+			font-size: 0.9rem;
+		}
 
 		.hero-title {
 			font-size: 1.8rem;
-		}
-
-		.hero-title {
-			font-size: 1rem;
 		}
 
 		.hero-description {

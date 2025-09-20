@@ -249,7 +249,7 @@
 	.primary-card::before {
 		content: "추천";
 		position: absolute;
-		top: -10px;
+		top: -15px;
 		right: 20px;
 		background: #007bff;
 		color: white;
