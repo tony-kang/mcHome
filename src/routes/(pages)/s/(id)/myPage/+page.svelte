@@ -4,7 +4,8 @@
 	import ___const from '$prj/lib/i_const';
 	import ___localStorage from '$prj/lib/i_localStorage';
 	import { g_logedIn, g_theme } from '$prj/prjStore';
-	import PasswordChange from './PasswordChange.svelte';
+    import PasswordChange from './PasswordChange.svelte';
+    import AdminSidebar from '$lib/components/AdminSidebar.svelte';
     import ___encDec from '$prj/lib/i_encDec';
     import { toastAlert } from '$prj/lib/i_alert';
     import { goto } from '$app/navigation';
@@ -23,6 +24,7 @@
     let encodedPartnerUrl = $state('');
     let encodedCounselorUrl = $state('');
     let counselorId = $state('MC001');
+    let adminSidebarOpen = $state(false);
 
     function getUserTypeLabel(userType) {
         return userTypes.find(type => type.value === userType)?.label;
@@ -47,6 +49,9 @@
 </script>
 
 {#if isLoaded && userInfo}
+    <!-- 관리자 사이드바 컴포넌트 -->
+    <AdminSidebar bind:isOpen={adminSidebarOpen} />
+    
     <div class="my-page-container">
         <!-- 헤더 섹션 -->
         <div class="partner-info-card">
