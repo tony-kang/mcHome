@@ -145,6 +145,7 @@
 								<div class="dropdown-section">
 									<ul>
 										<li><a href="/notice">공지사항</a></li>
+										<li><a href="/review">이용후기</a></li>
 										<li><a href="/news">뉴스</a></li>
 										<li><a href="/events">이벤트</a></li>
 									</ul>
@@ -266,6 +267,7 @@
 						{#if mobileOpenSubMenu === 'Info'}
 							<ul class="mobile-dropdown-menu">
 								<li><a href="/notice">공지사항</a></li>
+								<li><a href="/review">이용후기</a></li>
 								<li><a href="/news">뉴스</a></li>
 								<li><a href="/events">이벤트</a></li>
 							</ul>
