@@ -1,171 +1,23 @@
 <script>
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import ___const from "$prj/lib/i_const";
 	import ___prjConst from '$prj/prjConst';
+	import ___prj from '$prj/prjMain';
+	import { goto } from '$app/navigation';
+	import { ___decodeHtml, ___formatDate } from '$prj/lib/i_telepasi';
+
+	import { onMount } from 'svelte';
 
 	let selectedCategory = $state('all');
 	let searchQuery = $state('');
 	let currentPage = $state(1);
+
+	let searchTitle = $state('');
+	let searchContent = $state('');
 	const itemsPerPage = 3;
 
-	const notices = [
-		{
-			id: 1,
-			title: "마인드코딩 PTI:CODE 검사 서비스 오픈 안내",
-			content: `안녕하세요. 마인드코딩입니다.
-
-마인드코딩의 핵심 서비스인 PTI:CODE 검사가 정식으로 오픈되었습니다. 
-
-PTI:CODE는 개인의 심리재능을 정밀하게 진단하여 맞춤형 성장 전략을 제시하는 혁신적인 검사 도구입니다. 이 검사를 통해 다음과 같은 정보를 얻을 수 있습니다:
-
-• 심리기질 분석: 개인의 타고난 성향과 특성 파악
-• 심리기능 진단: 인지, 감정, 행동 패턴 분석  
-• 심리재능 발견: 숨겨진 강점과 잠재력 발굴
-• 성장 로드맵: 개인 맞춤형 발전 방향 제시
-
-검사는 온라인으로 진행되며 약 30-40분 정도 소요됩니다. 검사 완료 후 전문가가 결과를 분석하여 상담을 통해 맞춤형 성장 전략을 제시합니다.
-
-더 자세한 내용은 고객센터(${___prjConst.COMPANY.COUNSELING_TEL})로 문의해주시기 바랍니다.
-
-감사합니다.`,
-			category: "service",
-			date: "2024-01-15",
-			views: 1250,
-			important: true
-		},
-		{
-			id: 2,
-			title: "2024년 1분기 자격과정 수강생 모집 공고",
-			content: `마인드코딩 자격과정 수강생을 모집합니다.
-
-■ 모집 과정
-
-1. PTI:CODE 코치 과정
-   - 대상: 상담·코칭 입문자, 교사, 학부모, 교육 관련 종사자
-   - 기간: 2024년 2월 1일 ~ 3월 31일 (8주)
-   - 수강료: 500,000원
-   - 정원: 20명
-
-2. PTI:학습·진로 프로 과정  
-   - 대상: 코치과정 이수자
-   - 기간: 2024년 2월 15일 ~ 4월 15일 (8주)
-   - 수강료: 800,000원
-   - 정원: 15명
-
-3. PTI:관계·소통 프로 과정
-   - 대상: 코치과정 이수자  
-   - 기간: 2024년 3월 1일 ~ 4월 30일 (8주)
-   - 수강료: 800,000원
-   - 정원: 15명
-
-■ 신청 방법
-1. 홈페이지에서 온라인 신청
-2. 서류 심사 (이력서, 자기소개서)
-3. 면접 심사
-4. 최종 합격자 발표
-
-■ 신청 기간: 2024년 1월 10일 ~ 1월 25일 (16일간)
-
-■ 혜택
-- 공식 자격증 발급
-- 전문가 네트워크 참여  
-- 지속적인 교육 기회
-- 실무 현장 지원
-
-자세한 내용은 홈페이지 또는 고객센터로 문의해주시기 바랍니다.`,
-			category: "education",
-			date: "2024-01-10",
-			views: 890,
-			important: true
-		},
-		{
-			id: 3,
-			title: "온라인 상담 서비스 확대 운영 안내",
-			content: `고객 편의를 위해 온라인 화상 상담 서비스를 확대 운영합니다.
-
-■ 서비스 개요
-전국 어디서나 편리하게 상담을 받으실 수 있도록 온라인 화상 상담 서비스를 확대 운영합니다.
-
-■ 운영 시간
-- 평일: 오전 9시 ~ 오후 6시
-- 토요일: 오전 9시 ~ 오후 1시  
-- 일요일 및 공휴일: 휴무
-
-■ 상담 유형
-1. PTI:CODE 검사 결과 해석 상담
-2. 개인 맞춤형 성장 전략 상담
-3. 학습·진로 상담
-4. 관계·소통 상담
-5. 비즈니스 코칭
-
-■ 이용 방법
-1. 홈페이지에서 온라인 상담 신청
-2. 상담 일정 조율 (전화 또는 이메일)
-3. 화상 상담 진행 (Zoom, Teams 등)
-4. 상담 결과 및 후속 관리
-
-■ 준비사항
-- 안정적인 인터넷 연결
-- 웹캠 및 마이크가 있는 PC 또는 모바일 기기
-- 조용한 상담 환경
-
-■ 상담료
-- 1회 상담 (60분): 100,000원
-- 패키지 상담 (3회): 250,000원
-- 패키지 상담 (5회): 400,000원
-
-문의: 고객센터 ${___prjConst.COMPANY.COUNSELING_TEL}`,
-			category: "service",
-			date: "2024-01-08",
-			views: 650,
-			important: false
-		},
-		{
-			id: 4,
-			title: "개인정보처리방침 개정 안내",
-			content: "개인정보보호법 개정에 따라 개인정보처리방침이 변경되었습니다. 변경된 내용을 확인해주시기 바랍니다.",
-			category: "policy",
-			date: "2024-01-05",
-			views: 420,
-			important: false
-		},
-		{
-			id: 5,
-			title: "마인드코딩 웹사이트 리뉴얼 완료",
-			content: "더 나은 서비스 제공을 위해 웹사이트를 전면 리뉴얼했습니다. 새로운 디자인과 기능으로 찾아뵙겠습니다.",
-			category: "system",
-			date: "2024-01-01",
-			views: 1100,
-			important: false
-		},
-		{
-			id: 6,
-			title: "연말연시 고객센터 운영시간 안내",
-			content: "12월 30일부터 1월 2일까지 고객센터 운영이 중단됩니다. 긴급 문의는 이메일로 부탁드립니다.",
-			category: "system",
-			date: "2023-12-28",
-			views: 380,
-			important: false
-		},
-		{
-			id: 7,
-			title: "PTI:CODE 검사 결과 해석 가이드 업데이트",
-			content: "더욱 정확하고 상세한 검사 결과 해석을 위한 가이드가 업데이트되었습니다. 기존 고객분들도 참고하시기 바랍니다.",
-			category: "service",
-			date: "2023-12-20",
-			views: 720,
-			important: false
-		},
-		{
-			id: 8,
-			title: "마인드코딩 연구소 설립 및 연구진 확대",
-			content: "심리재능 연구의 전문성을 높이기 위해 마인드코딩 연구소를 설립하고 연구진을 확대했습니다.",
-			category: "company",
-			date: "2023-12-15",
-			views: 560,
-			important: false
-		}
-	];
+	let notices = $state([]);
 
 	const categories = [
 		{ value: 'all', label: '전체' },
@@ -226,15 +78,6 @@ PTI:CODE는 개인의 심리재능을 정밀하게 진단하여 맞춤형 성장
 		updateNotices();
 	});
 
-	const formatDate = (dateString) => {
-		const date = new Date(dateString);
-		return date.toLocaleDateString('ko-KR', {
-			year: 'numeric',
-			month: '2-digit',
-			day: '2-digit'
-		});
-	};
-
 	const handleSearch = () => {
 		currentPage = 1; // 검색 시 첫 페이지로 이동
 	};
@@ -243,6 +86,26 @@ PTI:CODE는 개인의 심리재능을 정밀하게 진단하여 맞춤형 성장
 		selectedCategory = category;
 		currentPage = 1; // 카테고리 변경 시 첫 페이지로 이동
 	};
+
+	const handleWriteNotice = () => {
+		goto('/admin/notice/write');
+	};
+
+	onMount(async () => {
+		const _para = {
+			sTitle: searchTitle,
+			sContent: searchContent,
+			page: 1,
+			pageSize: 30,
+			bbsId : 'notice'
+		};
+		const _data = null;
+		const r = await ___prj.api.post(___const.API_BBS ,'get.post.list' ,_para ,_data);
+
+		if (r.data.result === ___const.OK) {
+			notices = r.data.content;
+		}
+	});
 </script>
 
 <svelte:head>
@@ -263,6 +126,14 @@ PTI:CODE는 개인의 심리재능을 정밀하게 진단하여 맞춤형 성장
 					서비스 업데이트, 교육 과정, 정책 변경 등<br>
 					중요한 소식을 전해드립니다.
 				</p>
+				{#if ___prj.isAdmin}
+					<div class="admin-actions">
+						<button class="write-notice-btn" onclick={handleWriteNotice}>
+							<span class="btn-icon">✏️</span>
+							공지사항 작성
+						</button>
+					</div>
+				{/if}
 			</div>
 		</div>
 	</section>
@@ -315,13 +186,13 @@ PTI:CODE는 개인의 심리재능을 정밀하게 진단하여 맞춤형 성장
 									</h3>
 								</div>
 								<div class="notice-meta">
-									<span class="notice-date">{formatDate(notice.date)}</span>
-									<span class="notice-views">조회 {notice.views}</span>
+									<span class="notice-date">{___formatDate(notice.reg_date)}</span>
+									<span class="notice-views">조회 {notice.view_cnt}</span>
 								</div>
 							</div>
-							<div class="notice-content">
-								<p>{notice.content}</p>
-							</div>
+							<!-- <div class="notice-content fr-view">
+								<p>{@html ___decodeHtml(notice.content)}</p>
+							</div> -->
 						</article>
 					{/each}
 				{:else}
@@ -399,6 +270,37 @@ PTI:CODE는 개인의 심리재능을 정밀하게 진단하여 맞춤형 성장
 		max-width: 600px;
 		margin: 0 auto;
 		opacity: 0.95;
+	}
+
+	.admin-actions {
+		margin-top: 30px;
+	}
+
+	.write-notice-btn {
+		background: rgba(255, 255, 255, 0.2);
+		color: white;
+		border: 2px solid rgba(255, 255, 255, 0.3);
+		padding: 15px 30px;
+		border-radius: 50px;
+		font-size: 1rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		backdrop-filter: blur(10px);
+	}
+
+	.write-notice-btn:hover {
+		background: rgba(255, 255, 255, 0.3);
+		border-color: rgba(255, 255, 255, 0.5);
+		transform: translateY(-2px);
+		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+	}
+
+	.btn-icon {
+		font-size: 1.1rem;
 	}
 
 	.search-filter-section {
@@ -632,6 +534,11 @@ PTI:CODE는 개인의 심리재능을 정밀하게 진단하여 맞춤형 성장
 
 		.hero-description {
 			font-size: 1rem;
+		}
+
+		.write-notice-btn {
+			padding: 12px 24px;
+			font-size: 0.9rem;
 		}
 
 		.search-box {
