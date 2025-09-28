@@ -8,6 +8,8 @@ node_modules
 /.svelte-kit
 /build
 
+/ref/database_differences.json
+
 # OS
 .DS_Store
 Thumbs.db
