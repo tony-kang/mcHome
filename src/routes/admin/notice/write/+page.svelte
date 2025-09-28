@@ -11,13 +11,13 @@
 	let noticeContent = $state({
 		bbsId : 'notice',
 		postId : 0,
-		postTitle : '공지사항 제목',
-		postData : '가나다라<br>마바사아자차카타파하',
+		postTitle : '',
+		postData : '',
 		postTag : '',
 		postStartDate : '',
 		postEndDate : '',
 		uploadId : null,
-		postCategory : 'education',
+		postCategory : 'general',
 		important : true
 	});
 	
