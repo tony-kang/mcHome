@@ -161,6 +161,15 @@ export function ___date(dateStr, inFormat = "YYYYMMDDHHmmss", outFormat = "YYYY-
     return moment(dateStr, inFormat).format(outFormat);
 }
 
+export function ___formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+};
+
 export function ___currency(number, currencyCode = 'KRW', showDecimals = true, locale = 'ko-KR') {
     if (!number) number = 0;
     // 소수점 자릿수를 설정
@@ -252,15 +261,20 @@ export function ___dateDiff(cDate,bDate = null) {
 }
   
 export function ___decodeHtml(encodedHtml) {
-    return encodedHtml.replace(/&lt;|&gt;|&amp;|&quot;|&#39;/g, (entity) => {
-        const chars = {
-            '&lt;': '<',
-            '&gt;': '>',
-            '&amp;': '&',
-            '&quot;': '"',
-            '&#39;': "'"
-        };
-        return chars[entity];
+    const entities = {
+        '&amp;': '&',
+        '&lt;': '<',
+        '&gt;': '>',
+        '&quot;': '"',
+        '&#39;': "'",
+        '&nbsp;': ' ',
+        '&copy;': '©',
+        '&reg;': '®',
+        '&trade;': '™'
+    };
+    
+    return encodedHtml.replace(/&[a-zA-Z0-9#]+;/g, (entity) => {
+        return entities[entity] || entity;
     });
 }
 
