@@ -42,8 +42,6 @@
 
 		// URL 파라미터 처리
 		handleUrlParams();
-
-		console.log('g_logedIn', $g_logedIn);
 	});
 
 	// 페이지 변경 시 URL 파라미터 처리

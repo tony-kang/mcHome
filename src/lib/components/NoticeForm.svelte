@@ -16,7 +16,7 @@
 		onReset = () => {}
 	} = $props();
 
-	console.log('noticeForm : noticeData', $state.snapshot(noticeData));
+	// console.log('noticeForm : noticeData', $state.snapshot(noticeData));
 	
 	const categories = [
 		{ value: 'general', label: '일반' },
