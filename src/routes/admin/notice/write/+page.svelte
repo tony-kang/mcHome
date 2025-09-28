@@ -35,7 +35,7 @@
 		noticeContent.postTitle = '';
 		noticeContent.postCategory = 'general';
 		noticeContent.important = false;
-		noticeContent.postData = '888';
+		noticeContent.postData = '';
 		console.log('공지사항 초기화', $state.snapshot(noticeContent));
 	}
 	
