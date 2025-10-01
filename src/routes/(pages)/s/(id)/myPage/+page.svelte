@@ -6,6 +6,7 @@
 	import { g_logedIn, g_theme } from '$prj/prjStore';
     import PasswordChange from './PasswordChange.svelte';
     import AdminSidebar from '$lib/components/AdminSidebar.svelte';
+    import PartnerSidebar from '$lib/components/PartnerSidebar.svelte';
     import ___encDec from '$prj/lib/i_encDec';
     import { toastAlert } from '$prj/lib/i_alert';
     import { goto } from '$app/navigation';
@@ -24,7 +25,7 @@
     let encodedPartnerUrl = $state('');
     let encodedCounselorUrl = $state('');
     let counselorId = $state('MC001');
-    let adminSidebarOpen = $state(false);
+    let sidebarOpen = $state(false);
 
     function getUserTypeLabel(userType) {
         return userTypes.find(type => type.value === userType)?.label;
@@ -50,8 +51,11 @@
 
 {#if isLoaded && userInfo}
     <!-- 관리자 사이드바 컴포넌트 -->
-    <AdminSidebar bind:isOpen={adminSidebarOpen} />
-    
+    {#if ___prj.isAdmin}
+        <AdminSidebar bind:isOpen={sidebarOpen} />
+    {:else if (userInfo.userType === 3) }
+        <PartnerSidebar bind:isOpen={sidebarOpen} />
+    {/if}
     <div class="my-page-container">
         <!-- 헤더 섹션 -->
         <div class="partner-info-card">
@@ -67,10 +71,6 @@
                     <button class="btn-password-change" onclick={togglePasswordChange}>
                         <span class="btn-icon">🔐</span>
                         비밀번호 변경
-                    </button>
-                    <button class="btn-password-change" onclick={goto('/s/myPage/revenue')}>
-                        <span class="btn-icon">💰</span>
-                        수익 정산
                     </button>
                 </div>
             </div>

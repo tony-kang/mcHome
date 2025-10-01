@@ -24,7 +24,7 @@
 <svelte:window on:keydown={handleKeydown} />
 
 <!-- 사이드바 토글 버튼 -->
-<button class="admin-sidebar-toggle" onclick={toggleSidebar} class:active={isOpen}>
+<button class="partner-sidebar-toggle" onclick={toggleSidebar} class:active={isOpen}>
     <div class="hamburger-icon" class:active={isOpen}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path class="line line-1" d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -32,7 +32,7 @@
             <path class="line line-3" d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     </div>
-    <span class="admin-label">관리자</span>
+    <span class="admin-label">파트너</span>
 </button>
 
 <!-- 사이드바 오버레이 -->
@@ -47,86 +47,50 @@
     ></div>
 {/if}
 
-<!-- 관리자 사이드바 -->
-<div class="admin-sidebar" class:open={isOpen}>
+<!-- 파트너 사이드바 -->
+<div class="partner-sidebar" class:open={isOpen}>
     <div class="sidebar-header">
         <div class="sidebar-title">
             <span class="admin-icon">⚙️</span>
-            <h3>관리자 메뉴</h3>
+            <h3>파트너 메뉴</h3>
         </div>
         <button class="sidebar-close" onclick={toggleSidebar}>✕</button>
     </div>
 
     <nav class="sidebar-nav">
         <div class="nav-section">
-            <h4 class="nav-section-title">사용자 관리</h4>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/users')}>
+            <h4 class="nav-section-title">파트너 정보</h4>
+            <button class="nav-item" onclick={() => navigateToAdminPage('/s/myPage/partner/info')}>
                 <span class="nav-icon">👥</span>
-                <span>사용자 목록</span>
-            </button>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/counselors')}>
-                <span class="nav-icon">👨‍⚕️</span>
-                <span>상담사 관리</span>
-            </button>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/partners')}>
-                <span class="nav-icon">🤝</span>
-                <span>파트너 관리</span>
+                <span>기본 정보</span>
             </button>
         </div>
 
         <div class="nav-section">
-            <h4 class="nav-section-title">콘텐츠 관리</h4>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/notice')}>
-                <span class="nav-icon">📢</span>
-                <span>공지사항 관리</span>
+            <h4 class="nav-section-title">파트너 매체</h4>
+            <button class="nav-item" onclick={() => navigateToAdminPage('/s/myPage/partner/media')}>
+                <span class="nav-icon">🚕</span>
+                <span>매체 관리</span>
             </button>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/reviews')}>
-                <span class="nav-icon">⭐</span>
-                <span>후기 관리</span>
-            </button>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/faq')}>
-                <span class="nav-icon">❓</span>
-                <span>FAQ 관리</span>
-            </button>
-        </div>
-
-        <div class="nav-section">
-            <h4 class="nav-section-title">상담 관리</h4>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/counseling/sessions')}>
-                <span class="nav-icon">💬</span>
-                <span>상담 세션</span>
-            </button>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/counseling/schedule')}>
-                <span class="nav-icon">📅</span>
-                <span>상담 일정</span>
-            </button>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/counseling/reports')}>
-                <span class="nav-icon">📊</span>
-                <span>상담 리포트</span>
-            </button>
-        </div>
-
-        <div class="nav-section">
-            <h4 class="nav-section-title">시스템</h4>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/settings')}>
-                <span class="nav-icon">🔧</span>
-                <span>시스템 설정</span>
-            </button>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/logs')}>
-                <span class="nav-icon">📝</span>
-                <span>시스템 로그</span>
-            </button>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/statistics')}>
+            <button class="nav-item" onclick={() => navigateToAdminPage('/s/myPage/partner/traffic')}>
                 <span class="nav-icon">📈</span>
-                <span>통계</span>
+                <span>트래픽 통계</span>
+            </button>
+            <button class="nav-item" onclick={() => navigateToAdminPage('/s/myPage/partner/unsettled')}>
+                <span class="nav-icon">💰</span>
+                <span>미정산 수익</span>
+            </button>
+            <button class="nav-item" onclick={() => navigateToAdminPage('/s/myPage/partner/settled')}>
+                <span class="nav-icon">💸</span>
+                <span>정산 완료 내역</span>
             </button>
         </div>
     </nav>
 </div>
 
 <style>
-    /* 관리자 사이드바 스타일 */
-    .admin-sidebar-toggle {
+    /* 파트너 사이드바 스타일 */
+    .partner-sidebar-toggle {
         position: fixed;
         top: 20px;
         left: 20px;
@@ -146,12 +110,12 @@
         font-size: 14px;
     }
 
-    .admin-sidebar-toggle:hover {
+    .partner-sidebar-toggle:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4);
     }
 
-    .admin-sidebar-toggle.active {
+    .partner-sidebar-toggle.active {
         background: linear-gradient(135deg, #ee5a24 0%, #ff6b6b 100%);
     }
 
@@ -185,7 +149,7 @@
     }
 
     .admin-label {
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -202,7 +166,7 @@
         backdrop-filter: blur(4px);
     }
 
-    .admin-sidebar {
+    .partner-sidebar {
         position: fixed;
         top: 0;
         left: -350px;
@@ -215,7 +179,7 @@
         box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
     }
 
-    .admin-sidebar.open {
+    .partner-sidebar.open {
         left: 0;
     }
 
@@ -276,7 +240,7 @@
 
     .nav-section-title {
         color: #a0aec0;
-        font-size: 0.8rem;
+        font-size: 20px;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -296,7 +260,7 @@
         display: flex;
         align-items: center;
         gap: 15px;
-        font-size: 14px;
+        font-size: 16px;
         font-weight: 500;
         transition: all 0.3s ease;
         border-left: 3px solid transparent;
@@ -314,37 +278,37 @@
     }
 
     .nav-icon {
-        font-size: 1.2rem;
+        font-size: 14px;
         min-width: 20px;
         text-align: center;
     }
 
     /* 사이드바 스크롤바 스타일 */
-    .admin-sidebar::-webkit-scrollbar {
+    .partner-sidebar::-webkit-scrollbar {
         width: 6px;
     }
 
-    .admin-sidebar::-webkit-scrollbar-track {
+    .partner-sidebar::-webkit-scrollbar-track {
         background: rgba(255, 255, 255, 0.05);
     }
 
-    .admin-sidebar::-webkit-scrollbar-thumb {
+    .partner-sidebar::-webkit-scrollbar-thumb {
         background: rgba(255, 255, 255, 0.2);
         border-radius: 3px;
     }
 
-    .admin-sidebar::-webkit-scrollbar-thumb:hover {
+    .partner-sidebar::-webkit-scrollbar-thumb:hover {
         background: rgba(255, 255, 255, 0.3);
     }
 
-    /* 관리자 사이드바 반응형 */
+    /* 파트너 사이드바 반응형 */
     @media (max-width: 768px) {
-        .admin-sidebar {
+        .partner-sidebar {
             width: 280px;
             left: -280px;
         }
 
-        .admin-sidebar-toggle {
+        .partner-sidebar-toggle {
             top: 15px;
             left: 15px;
             padding: 10px 16px;
@@ -380,12 +344,12 @@
     }
 
     @media (max-width: 480px) {
-        .admin-sidebar {
+        .partner-sidebar {
             width: 100vw;
             left: -100vw;
         }
 
-        .admin-sidebar-toggle {
+        .partner-sidebar-toggle {
             top: 10px;
             left: 10px;
             padding: 8px 12px;
