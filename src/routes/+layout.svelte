@@ -60,9 +60,4 @@
 <SvelteToast />
 {#if prjInit}
 	{@render children()}
-{:else}
-	<div class="loading-container">
-		<div class="loading-spinner"></div>
-		<p>사용자 정보를 불러오는 중...</p>
-	</div>
 {/if}
