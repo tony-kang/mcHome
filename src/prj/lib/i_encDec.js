@@ -5,7 +5,9 @@ const ENCDEC = {
 
 export const i_encDec = {
     telepasiEncrypt(str,key = ENCDEC.KEY) {
-        const encodedBytes = btoa(decodeURIComponent(encodeURIComponent(str)));
+        // UTF-8 인코딩을 위한 안전한 방법
+        const utf8Bytes = new TextEncoder().encode(str);
+        const encodedBytes = btoa(String.fromCharCode.apply(null, utf8Bytes));
 
         const encrypted = new Uint8Array(encodedBytes.length);
         for (let i = 0; i < encodedBytes.length; i++) {
@@ -29,9 +31,15 @@ export const i_encDec = {
 
             // Base64 디코딩
             const encStr = atob(decryptedText);
-
+            
+            // UTF-8 바이트 배열로 변환
+            const utf8Bytes = new Uint8Array(encStr.length);
+            for (let i = 0; i < encStr.length; i++) {
+                utf8Bytes[i] = encStr.charCodeAt(i);
+            }
+            
             // UTF-8 디코딩
-            const decodedText = decodeURIComponent(encodeURIComponent(encStr));
+            const decodedText = new TextDecoder().decode(utf8Bytes);
             return decodedText;                
         } catch (error) {
             // console.log('복호화 오류');
