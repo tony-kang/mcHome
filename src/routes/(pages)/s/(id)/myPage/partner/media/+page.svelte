@@ -161,7 +161,6 @@
 	<div class="page-header">
 		<div class="header-content">
 			<h1 class="title">파트너 매체 관리</h1>
-			<button class="btn-secondary" onclick={() => goto(`/s/${partnerUserId}/myPage`)}>마이페이지로</button>
 		</div>
 	</div>
 
