@@ -1,4 +1,5 @@
 const ___prjConst = {
+    HOMEPAGE_URL: 'https://mind-coding.com',
     COMPANY: {
         TEST_SITE_URL: 'https://app.mind-coding.com',
         TEL: '1661-6876',

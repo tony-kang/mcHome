@@ -1,142 +1,391 @@
 <script>
-    import { onMount } from 'svelte';
-    import ___prj from '$prj/prjMain';
-    import ___localStorage from '$prj/lib/i_localStorage';
-    import { g_logedIn } from '$prj/prjStore';
-    import { toastAlert } from '$prj/lib/i_alert';
-    import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
+	import ___prj from '$prj/prjMain';
+	import ___const from '$prj/lib/i_const';
+	import ___prjConst from '$prj/prjConst';
+	import ___encDec from '$prj/lib/i_encDec';
 
-    let userInfo = $state(null);
-    let isLoaded = $state(false);
-    // 테스트 모드 설정 (실제 서비스에서는 false로 변경)
-    const isTestMode = true;
-    const storageDuration = isTestMode ? 5 : 24; // 테스트: 5분, 운영: 24시간
+	// 기본 설정
+	const apiName = '/s/partner';
+	const partnerUserId = parseInt($page.params.id || 0);
 
-    onMount(() => {
-        if (___prj.user && $g_logedIn) {
-            userInfo = ___prj.user;
-                        
-            isLoaded = true;
-        } else {
-            console.log('사용자 정보 없음, 로그인 페이지로 리다이렉트');
-            window.location.href = '/s/signIn';
-        }
-    });
+	// 상태
+	let loading = $state(true);
+	let submitting = $state(false);
+    let list = $state([]);
+    let editingId = $state(null); // null이면 신규
+    let openMenuKey = $state(null); // (기존) 셀 내 메뉴 키 - 사용 안 함
 
-    function goBack() {
-        goto('/s/myPage');
+    // 포털 레이어용 상태
+    let menuOpen = $state(false);
+    let menuPos = $state({ x: 0, y: 0 });
+    let menuRow = $state(null);
+
+	let form = $state({
+		media_code: '',
+		media_name: '',
+		media_url: '',
+		category: '',
+		is_active: 1
+	});
+
+	function resetForm() {
+		editingId = null;
+		form.media_code = '';
+		form.media_name = '';
+		form.media_url = '';
+		form.category = '';
+		form.is_active = 1;
+	}
+
+	function validate() {
+		if (!form.media_code.trim()) {
+			alert('매체 코드(media_code)를 입력해 주세요. 예: GOOGLE_ADS');
+			return false;
+		}
+		if (!form.media_name.trim()) {
+			alert('매체명(media_name)을 입력해 주세요.');
+			return false;
+		}
+		return true;
+	}
+
+	async function loadList() {
+        console.log('___prj.domain.origin',___prj.domain.origin);
+
+		loading = true;
+		try {
+			// 파트너 NO 조회가 필요하면 서버에서 partnerUserId로 NO를 구해 내려주거나, 별도 API를 사용하세요.
+			const r = await ___prj.api.post(apiName, 'get.partner.media.list', null, { userId: partnerUserId });
+			if (r.data.result === ___const.OK) {
+				list = r.data.content || [];
+				// 신규 입력 시 기본 _partner_no 세팅 시도
+				if (list.length > 0 && list[0]._partner_no) {
+					form._partner_no = list[0]._partner_no;
+				}
+			}
+		} finally {
+			loading = false;
+		}
+	}
+
+	async function submitForm(e) {
+		e.preventDefault();
+		if (!validate()) return;
+		submitting = true;
+		try {
+			const r = await ___prj.api.post(apiName, 'save.partner.media', null, { 
+                ...$state.snapshot(form) 
+            });
+
+			if (r.data.result === ___const.OK) {
+				alert(editingId ? '수정되었습니다.' : '등록되었습니다.');
+				await loadList();
+				resetForm();
+			}
+		} catch (err) {
+			console.error('저장 오류', err);
+			alert('저장 중 오류가 발생했습니다.');
+		} finally {
+			submitting = false;
+		}
+	}
+
+	function editRow(row) {
+    openMenuKey = null;
+		editingId = row.NO;
+		form._partner_no = row._partner_no || form._partner_no || 0;
+		form.media_code = row.media_code || '';
+		form.media_name = row.media_name || '';
+		form.media_url = row.media_url || '';
+		form.category = row.category || '';
+		form.is_active = typeof row.is_active === 'number' ? row.is_active : 1;
+	}
+
+	async function removeRow(row) {
+		if (!confirm('삭제하시겠습니까?')) return;
+		submitting = true;
+		try {
+			const r = await ___prj.api.post(apiName, 'delete.partner.media', null, { media_code: row.media_code });
+			if (r.data.result === ___const.OK) {
+				await loadList();
+				resetForm();
+			}
+		} catch (err) {
+			console.error('삭제 오류', err);
+			alert('삭제 중 오류가 발생했습니다.');
+		} finally {
+			submitting = false;
+		}
+	}
+
+    function makePartnerUrl(row) {
+        // const plainText = "안녕하세요, Welcome to KBW 세계!";
+        // const encText = ___encDec.telepasiEncrypt(plainText);
+        // console.log('암호화:\n\t', encText);
+
+        // const oriStr = ___encDec.telepasiDecrypt(encText);
+        // console.log('복호화:', oriStr);
+
+        const baseUrl = ___prjConst.HOMEPAGE_URL;
+        const data = ___prj.user.id + '||' + row.media_code;
+        const encodedPartnerUrl = `?pP=${___encDec.telepasiEncrypt(data)}`;
+        
+        return baseUrl + encodedPartnerUrl;
     }
+
+    async function copyToClipboard(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            alert('URL이 클립보드에 복사되었습니다.');
+        } catch (err) {
+            // fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('URL이 클립보드에 복사되었습니다.');
+        }
+    }
+
+	onMount(loadList);
 </script>
 
-{#if isLoaded && userInfo}
-    <div class="revenue-container">
-        <div class="page-header">
-            <div class="header-content">
-                <h1 class="text-white font-bold text-3xl">파트너 매체 관리</h1>
-            </div>
-        </div>
+<svelte:window onclick={() => { openMenuKey = null; menuOpen = false; }} />
 
-    </div>
-{:else if !isLoaded}
-    <div class="loading-container">
-        <div class="loading-spinner"></div>
-        <p>사용자 정보를 불러오는 중...</p>
-    </div>
-{:else}
-    <div class="revenue-container">
-        <h1>로그인 후 이용해주세요.</h1>
+<div class="partner-media-container">
+	<div class="page-header">
+		<div class="header-content">
+			<h1 class="title">파트너 매체 관리</h1>
+			<button class="btn-secondary" onclick={() => goto(`/s/${partnerUserId}/myPage`)}>마이페이지로</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2 class="section-title">{editingId ? '매체 수정' : '매체 등록'}</h2>
+		<form class="media-form" onsubmit={submitForm}>
+			<div class="grid">
+				<div class="form-group">
+					<label for="media_code">매체 코드 *</label>
+					<input id="media_code" type="text" bind:value={form.media_code} placeholder="예) GOOGLE_ADS, META, NAVER" required />
+				</div>
+				<div class="form-group">
+					<label for="media_name">매체명 *</label>
+					<input id="media_name" type="text" bind:value={form.media_name} placeholder="예) 구글 광고" required />
+				</div>
+				<div class="form-group">
+					<label for="media_url">매체 URL</label>
+					<input id="media_url" type="text" bind:value={form.media_url} placeholder="예) https://ads.google.com" />
+				</div>
+				<div class="form-group">
+					<label for="category">카테고리</label>
+					<input id="category" type="text" bind:value={form.category} placeholder="예) ads, social, search, video" />
+				</div>
+				<div class="form-group">
+					<label for="is_active">상태</label>
+					<select id="is_active" bind:value={form.is_active}>
+						<option value={1}>활성</option>
+						<option value={0}>중지</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-actions">
+				<button type="button" class="btn-secondary" onclick={resetForm} disabled={submitting}>초기화</button>
+				<button type="submit" class="btn-primary" disabled={submitting}>{submitting ? '저장 중...' : (editingId ? '수정 저장' : '저장')}</button>
+			</div>
+		</form>
+	</div>
+
+	<div class="section">
+		<h2 class="section-title">매체 목록</h2>
+		{#if loading}
+			<div class="loading">불러오는 중...</div>
+		{:else}
+			{#if list.length === 0}
+				<div class="empty">등록된 매체가 없습니다.</div>
+			{:else}
+				<div class="table-wrap">
+					<table class="table">
+						<thead>
+							<tr>
+								<th class="text-left w-[120px]">매체 코드</th>
+								<th class="text-left w-[100px]">매체명</th>
+								<th class="text-left">매체 URL</th>
+                                <th class="text-left w-[400px]">파트너 URL</th>
+								<th class="text-left w-[100px]">카테고리</th>
+								<th class="text-center w-[60px]">상태</th>
+								<th class="text-center w-[50px]">작업</th>
+							</tr>
+						</thead>
+						<tbody>
+							{#each list as row}
+								<tr>
+									<td class="text-left">{row.media_code}</td>
+									<td class="text-left">{row.media_name}</td>
+									<td class="text-left">
+										{#if row.media_url}
+											<a href={row.media_url} target="_blank" rel="noopener noreferrer">{row.media_url}</a>
+										{:else}-{/if}
+									</td>
+									<td class="text-left">
+										<div class="url-cell">
+											<span class="url-text">{makePartnerUrl(row)}</span>
+											<!-- svelte-ignore a11y_consider_explicit_label -->
+											<button class="copy-btn" onclick={() => copyToClipboard(makePartnerUrl(row))} title="URL 복사">
+												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+												</svg>
+											</button>
+										</div>
+									</td>
+									<td class="text-left">{row.category || '-'}</td>
+									<td class="text-center">{row.is_active ? '활성' : '중지'}</td>
+                                    <td class="text-center">
+                                        <div class="action-cell">
+                                            <button class="icon-btn" aria-label="액션" onclick={(e) => {
+                                                e.stopPropagation();
+                                                const r = e.currentTarget.getBoundingClientRect();
+                                                menuPos = { x: r.left, y: r.top };
+                                                menuRow = row;
+                                                menuOpen = !menuOpen;
+                                            }}>💎</button>
+                                        </div>
+                                    </td>
+								</tr>
+							{/each}
+						</tbody>
+					</table>
+				</div>
+			{/if}
+		{/if}
+	</div>
+</div>
+
+{#if menuOpen}
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <div class="menu-layer" role="menu" tabindex="-1" aria-label="컨텍스트 메뉴"
+         style={`top:${menuPos.y}px;left:${menuPos.x}px`}
+         onclick={(e) => e.stopPropagation()}>
+        <button class="menu-item" onclick={() => { editRow(menuRow); menuOpen = false; }}>정보 수정</button>
+        <hr class="menu-sep" />
+        <button class="menu-item danger" onclick={() => { removeRow(menuRow); menuOpen = false; }} disabled={submitting}>그룹 삭제</button>
     </div>
 {/if}
 
 <style>
-    .revenue-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-        background: #ffffff;
-        min-height: 100vh;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	.partner-media-container {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 20px;
+		background: #ffffff;
+		min-height: 100vh;
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	}
+
+	.page-header {
+		margin-bottom: 24px;
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		border-radius: 16px;
+		padding: 20px;
+		box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
+	}
+	.header-content { display: flex; align-items: center; justify-content: space-between; }
+	.title { color: #fff; font-size: 1.6rem; font-weight: 700; margin: 0; }
+
+	.section { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+	.section-title { font-size: 1.2rem; font-weight: 700; margin: 0 0 16px 0; }
+
+	.media-form .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
+	.form-group { display: flex; flex-direction: column; gap: 8px; }
+	.form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 12px; }
+
+	input[type="text"], select { width: 100%; padding: 12px 14px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem; transition: border-color 0.2s ease; }
+	input:focus, select:focus { outline: none; border-color: #28a745; box-shadow: 0 0 0 3px rgba(40,167,69,0.1); }
+
+    .form-group input, .form-group select {
+        font-size: 16px;
+        color: #0000ff;
     }
 
-    .page-header {
-        margin-bottom: 30px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 20px;
-        padding: 30px;
-        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
-    }
+	.btn-primary { padding: 10px 16px; background: #28a745; color: #fff; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; }
+	.btn-primary:hover { background: #20c997; }
+	.btn-secondary { padding: 10px 16px; background: #6c757d; color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+	.btn-small { padding: 6px 10px; background: #6c757d; color: #fff; border: none; border-radius: 6px; cursor: pointer; margin-right: 6px; }
+	.btn-danger { background: #dc3545; }
 
-    .header-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+	/* 액션 아이콘 및 컨텍스트 메뉴 */
+	.action-cell { position: relative; display: inline-block; }
+	.icon-btn { background: transparent; border: none; cursor: pointer; font-size: 18px; line-height: 1; }
+	.context-menu {
+		position: absolute;
+		left: -8px; /* 아이콘 왼쪽에 걸쳐 보이도록 */
+		top: -4px;
+		transform: translate(-100%, 0); /* 아이콘 왼쪽으로 붙임 */
+		min-width: 140px;
+		background: #fff;
+		border: 1px solid #e5e7eb;
+		border-radius: 8px;
+		box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+		overflow: hidden;
+		z-index: 10;
+	}
+	.menu-item { display: block; width: 100%; text-align: left; padding: 10px 12px; background: #fff; border: none; cursor: pointer; font-size: 14px; }
+	.menu-item:hover { background: #f5f7fa; }
+	.menu-item.danger { color: #dc3545; }
+	.menu-sep { margin: 0; border: none; border-top: 1px dashed #e5e7eb; }
 
-    .header-left {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
+	/* URL 셀 스타일 */
+	.url-cell {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		max-width: 100%;
+	}
+	.url-text {
+		flex: 1;
+		word-break: break-all;
+		font-size: 0.9rem;
+		color: #666;
+	}
+	.copy-btn {
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		padding: 4px;
+		border-radius: 4px;
+		color: #666;
+		transition: all 0.2s ease;
+		flex-shrink: 0;
+	}
+	.copy-btn:hover {
+		background: #f5f5f5;
+		color: #333;
+	}
 
-    .loading-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 60vh;
-        text-align: center;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 20px;
-        margin: 20px;
-        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
-    }
+	/* fixed 포털 레이어 */
+	.menu-layer {
+		position: fixed;
+		transform: translate(-100%, -6px);
+		min-width: 140px;
+		background: #fff;
+		border: 1px solid #e5e7eb;
+		border-radius: 8px;
+		box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+		z-index: 9999;
+	}
 
-    .loading-spinner {
-        width: 50px;
-        height: 50px;
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #667eea;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin-bottom: 20px;
-    }
+	.table-wrap { overflow-x: auto; }
+	.table { width: 100%; border-collapse: collapse; }
+	.table th, .table td { border-bottom: 1px solid #eee; text-align: left; padding: 10px 8px; font-size: 0.95rem; }
 
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
+	.loading, .empty { text-align: center; color: #666; padding: 24px; }
 
-    .loading-container p {
-        color: #718096;
-        font-size: 18px;
-        font-weight: 500;
-        margin: 0;
-    }
-
-    /* 반응형 디자인 */
-    @media (max-width: 768px) {
-        .revenue-container {
-            padding: 15px;
-        }
-
-        .page-header {
-            padding: 20px;
-        }
-
-        .header-left {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 15px;
-        }
-
-        .page-header h1 {
-            font-size: 1.8rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .page-header h1 {
-            font-size: 1.5rem;
-        }
-    }
+	@media (max-width: 768px) {
+		.media-form .grid { grid-template-columns: 1fr; }
+	}
 </style>
+
