@@ -20,7 +20,8 @@ export const i_encDec = {
     telepasiDecrypt(encodedEncryptedText,key = ENCDEC.KEY) {
         try {
             // Base64 디코딩
-            const decodedEncrypted = atob(encodedEncryptedText);
+            const restoredText = encodedEncryptedText.replace(/\s/g, '+');
+            const decodedEncrypted = atob(restoredText);
 
             // 복호화 로직
             let decryptedText = '';
