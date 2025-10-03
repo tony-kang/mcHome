@@ -14,11 +14,6 @@
 	let showDetail = $state(false);
 	let selectedService = $state(null);
 
-	// URL 파라미터 상태
-	let partnerId = $state('');
-	let counselorId = $state('');
-	let storedUrlParams = $state(null);
-
 	// 문의 폼 데이터 상태
 	let inquiryForm = $state({
 		name: '강강강',
@@ -35,32 +30,10 @@
 	let inquirySubmitted = $state(false);
 	let showPasswordModal = $state(false);
 	let editPassword = $state('');
-
-	// 테스트 모드 설정 (실제 서비스에서는 false로 변경)
-	const isTestMode = true;
-	const storageDuration = isTestMode ? 5 : 24; // 테스트: 5분, 운영: 24시간
+	let storedUrlParams = $state(null);
 
 	onMount(() => {
-		// 저장된 URL 파라미터 확인
 		storedUrlParams = ___localStorage.urlParams.getParams();
-		if (storedUrlParams) {
-			//console.log('ServicesSection - 저장된 URL 파라미터:', $state.snapshot(storedUrlParams));
-			
-			// 파라미터가 있으면 변수에 할당
-			if (storedUrlParams.pP) {
-				partnerId = ___encDec.telepasiDecrypt(storedUrlParams.pP);
-			}
-			if (storedUrlParams.pC) {
-				counselorId = ___encDec.telepasiDecrypt(storedUrlParams.pC);
-			}
-
-			// console.log('ServicesSection - 복원된 파트너/상담사 정보:', partnerId, counselorId);
-			
-			// 파라미터가 복원되었음을 알림
-			if (partnerId || counselorId) {
-				toastAlert('저장된 파트너/상담사 정보가 복원되었습니다.');
-			}
-		}
 	});
 
 	const categories = [
@@ -137,8 +110,8 @@
 
 		// API 호출 데이터 구성
 		const inquiryData = {
-			partner: storedUrlParams,
-			inquery: {
+			partner: storedUrlParams.pP,
+			inquiry: {
 				serviceName: selectedService?.name || '',
 				serviceId: selectedService?.id || '',
 				serviceType: inquiryForm.type,
@@ -148,12 +121,11 @@
 				datetime: inquiryForm.datetime,
 				content: inquiryForm.content.trim(),
 				password: inquiryForm.password.trim(), // 수정/상태확인용 비밀번호
-				partnerId: partnerId,
-				counselorId: counselorId
 			}
 		};
 
 		console.log('문의 데이터 전송:', inquiryData);
+		console.log('복호화:', ___encDec.telepasiDecrypt(storedUrlParams.pP));
 
 		// API 호출
 		___prj.api.post('/s/system', 'counselling.inquiry', null, inquiryData)
@@ -479,51 +451,6 @@
 			<p>심리재능을 기반으로 한 네 가지 영역의 맞춤형 성장 솔루션</p>
 		</div>
 
-		<!-- 저장된 URL 파라미터 정보 표시 -->
-		{#if storedUrlParams && (storedUrlParams.pP || storedUrlParams.pC)}
-		<div class="stored-params-banner">
-			<div class="params-content">
-				<div class="params-info">
-					<span class="params-icon">💾</span>
-					<div class="params-text">
-						<span class="params-title">저장된 파트너/상담사 정보가 복원되었습니다</span>
-						<div class="params-details">
-							{#if storedUrlParams.pP}
-								<span class="param-item">파트너: {storedUrlParams.pP}</span>
-							{/if}
-							{#if storedUrlParams.pC}
-								<span class="param-item">상담사: {storedUrlParams.pC}</span>
-							{/if}
-						</div>
-					</div>
-				</div>
-				<button class="params-close" onclick={() => {
-					___localStorage.urlParams.clearParams();
-					___localStorage.cookies.deleteCookie('url_params');
-					storedUrlParams = null;
-					partnerId = '';
-					counselorId = '';
-					toastAlert('저장된 파라미터가 삭제되었습니다.');
-				}}>
-					×
-				</button>
-			</div>
-		</div>
-		{/if}
-
-		<!-- Type Filter -->
-		<!-- <div class="type-filter">
-			{#each types as type}
-				<button 
-					class="type-button" 
-					class:active={currentType === type.id}
-					onclick={() => setType(type.id)}
-				>
-					{type.label}
-				</button>
-			{/each}
-		</div> -->
-
 		<!-- Category Filter -->
 		<div class="category-filter">
 			{#each categories as category}
@@ -800,84 +727,6 @@
 		margin: 0 0 15px 0;
 	}
 
-	/* 저장된 파라미터 배너 스타일 */
-	.stored-params-banner {
-		background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-		border-radius: 16px;
-		padding: 20px;
-		margin-bottom: 40px;
-		box-shadow: 0 8px 32px rgba(72, 187, 120, 0.2);
-		animation: slideInDown 0.5s ease-out;
-	}
-
-	.params-content {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 20px;
-	}
-
-	.params-info {
-		display: flex;
-		align-items: center;
-		gap: 15px;
-		flex: 1;
-	}
-
-	.params-icon {
-		font-size: 2rem;
-		color: white;
-	}
-
-	.params-text {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-	}
-
-	.params-title {
-		color: white;
-		font-size: 1.1rem;
-		font-weight: 600;
-	}
-
-	.params-details {
-		display: flex;
-		gap: 20px;
-		flex-wrap: wrap;
-	}
-
-	.param-item {
-		color: rgba(255, 255, 255, 0.9);
-		font-size: 0.9rem;
-		background: rgba(255, 255, 255, 0.15);
-		padding: 4px 12px;
-		border-radius: 20px;
-		backdrop-filter: blur(10px);
-	}
-
-	.params-close {
-		background: rgba(255, 255, 255, 0.2);
-		color: white;
-		border: none;
-		width: 32px;
-		height: 32px;
-		border-radius: 50%;
-		cursor: pointer;
-		font-size: 18px;
-		font-weight: bold;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		transition: all 0.3s ease;
-		backdrop-filter: blur(10px);
-	}
-
-	.params-close:hover {
-		background: rgba(255, 255, 255, 0.3);
-		transform: scale(1.1);
-	}
-
 	@keyframes slideInDown {
 		from {
 			opacity: 0;
@@ -1087,29 +936,6 @@
 			font-size: 2rem;
 		}
 
-		.stored-params-banner {
-			padding: 15px;
-			margin-bottom: 30px;
-		}
-
-		.params-content {
-			flex-direction: column;
-			align-items: stretch;
-			gap: 15px;
-		}
-
-		.params-info {
-			flex-direction: column;
-			align-items: flex-start;
-			gap: 10px;
-		}
-
-		.params-details {
-			flex-direction: column;
-			gap: 10px;
-		}
-
-
 		.category-filter {
 			justify-content: center;
 		}
@@ -1128,11 +954,6 @@
 			font-size: 1.5rem;
 		}
 
-		.cta-buttons {
-			flex-direction: column;
-			align-items: center;
-		}
-
 		.btn-primary,
 		.btn-secondary {
 			width: 100%;
@@ -1143,20 +964,6 @@
 	@media (max-width: 480px) {
 		.section-header h2 {
 			font-size: 1.8rem;
-		}
-
-		.stored-params-banner {
-			padding: 12px;
-			margin-bottom: 25px;
-		}
-
-		.params-title {
-			font-size: 1rem;
-		}
-
-		.param-item {
-			font-size: 0.8rem;
-			padding: 3px 10px;
 		}
 
 		.form-row {

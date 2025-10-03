@@ -28,6 +28,7 @@
 		media_name: '',
 		media_url: '',
 		category: '',
+        counselor_code: '',
 		is_active: 1
 	});
 
@@ -37,6 +38,7 @@
 		form.media_name = '';
 		form.media_url = '';
 		form.category = '';
+		form.counselor_code = '';
 		form.is_active = 1;
 	}
 
@@ -61,10 +63,6 @@
 			const r = await ___prj.api.post(apiName, 'get.partner.media.list', null, { userId: partnerUserId });
 			if (r.data.result === ___const.OK) {
 				list = r.data.content || [];
-				// 신규 입력 시 기본 _partner_no 세팅 시도
-				if (list.length > 0 && list[0]._partner_no) {
-					form._partner_no = list[0]._partner_no;
-				}
 			}
 		} finally {
 			loading = false;
@@ -96,11 +94,11 @@
 	function editRow(row) {
     openMenuKey = null;
 		editingId = row.NO;
-		form._partner_no = row._partner_no || form._partner_no || 0;
 		form.media_code = row.media_code || '';
 		form.media_name = row.media_name || '';
 		form.media_url = row.media_url || '';
 		form.category = row.category || '';
+		form.counselor_code = row.counselor_code || '';
 		form.is_active = typeof row.is_active === 'number' ? row.is_active : 1;
 	}
 
@@ -130,9 +128,13 @@
         // console.log('복호화:', oriStr);
 
         const baseUrl = ___prjConst.HOMEPAGE_URL;
-        const data = ___prj.user.id + '||' + row.media_code;
-        const encodedPartnerUrl = `?pP=${___encDec.telepasiEncrypt(data)}`;
-        
+        const data = ___prj.user.id + '||' + row.media_code + '||' + row.counselor_code;
+        const encodedData = ___encDec.telepasiEncrypt(data);
+        const encodedPartnerUrl = `?pP=${encodedData}`;
+        // console.log('데이터:', data);
+        // console.log('암호화:', encodedData);
+        // console.log('복호화:', ___encDec.telepasiDecrypt(encodedData));
+
         return baseUrl + encodedPartnerUrl;
     }
 
@@ -183,6 +185,11 @@
 				<div class="form-group">
 					<label for="category">카테고리</label>
 					<input id="category" type="text" bind:value={form.category} placeholder="예) ads, social, search, video" />
+				</div>
+                <div class="form-group">
+					<label for="category">전문가코드</label>
+					<input id="category" type="text" bind:value={form.counselor_code} placeholder="예) MC001" />
+                    <div class="text-sm text-[#ff00ff] text-right">전문가님께 의뢰를 받은 경우 입력해 주세요.</div>
 				</div>
 				<div class="form-group">
 					<label for="is_active">상태</label>
@@ -258,6 +265,7 @@
 							{/each}
 						</tbody>
 					</table>
+                    <div class="text-md text-gray-500 bg-yellow-100 p-2 rounded-md text-center">파트너 URL을 복사해서 매체에 링크로 연결해 주세요.</div>
 				</div>
 			{/if}
 		{/if}
@@ -271,7 +279,7 @@
          onclick={(e) => e.stopPropagation()}>
         <button class="menu-item" onclick={() => { editRow(menuRow); menuOpen = false; }}>정보 수정</button>
         <hr class="menu-sep" />
-        <button class="menu-item danger" onclick={() => { removeRow(menuRow); menuOpen = false; }} disabled={submitting}>그룹 삭제</button>
+        <button class="menu-item text-red-500" onclick={() => { removeRow(menuRow); menuOpen = false; }} disabled={submitting}>그룹 삭제</button>
     </div>
 {/if}
 
@@ -332,10 +340,10 @@
 		overflow: hidden;
 		z-index: 10;
 	}
-	.menu-item { display: block; width: 100%; text-align: left; padding: 10px 12px; background: #fff; border: none; cursor: pointer; font-size: 14px; }
+	.menu-item { display: block; width: 100%; text-align: left; padding: 10px 12px; background: #fff; border: none; cursor: pointer; font-size: 15px; }
 	.menu-item:hover { background: #f5f7fa; }
 	.menu-item.danger { color: #dc3545; }
-	.menu-sep { margin: 0; border: none; border-top: 1px dashed #e5e7eb; }
+	.menu-sep { margin: 0; border: none; border-top: 1px dashed #8ea0c2; }
 
 	/* URL 셀 스타일 */
 	.url-cell {
@@ -372,8 +380,8 @@
 		min-width: 140px;
 		background: #fff;
 		border: 1px solid #e5e7eb;
-		border-radius: 8px;
-		box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+		border-radius: 4px;
+		box-shadow: 0 5px 15px rgba(0,0,0,0.9);
 		z-index: 9999;
 	}
 
