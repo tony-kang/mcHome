@@ -4,6 +4,7 @@
 	import ___prj from '$prj/prjMain';
 	import ___const from '$prj/lib/i_const';
 	import ___localStorage from '$prj/lib/i_localStorage';
+	// import ___encDec from '$prj/lib/i_encDec';
 	import { g_logedIn, g_theme } from '$prj/prjStore';
 	import { SvelteToast } from '@zerodevx/svelte-toast';
 	import favicon from '$lib/assets/favicon.svg';
@@ -19,7 +20,7 @@
 	let storedUrlParams = $state(null);
 
 	// URL 파라미터 처리 함수
-	function handleUrlParams() {
+	async function handleUrlParams() {
 		// 현재 URL에서 파라미터 추출
 		currentParams = ___localStorage.urlParams.extractParamsFromUrl();
 		
@@ -39,7 +40,12 @@
 		} else {
 			storedUrlParams = ___localStorage.urlParams.getParams();
 			console.log('저장된 URL 파라미터 감지:', $state.snapshot(storedUrlParams));
-			console.log('복호화:', ___encDec.telepasiDecrypt(storedUrlParams.pP));
+			// console.log('복호화:', ___encDec.telepasiDecrypt(storedUrlParams.pP));
+		}
+
+		const r = await ___prj.api.post('/s/system', 'visitor.inflow', { partner: storedUrlParams ? storedUrlParams.pP : null }, null);
+		if (r.data.result === ___const.OK) {
+			console.log('유입 정보 저장:', r.data.content);
 		}
 	}
 
@@ -50,13 +56,6 @@
 		// URL 파라미터 처리
 		handleUrlParams();
 	});
-
-	// 페이지 변경 시 URL 파라미터 처리
-	// $effect(() => {
-	// 	if (prjInit && $page.url) {
-	// 		handleUrlParams();
-	// 	}
-	// });
 </script>
 
 <svelte:head>
@@ -68,30 +67,32 @@
 {#if prjInit}
 	<!-- 저장된 URL 파라미터 정보 표시 -->
 	{#if storedUrlParams && (storedUrlParams.pP || storedUrlParams.pC)}
-	<div class="stored-params-banner">
-		<div class="params-content">
-			<div class="params-info">
-				<span class="params-icon">💾</span>
-				<div class="params-text">
-					<span class="params-title">저장된 파트너정보</span>
-					<div class="params-details">
-						{#if storedUrlParams.pP}
-							<span class="param-item">파트너: {storedUrlParams.pP}</span>
-						{/if}
-						{#if storedUrlParams.pC}
-							<span class="param-item">상담사: {storedUrlParams.pC}</span>
-						{/if}
+		<div class="stored-params-banner">
+			<div class="params-content">
+				<div class="params-info">
+					<span class="params-icon">💾</span>
+					<div class="params-text">
+						<span class="params-title">저장된 파트너정보</span>
+						<div class="params-details">
+							{#if storedUrlParams.pP}
+								<span class="param-item">파트너: {storedUrlParams.pP}</span>
+							{/if}
+							{#if storedUrlParams.pC}
+								<span class="param-item">상담사: {storedUrlParams.pC}</span>
+							{/if}
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 	{/if}
 	{@render children()}
 {/if}
 <style>
 	/* 저장된 파라미터 배너 스타일 */
 	.stored-params-banner {
+		max-width: 1200px;
+		margin: 0 auto;
 		margin-top: 100px;
 		background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
 		border-radius: 16px;
@@ -145,5 +146,70 @@
 		padding: 4px 12px;
 		border-radius: 20px;
 		backdrop-filter: blur(10px);
+	}
+
+	/* 반응형 디자인 */
+	@media (max-width: 1200px) {
+		.stored-params-banner {
+			margin-left: 20px;
+			margin-right: 20px;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.stored-params-banner {
+			margin-top: 80px;
+			padding: 16px;
+			border-radius: 12px;
+		}
+
+		.params-content {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 15px;
+		}
+
+		.params-info {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 12px;
+		}
+
+		.params-icon {
+			font-size: 1.5rem;
+		}
+
+		.params-title {
+			font-size: 1rem;
+		}
+
+		.params-details {
+			flex-direction: column;
+			gap: 8px;
+		}
+
+		.param-item {
+			font-size: 0.8rem;
+			padding: 6px 10px;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.stored-params-banner {
+			padding: 20px;
+		}
+
+		.params-icon {
+			font-size: 1.2rem;
+		}
+
+		.params-title {
+			font-size: 0.9rem;
+		}
+
+		.param-item {
+			font-size: 0.75rem;
+			padding: 4px 8px;
+		}
 	}
 </style>
