@@ -7,12 +7,18 @@
     import { toastAlert } from '$prj/lib/i_alert';
     import { goto } from '$app/navigation';
     import PartnerInfo from './PartnerInfo.svelte';
+    import PartnerSidebar from '$lib/components/PartnerSidebar.svelte';
+    import '../partner-common.css';
 
     let partnerInfo = $state(null);
     let isLoaded = $state(false);
 
+    let userInfo = $state(null);
+    let sidebarOpen = $state(false);
+
     onMount(async () => {
         if (___prj.user && $g_logedIn) {
+            userInfo = ___prj.user;
             const r = await ___prj.api.post('/s/partner', 'get.partner.info', null, null);
 
             if (r.data.result === ___const.OK) {
@@ -31,10 +37,13 @@
     }
 </script>
 
-<div class="partner-info-container">
-    <div class="page-header">
-        <div class="header-content">
-            <h1 class="text-white font-bold text-3xl">파트너 정보 관리</h1>
+{#if (userInfo && userInfo.userType === 3) }
+    <PartnerSidebar bind:isOpen={sidebarOpen} />
+{/if}
+<div class="partner-container">
+    <div class="partner-page-header">
+        <div class="partner-header-content">
+            <h1 class="partner-title">파트너 정보 관리</h1>
         </div>
     </div>
     <div>
@@ -44,53 +53,4 @@
     </div>
 </div>
 
-<style>
-    .partner-info-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-        background: #ffffff;
-        min-height: 100vh;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-
-    .page-header {
-        margin-bottom: 30px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 20px;
-        padding: 30px;
-        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
-    }
-
-    .header-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    /* 반응형 디자인 */
-    @media (max-width: 768px) {
-        .partner-info-container {
-            padding: 15px;
-        }
-
-        .page-header {
-            padding: 20px;
-        }
-
-        .page-header h1 {
-            font-size: 1.8rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .page-header h1 {
-            font-size: 1.5rem;
-        }
-    }
-</style>
+<!-- 공통 CSS는 partner-common.css에서 import -->

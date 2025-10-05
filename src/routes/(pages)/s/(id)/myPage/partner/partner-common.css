@@ -1,0 +1,266 @@
+/* ========================================
+   파트너 페이지 공통 CSS 스타일
+   ======================================== */
+
+/* 기본 컨테이너 */
+.partner-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #ffffff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 페이지 헤더 */
+.partner-page-header {
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
+}
+
+.partner-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.partner-title {
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* 섹션 스타일 */
+.partner-section {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.partner-section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+}
+
+/* 폼 스타일 */
+.partner-form {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.partner-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+}
+
+.partner-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.partner-form-group--full {
+    grid-column: 1 / -1;
+}
+
+.partner-form-group label {
+    font-weight: 600;
+    color: #333;
+}
+
+.partner-form-group input,
+.partner-form-group select,
+.partner-form-group textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    color: #0000ff;
+    transition: border-color 0.2s ease;
+}
+
+.partner-form-group input:focus,
+.partner-form-group select:focus,
+.partner-form-group textarea:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40,167,69,0.1);
+}
+
+.partner-form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+/* 버튼 스타일 */
+.partner-btn-primary {
+    padding: 10px 16px;
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.partner-btn-primary:hover:enabled {
+    background: #20c997;
+}
+
+.partner-btn-primary:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+.partner-btn-secondary {
+    padding: 10px 16px;
+    background: #6c757d;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* 테이블 스타일 */
+.partner-table-wrap {
+    overflow-x: auto;
+}
+
+.partner-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.partner-table th,
+.partner-table td {
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    padding: 10px 8px;
+    font-size: 0.95rem;
+}
+
+/* 상태 메시지 */
+.partner-loading,
+.partner-empty {
+    text-align: center;
+    color: #666;
+    padding: 24px;
+}
+
+/* 액션 메뉴 */
+.partner-action-cell {
+    position: relative;
+    display: inline-block;
+}
+
+.partner-icon-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.partner-menu-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.partner-menu-item:hover {
+    background: #f5f7fa;
+}
+
+.partner-menu-sep {
+    margin: 0;
+    border: none;
+    border-top: 1px dashed #8ea0c2;
+}
+
+.partner-menu-layer {
+    position: fixed;
+    transform: translate(-100%, -6px);
+    min-width: 140px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.9);
+    z-index: 9999;
+}
+
+/* URL 셀 스타일 */
+.partner-url-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+}
+
+.partner-url-text {
+    flex: 1;
+    word-break: break-all;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.partner-copy-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    color: #666;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.partner-copy-btn:hover {
+    background: #f5f5f5;
+    color: #333;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .partner-container {
+        padding: 15px;
+    }
+
+    .partner-page-header {
+        padding: 20px;
+    }
+
+    .partner-title {
+        font-size: 1.4rem;
+    }
+
+    .partner-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .partner-title {
+        font-size: 1.2rem;
+    }
+}
