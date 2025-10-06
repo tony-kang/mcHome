@@ -108,17 +108,9 @@
 
         <div class="nav-section">
             <h4 class="nav-section-title">시스템</h4>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/settings')}>
-                <span class="nav-icon">🔧</span>
-                <span>시스템 설정</span>
-            </button>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/logs')}>
-                <span class="nav-icon">📝</span>
-                <span>시스템 로그</span>
-            </button>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/statistics')}>
+            <button class="nav-item" onclick={() => navigateToAdminPage('/s/myPage/partner/traffic')}>
                 <span class="nav-icon">📈</span>
-                <span>통계</span>
+                <span>트래픽 통계</span>
             </button>
         </div>
     </nav>
