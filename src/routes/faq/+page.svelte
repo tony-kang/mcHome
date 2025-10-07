@@ -1,8 +1,10 @@
 <script>
+	import { onMount } from 'svelte';
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
-	import ___prj from '$prj/prjMain';
 	import { goto } from '$app/navigation';
+	import ___prj from '$prj/prjMain';
+	import ___const from '$prj/lib/i_const';
 	import ___prjConst from '$prj/prjConst';
 
 	let openFaq = $state(null);
@@ -24,58 +26,8 @@
 		console.log('검색어:', searchTerm);
 	};
 
-	const faqs = [
-		{
-			question: "PTI:CODE 검사는 어떻게 진행되나요?",
-			answer: "PTI:CODE 검사는 온라인으로 진행되며, 약 30-40분 정도 소요됩니다. 검사 완료 후 전문가가 결과를 분석하여 상담을 통해 맞춤형 성장 전략을 제시합니다.",
-			category: "PTI:CODE 검사"
-		},
-		{
-			question: "상담은 어디서 받을 수 있나요?",
-			answer: "온라인 화상 상담과 오프라인 대면 상담 모두 가능합니다. 고객의 편의에 따라 선택하실 수 있습니다.",
-			category: "상담 서비스"
-		},
-		{
-			question: "검사 결과는 언제 받을 수 있나요?",
-			answer: "검사 완료 후 3-5일 내에 결과를 제공하며, 상담을 통해 자세한 해석과 활용 방안을 안내드립니다.",
-			category: "PTI:CODE 검사"
-		},
-		{
-			question: "자격과정 수강 조건이 있나요?",
-			answer: "코치 과정은 누구나 수강 가능하며, 프로 과정은 코치 과정 이수자가, 마스터 과정은 프로 과정 이수자 중 선발됩니다.",
-			category: "자격과정"
-		},
-		{
-			question: "PTI:CODE 검사 비용은 얼마인가요?",
-			answer: "검사 비용은 대상별로 다르며, 상담과 함께 패키지로 제공됩니다. 정확한 비용은 상담을 통해 안내드립니다.",
-			category: "PTI:CODE 검사"
-		},
-		{
-			question: "검사 결과는 얼마나 정확한가요?",
-			answer: "PTI:CODE는 심리학적 이론을 바탕으로 개발된 검사로, 높은 신뢰도와 타당도를 가지고 있습니다. 다만 검사 결과는 참고용이며, 전문가 상담을 통해 해석하는 것이 중요합니다.",
-			category: "PTI:CODE 검사"
-		},
-		{
-			question: "온라인 상담과 오프라인 상담의 차이점은 무엇인가요?",
-			answer: "온라인 상담은 시간과 장소의 제약이 적어 편리하며, 오프라인 상담은 더 깊이 있는 상호작용이 가능합니다. 상담 내용과 효과는 동일합니다.",
-			category: "상담 서비스"
-		},
-		{
-			question: "자격과정 수료 후 어떤 혜택이 있나요?",
-			answer: "공식 자격증 발급, 전문가 네트워크 참여, 지속적인 교육 기회, 실무 현장에서의 지원 등 다양한 혜택을 제공합니다.",
-			category: "자격과정"
-		},
-		{
-			question: "개인정보는 안전하게 보호되나요?",
-			answer: "네, 개인정보보호법에 따라 개인정보를 안전하게 보호하고 있으며, 검사 결과와 상담 내용은 철저히 비밀로 유지됩니다.",
-			category: "전체"
-		},
-		{
-			question: "환불 정책은 어떻게 되나요?",
-			answer: "서비스 시작 전에는 전액 환불이 가능하며, 서비스 진행 중에는 진행 정도에 따라 부분 환불이 가능합니다. 자세한 내용은 이용약관을 참고해주세요.",
-			category: "결제/환불"
-		}
-	];
+	let faqs = $state([]);
+	let categories = $state([]);
 
 	// 카테고리별 및 검색어별 필터링된 FAQ 목록
 	const filteredFaqs = $derived(faqs.filter(faq => {
@@ -91,6 +43,24 @@
 		console.log(`FAQ "${faq.question}" - 카테고리: ${categoryMatch}, 검색: ${searchMatch}, 결과: ${result}`);
 		return result;
 	}));
+
+	async function loadFaqs() {
+		const r = await ___prj.api.post('/s/system', 'get.faq.list', null, {
+			category: selectedCategory,
+			search: searchTerm
+		});
+
+		if (r.data.result === ___const.OK) {
+			faqs = r.data.content;
+			categories = faqs.map(faq => faq.category).filter((category, index, self) => self.indexOf(category) === index);
+			categories.unshift('전체');
+			console.log('categories',$state.snapshot(categories));
+		}
+	}
+
+	onMount(() => {
+		loadFaqs();
+	});
 </script>
 
 <svelte:head>
@@ -137,11 +107,9 @@
 	<section class="faq-categories">
 		<div class="container">
 		<div class="categories-nav">
-			<button class="category-btn" class:active={selectedCategory === '전체'} onclick={() => selectCategory('전체')}>전체</button>
-			<button class="category-btn" class:active={selectedCategory === 'PTI:CODE 검사'} onclick={() => selectCategory('PTI:CODE 검사')}>PTI:CODE 검사</button>
-			<button class="category-btn" class:active={selectedCategory === '상담 서비스'} onclick={() => selectCategory('상담 서비스')}>상담 서비스</button>
-			<button class="category-btn" class:active={selectedCategory === '자격과정'} onclick={() => selectCategory('자격과정')}>자격과정</button>
-			<button class="category-btn" class:active={selectedCategory === '결제/환불'} onclick={() => selectCategory('결제/환불')}>결제/환불</button>
+			{#each categories as category}
+				<button class="category-btn" class:active={selectedCategory === category} onclick={() => selectCategory(category)}>{category}</button>
+			{/each}
 		</div>
 		</div>
 	</section>
@@ -158,12 +126,21 @@
 				</div>
 			{:else}
 				{#each filteredFaqs as faq, index}
-					<div class="faq-item">
+					<div class="faq-item" class:faq-hidden={faq.is_active === 0}>
 						<button class="faq-question" onclick={() => toggleFaq(index)}>
 							<h3>{faq.question}</h3>
 							<span class="faq-icon" class:active={openFaq === index}>
-								{openFaq === index ? '−' : '+'}
+								{openFaq === index ? '➖' : '➕'}
 							</span>
+							{#if ___prj.isAdmin}
+								{#if faq.is_active === 0}
+									<span class="text-red-500 p-1 text-xs">비활성 상태</span>
+								{/if}
+								<!-- svelte-ignore node_invalid_placement_ssr -->
+								<button class="edit-faq-btn ml-2" onclick={() => goto(`/admin/faq/edit/${faq.no}`)}>
+									<span class="btn-icon rounded-full text-xs">✏️수정</span>
+								</button>
+							{/if}
 						</button>
 						{#if openFaq === index}
 							<div class="faq-answer">
@@ -344,6 +321,15 @@
 		border: 1px solid #e9ecef;
 	}
 
+	.faq-hidden {
+		background: #f8f9fa;
+		margin-bottom: 15px;
+		border-radius: 12px;
+		overflow: hidden;
+		box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5);
+		border: 1px solid #ff0000;
+	}
+
 	.faq-question {
 		width: 100%;
 		padding: 25px 30px;
@@ -373,8 +359,8 @@
 	.faq-icon {
 		width: 30px;
 		height: 30px;
-		background: #17a2b8;
-		color: #fff;
+		/* background: #17a2b8; */
+		/* color: #fff; */
 		border-radius: 50%;
 		display: flex;
 		align-items: center;
@@ -386,7 +372,7 @@
 	}
 
 	.faq-icon.active {
-		background: #dc3545;
+		/* background: #dc3545; */
 		transform: rotate(180deg);
 	}
 

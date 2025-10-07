@@ -126,14 +126,14 @@
 					서비스 업데이트, 교육 과정, 정책 변경 등<br>
 					중요한 소식을 전해드립니다.
 				</p>
-				{#if ___prj.isAdmin}
+				<!-- {#if ___prj.isAdmin}
 					<div class="admin-actions">
 						<button class="write-notice-btn" onclick={handleWriteNotice}>
 							<span class="btn-icon">✏️</span>
 							공지사항 작성
 						</button>
 					</div>
-				{/if}
+				{/if} -->
 			</div>
 		</div>
 	</section>
