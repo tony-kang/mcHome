@@ -139,13 +139,6 @@
 <style>
     .faq-edit-page { margin-top: 70px; min-height: calc(100vh - 70px); background: #f8f9fa; }
 
-    .breadcrumb-section { padding: 20px 0; background: #fff; border-bottom: 1px solid #e9ecef; }
-    .breadcrumb { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: #666; }
-    .breadcrumb a { color: #666; text-decoration: none; transition: color 0.3s ease; }
-    .breadcrumb a:hover { color: #28a745; }
-    .separator { color: #ccc; }
-    .current { color: #333; font-weight: 500; }
-
     .faq-edit-section { padding: 40px 0; }
     .edit-form-container { background: #fff; border-radius: 12px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
     .edit-form-container h1 { font-size: 2rem; font-weight: 700; color: #333; margin: 0 0 30px 0; text-align: center; }

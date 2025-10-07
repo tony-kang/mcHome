@@ -104,7 +104,7 @@
                 <span class="nav-icon">📈</span>
                 <span>트래픽 통계</span>
             </button>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/s/popup')}>
+            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/popup')}>
                 <span class="nav-icon">🎊</span>
                 <span>팝업관리</span>
             </button>

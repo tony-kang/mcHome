@@ -376,8 +376,8 @@
 	.nav-list a {
 		text-decoration: none;
 		color: #333;
-		font-weight: 500;
-		font-size: 16px;
+		font-weight: 600;
+		font-size: 18px;
 		transition: color 0.3s ease;
 	}
 

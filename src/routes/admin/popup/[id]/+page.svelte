@@ -7,14 +7,15 @@
 	import ___prj from '$prj/prjMain';
 	import ___const from '$prj/lib/i_const';
 	import { ___formatDate, ___decodeHtml } from '$prj/lib/i_telepasi';
+	import AdminPageHeader from '$prj/C/admin/AdminPageHeader.svelte';
 
 	// URL에서 ID 가져오기
-	const noticeId = parseInt($page.params.id || 0);
+    const noticeId = parseInt($page.params.id || 0);
 	
 
 	let notice = $state(null);
 	let viewTimer = null;
-	const bbsId = 'notice';
+    const bbsId = 'popup';
 	const postId = noticeId;
 
 	onMount(async () => {
@@ -50,32 +51,16 @@
 </script>
 
 <svelte:head>
-	<title>{notice ? notice.title : '공지사항'} - 마인드코딩</title>
-	<meta name="description" content={notice ? notice.content.replace(/<[^>]*>/g, '').substring(0, 150) : '마인드코딩 공지사항'} />
+    <title>{notice ? notice.title : '시스템 팝업'} - 마인드코딩</title>
+    <meta name="description" content={notice ? notice.content.replace(/<[^>]*>/g, '').substring(0, 150) : '마인드코딩 시스템 팝업'} />
 </svelte:head>
-
-<Header />
 
 <main class="notice-detail-page">
 	{#if notice}
-		<!-- Breadcrumb -->
-		<section class="breadcrumb-section">
-			<div class="container">
-				<nav class="breadcrumb">
-					<a href="/">홈</a>
-					<span class="separator">></span>
-					<a href="/community">커뮤니티</a>
-					<span class="separator">></span>
-					<a href="/notice">공지사항</a>
-					<span class="separator">></span>
-					<span class="current">상세보기</span>
-				</nav>
-			</div>
-		</section>
-
 		<!-- Notice Detail -->
 		<section class="notice-detail-section">
 			<div class="container">
+				<AdminPageHeader title="시스템 팝업 상세" />
 				<article class="notice-detail">
 					<!-- Notice Header -->
 					<header class="notice-header">
@@ -101,7 +86,7 @@
 								</div>
 							</div>
 							{#if ___prj.isAdmin}
-								<a href="/admin/notice/edit/{notice.id}" class="edit-btn">
+                                <a href="/admin/popup/edit/{notice.id}" class="edit-btn">
 									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 										<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -120,7 +105,7 @@
 					<!-- Notice Footer -->
 					<footer class="notice-footer">
 						<div class="notice-actions">
-							<a href="/notice" class="btn-secondary">목록으로</a>
+                            <a href="/admin/popup" class="btn-secondary">목록으로</a>
 							<!-- <button class="btn-primary" onclick={() => window.print()}>인쇄</button> -->
 						</div>
 					</footer>
@@ -132,27 +117,16 @@
 		<section class="not-found-section">
 			<div class="container">
 				<div class="not-found-content">
-					<h1>공지사항을 찾을 수 없습니다</h1>
-					<p>요청하신 공지사항이 존재하지 않거나 삭제되었습니다.</p>
-					<a href="/notice" class="btn-primary">공지사항 목록으로</a>
+                    <h1>시스템 팝업을 찾을 수 없습니다</h1>
+                    <p>요청하신 팝업이 존재하지 않거나 삭제되었습니다.</p>
+                    <a href="/admin/popup" class="btn-primary">팝업 목록으로</a>
 				</div>
 			</div>
 		</section>
 	{/if}
 </main>
 
-<Footer />
-
 <style>
-	.notice-detail-page {
-		margin-top: var(--header-height, 100px);
-	}
-
-	.notice-detail-section {
-		padding: 60px 0;
-		background: #fff;
-	}
-
 	.notice-detail {
 		background: #fff;
 		border: 1px solid #e9ecef;

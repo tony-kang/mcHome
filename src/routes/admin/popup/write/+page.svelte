@@ -5,15 +5,15 @@
 </script>
 
 <svelte:head>
-	<title>공지사항 작성 - 마인드코딩</title>
-	<meta name="description" content="마인드코딩 공지사항 작성 페이지" />
+	<title>시스템 팝업 작성 - 마인드코딩</title>
+	<meta name="description" content="마인드코딩 시스템 팝업 작성 페이지" />
 </svelte:head>
 
-<main class="notice-write-page">
+<main class="popup-write-page">
 	<div class="container">
-		<AdminPageHeader title="공지사항 작성" />
+		<AdminPageHeader title="시스템 팝업 작성" />
 		<div class="write-form-container">
-            <AdminBbsEditor bbsId="notice" postId={0} redirectTo="/notice" title="공지사항 작성" />
+            <AdminBbsEditor bbsId="popup" postId={0} redirectTo="/admin/popup" title="시스템 팝업 작성" />
 		</div>
 	</div>
 </main>

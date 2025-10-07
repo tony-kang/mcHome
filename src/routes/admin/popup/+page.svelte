@@ -1,13 +1,12 @@
 <script>
-	import Header from '$lib/components/Header.svelte';
-	import Footer from '$lib/components/Footer.svelte';
-	import ___const from "$prj/lib/i_const";
-	import ___prjConst from '$prj/prjConst';
-	import ___prj from '$prj/prjMain';
-	import { goto } from '$app/navigation';
-	import { ___decodeHtml, ___formatDate } from '$prj/lib/i_telepasi';
-
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import ___const from "$prj/lib/i_const";
+	import ___prj from '$prj/prjMain';
+	import ___prjConst from '$prj/prjConst';
+	import { ___decodeHtml, ___formatDate } from '$prj/lib/i_telepasi';
+	import AdminPageHeader from '$prj/C/admin/AdminPageHeader.svelte';
+
 
 	let selectedCategory = $state('all');
 	let searchQuery = $state('');
@@ -87,17 +86,17 @@
 		currentPage = 1; // 카테고리 변경 시 첫 페이지로 이동
 	};
 
-	const handleWriteNotice = () => {
-		goto('/admin/notice/write');
-	};
+    const handleWriteNotice = () => {
+        goto('/admin/popup/write');
+    };
 
 	onMount(async () => {
-		const _para = {
+        const _para = {
 			sTitle: searchTitle,
 			sContent: searchContent,
 			page: 1,
 			pageSize: 30,
-			bbsId : 'notice'
+            bbsId : 'popup'
 		};
 		const _data = null;
 		const r = await ___prj.api.post(___const.API_BBS ,'get.post.list' ,_para ,_data);
@@ -109,44 +108,21 @@
 </script>
 
 <svelte:head>
-	<title>공지사항 - 마인드코딩</title>
-	<meta name="description" content="마인드코딩의 공지사항을 확인하세요. 서비스 업데이트, 교육 과정, 정책 변경 등 중요한 소식을 전해드립니다." />
+	<title>시스템 팝업 - 마인드코딩</title>
+	<meta name="description" content="마인드코딩의 시스템 팝업 목록입니다. 서비스 운영과 관련된 안내 팝업을 관리합니다." />
 </svelte:head>
 
-<Header />
-
-<main class="notice-page">
-	<!-- Hero Section -->
-	<section class="hero-section">
-		<div class="container">
-			<div class="hero-content">
-				<h1 class="hero-title">공지사항</h1>
-				<p class="hero-subtitle">마인드코딩 소식</p>
-				<p class="hero-description">
-					서비스 업데이트, 교육 과정, 정책 변경 등<br>
-					중요한 소식을 전해드립니다.
-				</p>
-				{#if ___prj.isAdmin}
-					<div class="admin-actions">
-						<button class="write-notice-btn" onclick={handleWriteNotice}>
-							<span class="btn-icon">✏️</span>
-							공지사항 작성
-						</button>
-					</div>
-				{/if}
-			</div>
-		</div>
-	</section>
-
+<main class="popup-page">
 	<!-- Search and Filter Section -->
 	<section class="search-filter-section">
 		<div class="container">
+			<AdminPageHeader title="시스템 팝업" />
 			<div class="search-filter-wrapper">
 				<!-- Search Box -->
 				<div class="search-box">
-					<input 
-						type="text" 
-						placeholder="공지사항을 검색하세요..." 
+						<input 
+							type="text" 
+							placeholder="팝업을 검색하세요..." 
 						bind:value={searchQuery}
 						onkeydown={(e) => e.key === 'Enter' && handleSearch()}
 					/>
@@ -172,31 +148,31 @@
 	<!-- Notice List Section -->
 	<section class="notice-list-section">
 		<div class="container">
-			<div class="notice-list">
+			<div class="popup-list">
 				{#if paginatedNotices.length > 0}
 					{#each paginatedNotices as notice}
-						<article class="notice-item" class:important={notice.important}>
-							<div class="notice-header">
-								<div class="notice-title-wrapper">
+					<article class="popup-item" class:important={notice.important}>
+						<div class="popup-header">
+							<div class="popup-title-wrapper">
 									{#if notice.important}
 										<span class="important-badge">중요</span>
 									{/if}
-									<h3 class="notice-title">
-										<a href="/notice/{notice.id}">{notice.title}</a>
+								<h3 class="popup-title">
+                                        <a href="/admin/popup/{notice.id}">{notice.title}</a>
 									</h3>
 								</div>
-								<div class="notice-meta">
+							<div class="popup-meta">
 									<span class="notice-date">{___formatDate(notice.reg_date)}</span>
 									<span class="notice-views">조회 {notice.view_cnt}</span>
 								</div>
 							</div>
-							<!-- <div class="notice-content fr-view">
+						<!-- <div class="popup-content fr-view">
 								<p>{@html ___decodeHtml(notice.content)}</p>
 							</div> -->
 						</article>
 					{/each}
 				{:else}
-					<div class="no-results">
+		<div class="no-results">
 						<p>검색 결과가 없습니다.</p>
 					</div>
 				{/if}
@@ -236,73 +212,7 @@
 	</section>
 </main>
 
-<Footer />
-
 <style>
-	.notice-page {
-		margin-top: var(--header-height, 100px);
-	}
-
-	.hero-section {
-		background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-		color: #fff;
-		padding: 100px 0;
-		text-align: center;
-	}
-
-
-	.hero-title {
-		font-size: 3.5rem;
-		font-weight: 700;
-		margin: 0 0 10px 0;
-	}
-
-	.hero-subtitle {
-		font-size: 1.5rem;
-		font-weight: 300;
-		margin: 0 0 30px 0;
-		opacity: 0.9;
-	}
-
-	.hero-description {
-		font-size: 1.2rem;
-		line-height: 1.8;
-		max-width: 600px;
-		margin: 0 auto;
-		opacity: 0.95;
-	}
-
-	.admin-actions {
-		margin-top: 30px;
-	}
-
-	.write-notice-btn {
-		background: rgba(255, 255, 255, 0.2);
-		color: white;
-		border: 2px solid rgba(255, 255, 255, 0.3);
-		padding: 15px 30px;
-		border-radius: 50px;
-		font-size: 1rem;
-		font-weight: 600;
-		cursor: pointer;
-		transition: all 0.3s ease;
-		display: inline-flex;
-		align-items: center;
-		gap: 10px;
-		backdrop-filter: blur(10px);
-	}
-
-	.write-notice-btn:hover {
-		background: rgba(255, 255, 255, 0.3);
-		border-color: rgba(255, 255, 255, 0.5);
-		transform: translateY(-2px);
-		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-	}
-
-	.btn-icon {
-		font-size: 1.1rem;
-	}
-
 	.search-filter-section {
 		padding: 40px 0;
 		background: #f8f9fa;
@@ -381,19 +291,14 @@
 		border-color: #28a745;
 	}
 
-	.notice-list-section {
-		padding: 60px 0;
-		background: #fff;
-	}
-
-	.notice-list {
+	.popup-list {
 		display: flex;
 		flex-direction: column;
 		gap: 20px;
 		margin-bottom: 50px;
 	}
 
-	.notice-item {
+	.popup-item {
 		background: #fff;
 		border: 1px solid #e9ecef;
 		border-radius: 12px;
@@ -402,24 +307,24 @@
 		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 	}
 
-	.notice-item:hover {
+	.popup-item:hover {
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 		transform: translateY(-2px);
 	}
 
-	.notice-item.important {
+	.popup-item.important {
 		border-left: 4px solid #dc3545;
 		background: #fff5f5;
 	}
 
-	.notice-header {
+	.popup-header {
 		display: flex;
 		justify-content: space-between;
 		align-items: flex-start;
 		margin-bottom: 15px;
 	}
 
-	.notice-title-wrapper {
+	.popup-title-wrapper {
 		display: flex;
 		align-items: center;
 		gap: 15px;
@@ -436,12 +341,12 @@
 		white-space: nowrap;
 	}
 
-	.notice-title {
+	.popup-title {
 		margin: 0;
 		flex: 1;
 	}
 
-	.notice-title a {
+	.popup-title a {
 		color: #333;
 		text-decoration: none;
 		font-size: 1.3rem;
@@ -449,11 +354,11 @@
 		transition: color 0.3s ease;
 	}
 
-	.notice-title a:hover {
+	.popup-title a:hover {
 		color: #28a745;
 	}
 
-	.notice-meta {
+	.popup-meta {
 		display: flex;
 		flex-direction: column;
 		align-items: flex-end;
@@ -463,12 +368,12 @@
 		white-space: nowrap;
 	}
 
-	.notice-content {
+	.popup-content {
 		color: #555;
 		line-height: 1.6;
 	}
 
-	.notice-content p {
+	.popup-content p {
 		margin: 0;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;

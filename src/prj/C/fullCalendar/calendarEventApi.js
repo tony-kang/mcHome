@@ -13,7 +13,7 @@ export async function ___getCalendarEvent(info) {
         // const events = response.data;
         
         // events 배열이 성공적으로 로드되면,
-        console.log('달력 데이타 API로 불러오기');
+        console.log('달력 데이타 API로 조회하기');
         return [ ...sampleEvent ];
     } catch (error) {
         // error.response는 서버의 응답입니다. 

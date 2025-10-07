@@ -268,7 +268,7 @@
 								onclick={loadInquiries}
 								disabled={loading}
 							>
-								{loading ? '조회 중...' : '문의사항 불러오기'}
+								{loading ? '조회 중...' : '문의사항 조회하기'}
 							</button>
 						</div>
 					</div>

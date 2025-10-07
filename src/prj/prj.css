@@ -48,7 +48,7 @@ img {
 /* Utility Classes */
 .container {
 	max-width: 1200px;
-	margin: 0 auto;
+	margin: 10px auto;
 	padding: 0 20px;
 }
 
@@ -243,6 +243,13 @@ a:focus {
     /* 선택적으로 정렬 보정 */
     vertical-align: middle;
 }
+
+.breadcrumb-section {	padding: 20px 0;		background: #f8f9fa;	border-bottom: 1px solid #e9ecef; }
+.breadcrumb {	display: flex;	align-items: center;	gap: 10px;	font-size: 0.9rem;	color: #666; }
+.breadcrumb a {	color: #666;	text-decoration: none;	transition: color 0.3s ease; }
+.breadcrumb a:hover {	color: #28a745; }
+.separator {	color: #ccc; }
+.current {	color: #333;	font-weight: 500; }
 
 /** ============================== Responsive ============================== */
 
