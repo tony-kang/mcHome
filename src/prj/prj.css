@@ -228,13 +228,20 @@ a:focus {
 	background: #a8a8a8;
 }
 /** ============================== Special ============================== */
-.telepasi-form input, .telepasi-form select {
+.telepasi-form input:not([type="checkbox"]):not([type="radio"]), .telepasi-form select {
     height: 50px;
     color: #0000ff;
 }
 
 .telepasi-form textarea {
     color: #0000ff;
+}
+
+.telepasi-form input[type="checkbox"], .telepasi-form input[type="radio"] {
+    transform: scale(1.5);
+    transform-origin: left center;
+    /* 선택적으로 정렬 보정 */
+    vertical-align: middle;
 }
 
 /** ============================== Responsive ============================== */

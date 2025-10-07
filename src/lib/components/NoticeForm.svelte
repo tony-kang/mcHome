@@ -66,7 +66,7 @@
 </script>
 
 {#if noticeData}
-	<form onsubmit={handleSubmit}>
+	<form class="telepasi-form notice-form" onsubmit={handleSubmit}>
 		<!-- 제목 입력 -->
 		<div class="form-group">
 			<label for="title">제목 *</label>
@@ -90,12 +90,21 @@
 		</div>
 		
 		<!-- 중요 공지 체크박스 -->
-		<div class="form-group checkbox-group">
-			<label class="checkbox-label">
-				<input type="checkbox" bind:checked={noticeData.important} />
-				<span class="checkmark"></span>
-				중요 공지사항으로 설정
-			</label>
+		<div class="checkbox-group">
+			<input type="checkbox" id="important" bind:checked={noticeData.important} />
+			<label for="important" class="checkbox-label">중요 공지사항으로 설정</label>
+		</div>
+
+		<!-- 게시 기간 -->
+		<div class="form-row">
+			<div class="form-group small">
+				<label for="postStartDate" class="text-right">게시 시작일</label>
+				<input id="postStartDate" type="date" bind:value={noticeData.postStartDate} />
+			</div>
+			<div class="form-group small">
+				<label for="postEndDate" class="text-right">게시 종료일</label>
+				<input id="postEndDate" type="date" bind:value={noticeData.postEndDate} />
+			</div>
 		</div>
 		
 		<!-- 내용 입력 -->
@@ -134,6 +143,7 @@
 	}
 	
 	.form-group input[type="text"],
+	.form-group input[type="date"],
 	.form-group select {
 		width: 100%;
 		padding: 12px 16px;
@@ -144,28 +154,53 @@
 	}
 	
 	.form-group input[type="text"]:focus,
+	.form-group input[type="date"]:focus,
 	.form-group select:focus {
 		outline: none;
 		border-color: #28a745;
 		box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
 	}
+
+	.form-row {
+		display: flex;
+		gap: 12px;
+	}
+
+	.form-group.small {
+		flex: 1;
+	}
+
+	/* 날짜 두 필드를 한 라인에서 라벨-입력 가로 정렬 */
+	.form-row .form-group {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.form-row .form-group label {
+		margin-bottom: 0;
+		min-width: 100px;
+	}
+
+	.form-row .form-group input[type="date"] {
+		flex: 1;
+		width: auto;
+	}
 	
 	.checkbox-group {
 		display: flex;
 		align-items: center;
+		justify-content: flex-start;
+		gap: 10px;
+		margin-bottom: 25px;
 	}
 	
 	.checkbox-label {
-		display: flex;
-		align-items: center;
+		margin-top: 1px;
 		cursor: pointer;
 		font-weight: 500;
 		color: #333;
-	}
-	
-	.checkbox-label input[type="checkbox"] {
-		margin-right: 10px;
-		transform: scale(1.2);
 	}
 	
 	.form-actions {
@@ -217,6 +252,10 @@
 	
 	/* Responsive Design */
 	@media (max-width: 768px) {
+		.form-row { flex-direction: column; }
+		.form-row .form-group { flex-direction: column; align-items: stretch; }
+		.form-row .form-group label { margin-bottom: 8px; min-width: 0; }
+		.form-row .form-group input[type="date"] { width: 100%; flex: initial; }
 		.form-actions {
 			flex-direction: column;
 		}
