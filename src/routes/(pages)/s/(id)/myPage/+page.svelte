@@ -5,8 +5,7 @@
 	import ___localStorage from '$prj/lib/i_localStorage';
 	import { g_logedIn, g_theme } from '$prj/prjStore';
     import PasswordChange from './PasswordChange.svelte';
-    import AdminSidebar from '$lib/components/AdminSidebar.svelte';
-    import PartnerSidebar from '$lib/components/PartnerSidebar.svelte';
+    import AdminPageHeader from '$src/prj/C/admin/AdminPageHeader.svelte';
     import ___encDec from '$prj/lib/i_encDec';
     import { toastAlert } from '$prj/lib/i_alert';
     import { goto } from '$app/navigation';
@@ -50,71 +49,68 @@
 </script>
 
 {#if isLoaded && userInfo}
-    <!-- 관리자 사이드바 컴포넌트 -->
-    {#if ___prj.isAdmin}
-        <AdminSidebar bind:isOpen={sidebarOpen} />
-    {:else if (userInfo.userType === 3) }
-        <PartnerSidebar bind:isOpen={sidebarOpen} />
+    {#if ___prj.isAdmin || (userInfo && userInfo.userType === 3) }
+        <div class="my-page-container">
+            <AdminPageHeader title="사용자 정보" />
+            <!-- 헤더 섹션 -->
+            <div class="partner-info-card">
+                <div class="card-header">
+                    <div class="header-left">
+                        <div class="card-icon">👋</div>
+                        <div>
+                            <h2>안녕하세요, {userInfo.loginUserName || userInfo.nickname || '사용자'}님!</h2>
+                            <p class="welcome-subtitle">마인드코딩에 오신 것을 환영합니다</p>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <button class="btn-password-change" onclick={togglePasswordChange}>
+                            <span class="btn-icon">🔐</span>
+                            비밀번호 변경
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 사용자 정보 카드 -->
+            <div class="user-info-card">
+                <div class="card-header">
+                    <div class="header-left">
+                        <div class="card-icon">👤</div>
+                        <h2>사용자 정보</h2>
+                    </div>
+                </div>
+                <div class="user-info-grid">
+                    <div class="info-item">
+                        <div class="info-icon">🏷️</div>
+                        <div class="info-content">
+                            <span class="info-label">사용자명</span>
+                            <span class="info-value">{userInfo.loginUserName || userInfo.nickname || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📧</div>
+                        <div class="info-content">
+                            <span class="info-label">이메일</span>
+                            <span class="info-value">{userInfo.userEmail || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">🎯</div>
+                        <div class="info-content">
+                            <span class="info-label">사용자 타입</span>
+                            <span class="info-value user-type-badge user-type-{userInfo.userType}">
+                                {getUserTypeLabel(userInfo.userType) || 'N/A'}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {#if showPasswordChange}
+                <PasswordChange onClose={() => showPasswordChange = false} />
+            {/if}
+        </div>
     {/if}
-    <div class="my-page-container">
-        <!-- 헤더 섹션 -->
-        <div class="partner-info-card">
-            <div class="card-header">
-                <div class="header-left">
-                    <div class="card-icon">👋</div>
-                    <div>
-                        <h2>안녕하세요, {userInfo.loginUserName || userInfo.nickname || '사용자'}님!</h2>
-                        <p class="welcome-subtitle">마인드코딩에 오신 것을 환영합니다</p>
-                    </div>
-                </div>
-                <div class="header-right flex items-center justify-center gap-2">
-                    <button class="btn-password-change" onclick={togglePasswordChange}>
-                        <span class="btn-icon">🔐</span>
-                        비밀번호 변경
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 사용자 정보 카드 -->
-        <div class="user-info-card">
-            <div class="card-header">
-                <div class="header-left">
-                    <div class="card-icon">👤</div>
-                    <h2>사용자 정보</h2>
-                </div>
-            </div>
-            <div class="user-info-grid">
-                <div class="info-item">
-                    <div class="info-icon">🏷️</div>
-                    <div class="info-content">
-                        <span class="info-label">사용자명</span>
-                        <span class="info-value">{userInfo.loginUserName || userInfo.nickname || 'N/A'}</span>
-                    </div>
-                </div>
-                <div class="info-item">
-                    <div class="info-icon">📧</div>
-                    <div class="info-content">
-                        <span class="info-label">이메일</span>
-                        <span class="info-value">{userInfo.userEmail || 'N/A'}</span>
-                    </div>
-                </div>
-                <div class="info-item">
-                    <div class="info-icon">🎯</div>
-                    <div class="info-content">
-                        <span class="info-label">사용자 타입</span>
-                        <span class="info-value user-type-badge user-type-{userInfo.userType}">
-                            {getUserTypeLabel(userInfo.userType) || 'N/A'}
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {#if showPasswordChange}
-            <PasswordChange onClose={() => showPasswordChange = false} />
-        {/if}
-    </div>
 {:else if !isLoaded}
     <!-- 로딩 중 -->
     <div class="loading-container">
@@ -223,6 +219,7 @@
     }
 
     .header-right {
+        margin-left: auto;
         display: flex;
         align-items: center;
     }

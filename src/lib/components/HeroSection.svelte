@@ -102,11 +102,11 @@
 </section>
 
 <style>
-	.hero-section {
+    .hero-section {
 		position: relative;
 		height: 70vh;
 		overflow: hidden;
-		margin-top: 70px; /* Header height */
+        margin-top: var(--header-height, 100px); /* Header height synced */
 	}
 
 	.hero-slider {

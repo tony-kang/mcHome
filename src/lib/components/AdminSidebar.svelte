@@ -32,7 +32,7 @@
             <path class="line line-3" d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     </div>
-    <span class="admin-label">관리자</span>
+    <!-- <span class="admin-label">관리자</span> -->
 </button>
 
 <!-- 사이드바 오버레이 -->
@@ -59,22 +59,14 @@
 
     <nav class="sidebar-nav">
         <div class="nav-section">
-            <h4 class="nav-section-title">사용자 관리</h4>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/users')}>
-                <span class="nav-icon">👥</span>
-                <span>사용자 목록</span>
-            </button>
-            <button class="nav-item" onclick={() => navigateToAdminPage('/admin/counselors')}>
-                <span class="nav-icon">👨‍⚕️</span>
-                <span>상담사 관리</span>
-            </button>
+            <h4 class="nav-section-title">파트너 관리</h4>
             <button class="nav-item" onclick={() => navigateToAdminPage('/admin/partners')}>
                 <span class="nav-icon">🤝</span>
                 <span>파트너 관리</span>
             </button>
         </div>
 
-        <div class="nav-section">
+        <!-- <div class="nav-section">
             <h4 class="nav-section-title">콘텐츠 관리</h4>
             <button class="nav-item" onclick={() => navigateToAdminPage('/admin/notice')}>
                 <span class="nav-icon">📢</span>
@@ -88,9 +80,9 @@
                 <span class="nav-icon">❓</span>
                 <span>FAQ 관리</span>
             </button>
-        </div>
+        </div> -->
 
-        <div class="nav-section">
+        <!-- <div class="nav-section">
             <h4 class="nav-section-title">상담 관리</h4>
             <button class="nav-item" onclick={() => navigateToAdminPage('/admin/counseling/sessions')}>
                 <span class="nav-icon">💬</span>
@@ -104,7 +96,7 @@
                 <span class="nav-icon">📊</span>
                 <span>상담 리포트</span>
             </button>
-        </div>
+        </div> -->
 
         <div class="nav-section">
             <h4 class="nav-section-title">시스템</h4>
@@ -119,9 +111,9 @@
 <style>
     /* 관리자 사이드바 스타일 */
     .admin-sidebar-toggle {
-        position: fixed;
+        /* position: fixed;
         top: 20px;
-        left: 20px;
+        left: 20px; */
         z-index: 1001;
         background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
         color: white;
@@ -197,8 +189,8 @@
     .admin-sidebar {
         position: fixed;
         top: 0;
-        left: -350px;
-        width: 350px;
+        left: -250px;
+        width: 250px;
         height: 100vh;
         background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
         z-index: 1003;

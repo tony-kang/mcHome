@@ -2,7 +2,9 @@
     import { goto } from '$app/navigation';
     import ___prj from '$prj/prjMain';
 
-    let { isOpen = $bindable(false) } = $props();
+    let { 
+        isOpen = $bindable(false)
+    } = $props();
 
     function toggleSidebar() {
         isOpen = !isOpen;
@@ -32,7 +34,7 @@
             <path class="line line-3" d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     </div>
-    <span class="admin-label">파트너</span>
+    <!-- <span class="admin-label">파트너</span> -->
 </button>
 
 <!-- 사이드바 오버레이 -->
@@ -91,14 +93,15 @@
 <style>
     /* 파트너 사이드바 스타일 */
     .partner-sidebar-toggle {
-        position: fixed;
-        top: 20px;
+        /* position: fixed;
+        top: calc(var(--header-height, 100px) + 60px);
         left: 20px;
-        z-index: 1001;
+        z-index: 1001; */
         background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
         color: white;
         border: none;
         border-radius: 50px;
+
         padding: 12px 20px;
         cursor: pointer;
         display: flex;
@@ -109,7 +112,7 @@
         font-weight: 600;
         font-size: 14px;
     }
-
+    
     .partner-sidebar-toggle:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4);
@@ -169,8 +172,8 @@
     .partner-sidebar {
         position: fixed;
         top: 0;
-        left: -350px;
-        width: 350px;
+        left: -250px;
+        width: 250px;
         height: 100vh;
         background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
         z-index: 1003;
@@ -309,10 +312,13 @@
         }
 
         .partner-sidebar-toggle {
-            top: 15px;
+            top: calc(var(--header-height, 100px) + 40px);
             left: 15px;
             padding: 10px 16px;
             font-size: 12px;
+        }
+        .partner-sidebar-toggle.inline {
+            top: auto; left: auto;
         }
 
         .admin-label {
@@ -350,9 +356,12 @@
         }
 
         .partner-sidebar-toggle {
-            top: 10px;
+            top: calc(var(--header-height, 100px) + 30px);
             left: 10px;
             padding: 8px 12px;
+        }
+        .partner-sidebar-toggle.inline {
+            top: auto; left: auto;
         }
     }
 </style>

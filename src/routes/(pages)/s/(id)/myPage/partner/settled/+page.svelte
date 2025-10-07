@@ -1,4 +1,5 @@
 <script>
+    import AdminPageHeader from '$src/prj/C/admin/AdminPageHeader.svelte';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import ___prj from '$prj/prjMain';
@@ -40,14 +41,8 @@
 </script>
 
 {#if (userInfo && userInfo.userType === 3) }
-    <PartnerSidebar bind:isOpen={sidebarOpen} />
-{/if}
 <div class="partner-container">
-	<div class="partner-page-header">
-		<div class="partner-header-content">
-			<h1 class="partner-title">정산 완료 내역</h1>
-		</div>
-	</div>
+    <AdminPageHeader title="정산 완료 내역" />
 
 	<div class="partner-section">
 		<h2 class="partner-section-title">정산 완료 목록</h2>
@@ -89,5 +84,4 @@
 		{/if}
 	</div>
 </div>
-
-<!-- 공통 CSS는 partner-common.css에서 import -->
+{/if}

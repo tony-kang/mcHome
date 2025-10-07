@@ -1,6 +1,8 @@
 <script>
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import ___prj from '$prj/prjMain';
+	import { goto } from '$app/navigation';
 	import ___prjConst from '$prj/prjConst';
 
 	let openFaq = $state(null);
@@ -109,6 +111,14 @@
 					마인드코딩 서비스에 대한<br>
 					궁금한 점을 해결해드립니다.
 				</p>
+				{#if ___prj.isAdmin}
+					<div class="admin-actions">
+						<button class="write-faq-btn" onclick={() => goto('/admin/faq/write')}>
+							<span class="btn-icon">✏️</span>
+							FAQ 작성
+						</button>
+					</div>
+				{/if}
 			</div>
 		</div>
 	</section>
@@ -116,10 +126,10 @@
 	<!-- Search Section -->
 	<section class="search-section">
 		<div class="container">
-		<div class="search-box">
-			<input type="text" placeholder="궁금한 내용을 검색해보세요..." bind:value={searchTerm} oninput={handleSearch} onkeydown={(e) => e.key === 'Enter' && handleSearch()} />
-			<button type="button" onclick={handleSearch}>검색</button>
-		</div>
+			<div class="search-box">
+				<input type="text" placeholder="궁금한 내용을 검색해보세요..." bind:value={searchTerm} oninput={handleSearch} onkeydown={(e) => e.key === 'Enter' && handleSearch()} />
+				<button type="button" onclick={handleSearch}>검색</button>
+			</div>
 		</div>
 	</section>
 
@@ -185,6 +195,29 @@
 <Footer />
 
 <style>
+	.write-faq-btn {
+		background: rgba(255, 255, 255, 0.2);
+		color: white;
+		border: 2px solid rgba(255, 255, 255, 0.3);
+		padding: 15px 30px;
+		border-radius: 50px;
+		font-size: 1rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		backdrop-filter: blur(10px);
+	}
+
+	.write-faq-btn:hover {
+		background: rgba(255, 255, 255, 0.3);
+		border-color: rgba(255, 255, 255, 0.5);
+		transform: translateY(-2px);
+		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+	}
+
 	.faq-page {
 		margin-top: 70px;
 	}

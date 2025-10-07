@@ -1,4 +1,5 @@
 <script>
+    import AdminPageHeader from '$src/prj/C/admin/AdminPageHeader.svelte';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import ___prj from '$prj/prjMain';
@@ -41,61 +42,52 @@
     });
 </script>
 
-{#if ___prj.isAdmin}
-    <AdminSidebar bind:isOpen={sidebarOpen} />
-{:else if (userInfo && userInfo.userType === 3) }
-    <PartnerSidebar bind:isOpen={sidebarOpen} />
-{/if}
-<div class="partner-container">
-	<div class="partner-page-header">
-		<div class="partner-header-content">
-			<h1 class="partner-title">파트너 트래픽 관리</h1>
+{#if ___prj.isAdmin || (userInfo && userInfo.userType === 3) }
+	<div class="partner-container">
+		<AdminPageHeader title="파트너 트래픽 관리" />
+
+		<div class="partner-section">
+			<h2 class="partner-section-title">트래픽 통계</h2>
+			{#if loading}
+				<div class="partner-loading">불러오는 중...</div>
+			{:else}
+				{#if list.length === 0}
+					<div class="partner-empty">트래픽 데이터가 없습니다.</div>
+				{:else}
+					<div class="partner-table-wrap">
+						<table class="partner-table">
+							<thead>
+								<tr>
+									<th class="text-center">날짜</th>
+									{#if ___prj.isAdmin}
+										<th class="text-center">파트너 아이디</th>
+										<th class="text-center">매체</th>
+									{/if}
+									<th class="text-right">방문 수</th>
+									<th class="text-right">방문자 수</th>
+									<th class="text-right">문의글 수</th>
+									<th class="text-right">수익</th>
+								</tr>
+							</thead>
+							<tbody>
+								{#each list as row}
+									<tr>
+										<td class="text-center">{row.visit_date.substring(0, 10) || '-'}</td>
+										{#if ___prj.isAdmin}
+											<td class="text-center">{row.partner_name || ''}</td>
+											<td class="text-center">{row.partner_media || ''}</td>
+										{/if}
+										<td class="text-right">{row.visit_cnt || 0}</td>
+										<td class="text-right">{row.visitor_cnt || 0}</td>
+										<td class="text-right">{row.inquiry_cnt || 0}</td>
+										<td class="text-right">{row.revenue || 0} 원</td>
+									</tr>
+								{/each}
+							</tbody>
+						</table>
+					</div>
+				{/if}
+			{/if}
 		</div>
 	</div>
-
-	<div class="partner-section">
-		<h2 class="partner-section-title">트래픽 통계</h2>
-		{#if loading}
-			<div class="partner-loading">불러오는 중...</div>
-		{:else}
-			{#if list.length === 0}
-				<div class="partner-empty">트래픽 데이터가 없습니다.</div>
-			{:else}
-				<div class="partner-table-wrap">
-					<table class="partner-table">
-						<thead>
-							<tr>
-								<th class="text-center">날짜</th>
-                                {#if ___prj.isAdmin}
-                                    <th class="text-center">파트너 아이디</th>
-                                    <th class="text-center">매체</th>
-                                {/if}
-								<th class="text-right">방문 수</th>
-								<th class="text-right">방문자 수</th>
-								<th class="text-right">문의글 수</th>
-								<th class="text-right">수익</th>
-							</tr>
-						</thead>
-						<tbody>
-							{#each list as row}
-								<tr>
-									<td class="text-center">{row.visit_date.substring(0, 10) || '-'}</td>
-                                    {#if ___prj.isAdmin}
-                                        <td class="text-center">{row.partner_name || ''}</td>
-                                        <td class="text-center">{row.partner_media || ''}</td>
-                                    {/if}
-									<td class="text-right">{row.visit_cnt || 0}</td>
-									<td class="text-right">{row.visitor_cnt || 0}</td>
-									<td class="text-right">{row.inquiry_cnt || 0}</td>
-									<td class="text-right">{row.revenue || 0} 원</td>
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-				</div>
-			{/if}
-		{/if}
-	</div>
-</div>
-
-<!-- 공통 CSS는 partner-common.css에서 import -->
+{/if}

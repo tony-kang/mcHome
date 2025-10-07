@@ -81,7 +81,7 @@
 </script>
 
 {#if partner && isLoaded}
-    <form onsubmit={handleSubmit} class="partner-form">
+    <form onsubmit={handleSubmit} class="telepasi-form partner-form">
         <div class="partner-grid">
             <div class="partner-form-group">
                 <label for="biz_name">파트너사명 *</label>

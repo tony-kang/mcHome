@@ -1,4 +1,5 @@
 <script>
+    import AdminPageHeader from '$src/prj/C/admin/AdminPageHeader.svelte';
     import { onMount } from 'svelte';
     import ___prj from '$prj/prjMain';
     import ___const from '$prj/lib/i_const';
@@ -38,19 +39,12 @@
 </script>
 
 {#if (userInfo && userInfo.userType === 3) }
-    <PartnerSidebar bind:isOpen={sidebarOpen} />
-{/if}
-<div class="partner-container">
-    <div class="partner-page-header">
-        <div class="partner-header-content">
-            <h1 class="partner-title">파트너 정보 관리</h1>
+    <div class="partner-container">
+        <AdminPageHeader title="파트너 정보 관리" />
+        <div>
+            {#if isLoaded}
+                <PartnerInfo {partnerInfo} />
+            {/if}
         </div>
     </div>
-    <div>
-        {#if isLoaded}
-            <PartnerInfo {partnerInfo} />
-        {/if}
-    </div>
-</div>
-
-<!-- 공통 CSS는 partner-common.css에서 import -->
+{/if}

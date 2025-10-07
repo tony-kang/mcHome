@@ -1,4 +1,18 @@
 <script>
+    let isShrunk = $state(false);
+
+    function onScroll() {
+        isShrunk = window.scrollY > 30;
+        document.documentElement.style.setProperty(
+            '--header-height',
+            isShrunk ? '70px' : '100px'
+        );
+    }
+
+    // 초기 헤더 높이 설정
+    $effect(() => {
+        document.documentElement.style.setProperty('--header-height', '100px');
+    });
 	import { g_logedIn } from '$prj/prjStore';
 	import ___prj from '$prj/prjMain';
 	import ___const from '$prj/lib/i_const';
@@ -77,7 +91,9 @@
 	};
 </script>
 
-<header class="header">
+<svelte:window onscroll={onScroll} />
+
+<header class={`header ${isShrunk ? 'shrink' : 'expanded'}`}>
 	<div class="container">
 		<div class="header-content">
 			<!-- Logo -->
@@ -329,16 +345,16 @@
 	}
 
 
-	.header-content {
+    .header-content {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		height: 70px;
+        height: var(--header-height, 100px);
 	}
 
-	.logo img {
-		height: 60px;
-	}
+    .logo img { height: 80px; transition: height .25s ease; }
+    .header.expanded .logo img { height: 80px; }
+    .header.shrink   .logo img { height: 60px; }
 
 	.desktop-nav {
 		display: flex;
