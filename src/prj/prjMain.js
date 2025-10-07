@@ -27,7 +27,7 @@ const ___prj = {
     //----------------------------------------------------------
     name: 'CODE',
     framework: 'SvelteKit 5.0.1',
-    version: '0.0.7',
+    version: '0.0.8',
     author: 'bluein007',
     authorEmail: 'bluein007@gmail.com',
 
