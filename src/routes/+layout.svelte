@@ -7,6 +7,7 @@
 	// import ___encDec from '$prj/lib/i_encDec';
 	import { g_logedIn, g_theme } from '$prj/prjStore';
 	import { SvelteToast } from '@zerodevx/svelte-toast';
+	import NoticePopupManager from '$src/lib/components/NoticePopupManager.svelte';
 	import favicon from '$lib/assets/favicon.svg';
 	import '../app.css';
 
@@ -49,13 +50,49 @@
 		}
 	}
 
+	function click_sidebarToggle() {
+		if (sideMenuType === 'popup') {
+			isSidebarOpen = true;
+		} else {
+			isSidebarOpen = !isSidebarOpen;
+		}
+	}
+
+	function close_popupSidebar() {
+		isSidebarOpen = false;
+	}
+
+	let popupCheck = false;
+	let popupList = $state([]);
+	async function getPopupList() {
+		const r = await ___prj.api.post('/s/system' ,'get.popup.list' ,null ,null);
+
+		if (r.data.result === ___const.OK) {
+			//console.log('getPopupList r.data = ', r.data);
+			popupList = r.data.content;
+		}
+	}
+
 	onMount(async () => {
 		await ___prj.init();
 		prjInit = true;
 
 		// URL 파라미터 처리
 		handleUrlParams();
+
+		// 팝업 목록 조회
+		if (!popupCheck) {
+			console.log('popupCheck', $page.url.pathname);
+			if ($page.url.pathname === '/') {
+				await getPopupList();
+				popupCheck = true;
+			}
+		}
 	});
+
+	function onClosePopup() {
+		popupContent = null;
+	}
 </script>
 
 <svelte:head>
@@ -85,6 +122,9 @@
 				</div>
 			</div>
 		</div>
+	{/if}
+	{#if popupList.length > 0}
+		<NoticePopupManager bind:popupList={popupList}	/>
 	{/if}
 	{@render children()}
 {/if}

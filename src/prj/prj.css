@@ -227,7 +227,111 @@ a:focus {
 ::-webkit-scrollbar-thumb:hover {
 	background: #a8a8a8;
 }
+
+:root {
+	--font-body: Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+		Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	--font-mono: 'Fira Mono', monospace;
+	font-family: var(--font-body);
+	color: var(--color-text);
+    /* 기본 색상 */
+    --text-color: #1a1a1a;
+    --bg-color: #ffffff;
+    
+    /* 상호작용 색상 */
+    --hover-bg: #d1d5db;
+    --hover-color: #111827;
+    --active-bg: #e5e7eb;
+    
+    /* 테두리와 그림자 */
+    --border-color: #d1d5db;
+    --border-color-hover: #9ca3af;
+    --border-focus-color: #3b82f6;
+    --shadow-color: rgba(0,0,0,0.1);
+    
+    /* 강조 색상 */
+    --accent-color: #3b82f6;
+    --accent-bg: #e5e7eb;
+    --accent-bg-hover: #d1d5db;
+    --accent-bg-active: #f87171;
+    --accent-bg-active-hover: #dc2626;
+    --accent-text: #1a1a1a;
+    
+    /* 테이블 전용 */
+    --table-head-text: #374151;
+    --table-head-bg: #e5e7eb;
+
+    /* 모달 전용 */
+    --overlay-bg: rgba(0, 0, 0, 0.5);
+    --header-bg: #f3f4f6;
+    --header-text: #111827;
+    --footer-bg: #f9fafb;
+    --button-bg: #ffffff;
+    --button-text: #374151;
+    --button-hover-bg: #f3f4f6;
+    --button-hover-text: #111827;
+
+	/* 모달 공통 */
+	--overlay-bg: rgba(0, 0, 0, 0.5);
+	--header-bg: #374151;
+	--header-text: #f3f4f6;
+	--footer-bg: #f9fafb;
+	
+	/* 버튼 스타일 */
+	--button-bg: #ffffff;
+	--button-text: #374151;
+	--button-hover-bg: #f3f4f6;
+	--button-hover-text: #111827;
+	
+	/* 테두리와 그림자 */
+	--border-color: #e5e7eb;
+	--shadow-color: rgba(69, 68, 68, 0.3);
+    --border-active-color: #f00;
+
+    /* 타이틀바 스타일 */
+    --title-bg-start: #2c5282;
+    --title-bg-end: #2a4365;
+    --title-text: #ffffff;
+    --title-border: #1a365d;
+    --title-close-hover: #e53e3e;
+    --title-close-hover-text: #ffffff;
+
+    /* 폼 구성 */
+    --bg-theme: #0f0;
+    --primary-bg: #3182ce;
+    --primary-text: #3182ce;
+    --primary-color: #3182ce;
+    --primary-hover: #2c5282;
+    --primary-hover-bg: #F00;
+    --input-bg: #f2ebeb;
+    --input-text: #1a202c;
+
+    /* 테이블 전용 */
+    --th-text: #1a1a1a;
+    --th-bg: #e5e7eb;
+    --th-border: #9ca3af;
+
+    --td-bg: #ffffff;
+    --td-border: #555;
+    --td-text: #374151;
+  }
+  
+  body {
+	margin: 0;
+    background-color: var(--bg-color);
+}
+
 /** ============================== Special ============================== */
+.backdrop {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+}
+
 .telepasi-form input:not([type="checkbox"]):not([type="radio"]), .telepasi-form select {
     height: 50px;
     color: #0000ff;
