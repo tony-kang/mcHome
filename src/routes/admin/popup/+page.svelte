@@ -148,6 +148,12 @@
 	<!-- Notice List Section -->
 	<section class="notice-list-section">
 		<div class="container">
+			<div class="flex justify-end">
+				<button class="write-popup-btn" onclick={handleWriteNotice}>
+					<span class="btn-icon">✏️</span>
+					팝업 작성
+				</button>
+			</div>
 			<div class="popup-list">
 				{#if paginatedNotices.length > 0}
 					{#each paginatedNotices as notice}
@@ -291,6 +297,23 @@
 		border-color: #28a745;
 	}
 
+	.write-popup-btn {
+		color: black;
+		border: 2px solid rgba(255, 255, 255, 0.3);
+		padding: 5px 20px;
+		margin-bottom: 10px;
+		border: 1px solid #e9ecef;
+		border-radius: 12px;
+		background: #0f0;
+	}
+	
+	.write-popup-btn:hover {
+		background: rgb(140, 214, 185);
+		border-color: rgba(255, 255, 255, 0.5);
+		transform: translateY(-2px);
+		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+	}
+
 	.popup-list {
 		display: flex;
 		flex-direction: column;
@@ -366,20 +389,6 @@
 		font-size: 0.9rem;
 		color: #666;
 		white-space: nowrap;
-	}
-
-	.popup-content {
-		color: #555;
-		line-height: 1.6;
-	}
-
-	.popup-content p {
-		margin: 0;
-		display: -webkit-box;
-		-webkit-line-clamp: 2;
-		line-clamp: 2;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
 	}
 
 	.no-results {
