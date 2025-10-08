@@ -22,7 +22,7 @@
 		const r = await ___prj.api.post(___const.API_BBS ,'get.post' ,{bbsId, postId} ,null);
 		if (r.data.result === ___const.OK) {
 			notice = r.data.content[0];
-			console.log('notice', $state.snapshot(notice));
+			// console.log('popup detail', $state.snapshot(notice));
 
 
 			// 게시물 진입 VIEW_COUNT_TIME ms후 조회수 증가
