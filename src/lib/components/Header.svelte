@@ -1,24 +1,20 @@
 <script>
-    let isShrunk = $state(false);
-
-    function onScroll() {
-        isShrunk = window.scrollY > 30;
-        document.documentElement.style.setProperty(
-            '--header-height',
-            isShrunk ? '70px' : '100px'
-        );
-    }
-
-    // 초기 헤더 높이 설정
-    $effect(() => {
-        document.documentElement.style.setProperty('--header-height', '100px');
-    });
 	import { g_logedIn } from '$prj/prjStore';
 	import ___prj from '$prj/prjMain';
 	import ___const from '$prj/lib/i_const';
 	import { ___toCurrency, ___isInArray } from '$prj/lib/i_telepasi';
 	import { base64Decode } from '$prj/lib/i_util';
 	import { goto } from '$app/navigation';
+
+    let isShrunk = $state(false);
+
+    function onScroll() {
+        isShrunk = window.scrollY > 30;
+        // document.documentElement.style.setProperty(
+        //     '--header-height',
+        //     isShrunk ? '70px' : '100px'
+        // );
+    }
 
 	let isMenuOpen = $state(false);
 	let isSubMenuOpen = $state(false);
@@ -873,7 +869,7 @@
 	}
 
 		/* Responsive Design */
-		@media (max-width: 480px) {
+	@media (max-width: 480px) {
 		.header.expanded .logo img { height: 55px; }
 		.header.shrink   .logo img { height: 40px; }
 	}

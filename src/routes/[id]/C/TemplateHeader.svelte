@@ -1,5 +1,7 @@
 <script>
-	import { page } from '$app/stores';
+
+import { page } from '$app/stores';
+import ___prj from '$prj/prjMain';
 	
 	let { counselorId } = $props();
 	
@@ -8,6 +10,7 @@
     function onScroll() {
         isShrunk = window.scrollY > 30;
     }
+
 	// 현재 경로에 따라 active 클래스 적용
 	const isActive = (path) => {
 		const currentPath = $page.url.pathname;
@@ -19,7 +22,7 @@
 </script>
 
 <svelte:window onscroll={onScroll} />
-<nav class="template-nav {isShrunk ? 'shrink' : 'expanded'}">
+<nav class="template-nav {isShrunk ? 'shrink' : 'expanded'} {___prj.screenSize}">
 	<div class="flex items-center justify-center gap-10 h-full">
 		<a href="/{counselorId}" class="nav-link" class:active={isActive(`/${counselorId}`)}>홈</a>
 		<a href="/{counselorId}/about" class="nav-link" class:active={isActive(`/${counselorId}/about`)}>소개</a>
@@ -33,7 +36,7 @@
 		background: white;
 		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 		position: fixed;
-		top: var(--header-height, 70px);
+		top: var(--header-height, 60px);
 		left: 0;
 		right: 0;
 		z-index: 90;
@@ -49,16 +52,34 @@
 		height: 65px;
 	}
 
+	/* 화면 크기별 스타일 */
+	.template-nav.tablet.shrink {
+		height: 40px;
+	}
+
+	.template-nav.tablet.expanded {
+		height: 55px;
+	}
+
+	.template-nav.mobile.shrink {
+		height: 35px;
+	}
+
+	.template-nav.mobile.expanded {
+		height: 50px;
+	}
+
 	.nav-link {
 		color: #333;
 		text-decoration: none;
 		font-weight: 600;
-		padding: 2px 20px;
+		padding: 2px 10px;
 		border-radius: 8px;
 		transition: all 0.3s ease;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		font-size: 1.2rem;
 	}
 
 	.nav-link:hover,
@@ -67,16 +88,22 @@
 		color: white;
 	}
 
-	/* Responsive */
-	@media (max-width: 768px) {
-		.nav-links {
-			gap: 10px;
-			flex-wrap: wrap;
-		}
+	/* 화면 크기별 네비게이션 링크 스타일 */
+	.template-nav.tablet .nav-link {
+		padding: 2px 15px;
+		font-size: 1rem;
+	}
 
-		.nav-link {
-			padding: 8px 15px;
-			font-size: 0.9rem;
-		}
+	.template-nav.tablet .flex {
+		gap: 8px;
+	}
+
+	.template-nav.mobile .nav-link {
+		padding: 2px 10px;
+		font-size: 1rem;
+	}
+
+	.template-nav.mobile .flex {
+		gap: 5px;
 	}
 </style>
