@@ -93,10 +93,6 @@
 <style>
     /* 파트너 사이드바 스타일 */
     .partner-sidebar-toggle {
-        /* position: fixed;
-        top: calc(var(--header-height, 100px) + 60px);
-        left: 20px;
-        z-index: 1001; */
         background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
         color: white;
         border: none;
@@ -317,13 +313,6 @@
             padding: 10px 16px;
             font-size: 12px;
         }
-        .partner-sidebar-toggle.inline {
-            top: auto; left: auto;
-        }
-
-        .admin-label {
-            display: none;
-        }
 
         .hamburger-icon svg {
             width: 18px;
@@ -359,9 +348,6 @@
             top: calc(var(--header-height, 100px) + 30px);
             left: 10px;
             padding: 8px 12px;
-        }
-        .partner-sidebar-toggle.inline {
-            top: auto; left: auto;
         }
     }
 </style>
