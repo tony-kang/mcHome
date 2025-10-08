@@ -59,6 +59,7 @@ const ___prj = {
     isLogedIn: false,
     isMobile: false,
     isMobileDevice: false,
+    deviceSize: '',
     async init() {
         if (!browser) return;
 
@@ -78,6 +79,11 @@ const ___prj = {
         };
 
         this.isMobile = window.innerWidth < 768;
+        const width = window.innerWidth;
+        if (width <= 480) { this.deviceSize = 'device480'; } 
+        else if (width <= 768) { this.deviceSize = 'device768'; }
+        // PC 는 필요 없음.
+
         this.isMobileDevice = isMobileDevice();
         this.landingDomain = this.window.host;
         this.protocol = this.window.protocol;
