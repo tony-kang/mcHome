@@ -7,13 +7,21 @@
 	import { goto } from '$app/navigation';
 
     let isShrunk = $state(false);
+	let headerHeight = $state('100px');
+
+	$effect(() => {
+		if (___prj.screenSize === 'screen768') {
+			headerHeight = isShrunk ? '80px' : '100px';
+		} else if (___prj.screenSize === 'screen480') {
+			headerHeight = isShrunk ? '60px' : '80px';
+		}
+
+        document.documentElement.style.setProperty('--header-height', headerHeight);
+		//console.log('onScroll--------',isShrunk, headerHeight);
+	});
 
     function onScroll() {
         isShrunk = window.scrollY > 30;
-        // document.documentElement.style.setProperty(
-        //     '--header-height',
-        //     isShrunk ? '70px' : '100px'
-        // );
     }
 
 	let isMenuOpen = $state(false);
@@ -864,7 +872,7 @@
 			height: 35px;
 		}
 
-		.header.expanded .logo img { height: 70px; }
+		.header.expanded .logo img { height: 60px; }
 		.header.shrink   .logo img { height: 50px; }
 	}
 

@@ -82,6 +82,8 @@ const ___prj = {
         const width = window.innerWidth;
         if (width <= 480) { this.screenSize = 'screen480'; } 
         else if (width <= 768) { this.screenSize = 'screen768'; }
+
+        //console.log('this.screenSize',this.screenSize);
         // PC 는 필요 없음.
 
         this.isMobileDevice = isMobileDevice();

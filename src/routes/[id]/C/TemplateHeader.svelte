@@ -6,6 +6,29 @@ import ___prj from '$prj/prjMain';
 	let { counselorId } = $props();
 	
 	let isShrunk = $state(false);
+	let templateNavTop = $state(100);
+
+	$effect(() => {
+		if (isShrunk) {
+			if (___prj.screenSize === 'screen768') {
+				templateNavTop = 60;
+			} else if (___prj.screenSize === 'screen480') {
+				templateNavTop = 60;
+			} else {
+				templateNavTop = 100;
+			}
+		} else {
+			if (___prj.screenSize === 'screen768') {
+				templateNavTop = 60;
+			} else if (___prj.screenSize === 'screen480') {
+				templateNavTop = 60;
+			} else {
+				templateNavTop = 100;
+			}
+		}
+
+		//console.log('onScroll----2----',isShrunk, templateNavTop);
+	});
 
     function onScroll() {
         isShrunk = window.scrollY > 30;
@@ -22,7 +45,7 @@ import ___prj from '$prj/prjMain';
 </script>
 
 <svelte:window onscroll={onScroll} />
-<nav class="template-nav {isShrunk ? 'shrink' : 'expanded'} {___prj.screenSize}">
+<nav class="template-nav {isShrunk ? 'shrink' : 'expanded'} {___prj.screenSize}" style:top={templateNavTop + 'px'}>
 	<div class="flex items-center justify-center gap-10 h-full">
 		<a href="/{counselorId}" class="nav-link" class:active={isActive(`/${counselorId}`)}>홈</a>
 		<a href="/{counselorId}/about" class="nav-link" class:active={isActive(`/${counselorId}/about`)}>소개</a>
@@ -36,7 +59,6 @@ import ___prj from '$prj/prjMain';
 		background: white;
 		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 		position: fixed;
-		top: var(--header-height, 60px);
 		left: 0;
 		right: 0;
 		z-index: 90;
