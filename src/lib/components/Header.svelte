@@ -860,7 +860,6 @@
 			display: block;
 		}
 
-
 		.header-content {
 			height: 60px;
 		}
@@ -868,5 +867,14 @@
 		.logo img {
 			height: 35px;
 		}
+
+		.header.expanded .logo img { height: 70px; }
+		.header.shrink   .logo img { height: 50px; }
+	}
+
+		/* Responsive Design */
+		@media (max-width: 480px) {
+		.header.expanded .logo img { height: 55px; }
+		.header.shrink   .logo img { height: 40px; }
 	}
 </style>

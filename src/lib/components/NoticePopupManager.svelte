@@ -89,10 +89,10 @@
 
 {#if showPopup}
     <div class="backdrop">
-        <div class="popup_layer" style="top:{mPos.y}px; left:{mPos.x}px; width: {pWidth}; height: {pHeight};">
+        <div class="popup_layer">
             <button class="btn_close text-red-500 text-xl" onclick={() => onClosePopup(popupId)}>닫기</button>
             <p class="popup_title border-b-2 border-gray-300 pb-2">{popupTitle}</p>
-            <div class="popup_cont">
+            <div class="popup_content">
                 <div class="fr-view">
                     {@html popupContent}
                 </div>
@@ -114,6 +114,11 @@
 		/* max-height: 90vh; */
 		overflow-y: auto;
         position: relative;
+        
+        margin: 0 auto;
+        width: 50%;
+        top: 50%;
+        transform: translateY(-50%);
 	}
 
     .popup_title {
@@ -128,7 +133,15 @@
         right: 20px;
     }
 
-    /* .popup_cont {
-        font-size: 1rem;
-    } */
+    @media (max-width: 768px) {
+        .popup_layer {
+            width: 50%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .popup_layer {
+            width: 90%;
+        }
+    }
 </style>
