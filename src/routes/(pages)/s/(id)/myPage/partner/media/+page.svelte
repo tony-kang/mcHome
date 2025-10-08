@@ -287,7 +287,9 @@
 								{/each}
 							</tbody>
 						</table>
-						<div class="text-md text-gray-500 bg-yellow-100 p-2 rounded-md text-center">파트너 URL을 복사해서 매체에 링크로 연결해 주세요.</div>
+						{#if !partnerUserId}
+							<div class="text-md text-gray-500 bg-yellow-100 p-2 rounded-md text-center">파트너 URL을 복사해서 매체에 링크로 연결해 주세요.</div>
+						{/if}
 					</div>
 				{/if}
 			{/if}
