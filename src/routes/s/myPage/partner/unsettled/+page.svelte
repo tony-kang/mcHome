@@ -9,7 +9,7 @@
 	import '../partner-common.css';
 
 	const apiName = '/s/partner';
-	const partnerUserId = parseInt($page.params.id || 0);
+	const partnerUserId = parseInt($page.url.searchParams.get('id') || 0);
 
     let userInfo = $state(null);
     let sidebarOpen = $state(false);

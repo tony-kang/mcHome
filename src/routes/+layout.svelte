@@ -12,6 +12,8 @@
 	import '../app.css';
 
 	let { children } = $props();
+
+	// const counselorId = parseInt($page.url.searchParams.get('cId') || 0);
 	let prjInit = $state(false);
 
 	// 테스트 모드 설정 (실제 서비스에서는 false로 변경)
