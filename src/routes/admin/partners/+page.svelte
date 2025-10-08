@@ -178,62 +178,6 @@
 </main>
 
 <style>
-	.partners-page {
-		margin-top: var(--header-height, 100px);
-		min-height: calc(100vh - var(--header-height, 100px));
-		background: #f8f9fa;
-	}
-
-	.partners-header {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		color: #fff;
-		padding: 60px 0;
-	}
-
-	.header-content {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-
-	.header-content h1 {
-		font-size: 2.5rem;
-		font-weight: 700;
-		margin: 0;
-	}
-
-	.add-partner-btn {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		padding: 12px 24px;
-		background: rgba(255, 255, 255, 0.2);
-		color: white;
-		border: 2px solid rgba(255, 255, 255, 0.3);
-		border-radius: 12px;
-		font-size: 1rem;
-		font-weight: 600;
-		cursor: pointer;
-		transition: all 0.3s ease;
-		backdrop-filter: blur(10px);
-	}
-
-	.add-partner-btn:hover {
-		background: rgba(255, 255, 255, 0.3);
-		transform: translateY(-2px);
-		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-	}
-
-	.btn-icon {
-		font-size: 1.2rem;
-	}
-
-	.search-section {
-		padding: 30px 0;
-		background: #fff;
-		border-bottom: 1px solid #e9ecef;
-	}
-
 	.search-box {
 		display: flex;
 		gap: 10px;

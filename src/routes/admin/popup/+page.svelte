@@ -438,23 +438,6 @@
 
 	/* Responsive Design */
 	@media (max-width: 768px) {
-		.hero-title {
-			font-size: 2.5rem;
-		}
-
-		.hero-subtitle {
-			font-size: 1.2rem;
-		}
-
-		.hero-description {
-			font-size: 1rem;
-		}
-
-		.write-notice-btn {
-			padding: 12px 24px;
-			font-size: 0.9rem;
-		}
-
 		.search-box {
 			flex-direction: column;
 		}
@@ -469,34 +452,8 @@
 			font-size: 0.9rem;
 		}
 
-		.notice-header {
-			flex-direction: column;
-			gap: 15px;
-		}
-
-		.notice-title-wrapper {
-			flex-direction: column;
-			align-items: flex-start;
-			gap: 10px;
-		}
-
-		.notice-meta {
-			align-items: flex-start;
-			flex-direction: row;
-			gap: 15px;
-		}
-
-		.notice-item {
-			padding: 20px;
-		}
-
-		.notice-title a {
-			font-size: 1.1rem;
-		}
-
 		.pagination {
 			flex-wrap: wrap;
 		}
-
 	}
 </style>
