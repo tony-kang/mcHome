@@ -160,23 +160,18 @@
 				initialized: () => {
 					editor.html.set(value);
 
-					// 실시간 입력 반응을 위한 input 이벤트 추가
-					editor.events.on('input', () => {
-						value = editor.html.get();
-						if (onChange) onChange(value);
-					});
-
 					editor.events.on('contentChanged', () => {
 						value = editor.html.get();
 						editor.events.trigger('valueUpdated');
 					});
 				},
+				
 				// 편집데이타가 변경되면 호출됩니다. 이곳에서 변경된 데이타를 처리할 수 있습니다. 
-				// valueUpdated: () => {
-				// 	//편집데이타 trigger
-				// 	console.log('Value updated:', value);
-				// 	if (onChange) onChange(value);
-				// },
+				valueUpdated: () => {
+					//편집데이타 trigger
+					// console.log('froala Value updated:', value);
+					if (onChange) onChange(value);
+				},
 				linkOpen: function (link) {
 					console.log('Link opened:', link);
 				},
