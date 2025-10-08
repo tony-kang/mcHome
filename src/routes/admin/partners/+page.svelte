@@ -1,11 +1,10 @@
 <script>
 	import { onMount } from 'svelte';
-	import Header from '$lib/components/Header.svelte';
-	import Footer from '$lib/components/Footer.svelte';
 	import ___prj from '$prj/prjMain';
 	import ___const from '$prj/lib/i_const';
 	import { goto } from '$app/navigation';
 	import { ___formatDate } from '$prj/lib/i_telepasi';
+	import AdminPageHeader from '$prj/C/admin/AdminPageHeader.svelte';
 
 	let searchQuery = $state('');
 	let currentPage = $state(1);
@@ -72,32 +71,22 @@
 	<title>파트너 관리 - 마인드코딩</title>
 	<meta name="description" content="마인드코딩 파트너 관리 페이지" />
 </svelte:head>
-
-<Header />
-
-<main class="partners-page">
-	<section class="partners-header">
+<main class="popup-page">
+	<!-- Search and Filter Section -->
+	<section class="search-filter-section">
 		<div class="container">
-			<div class="header-content">
-				<h1>파트너 관리</h1>
-				<button class="add-partner-btn" onclick={handleAddPartner}>
-					<span class="btn-icon">➕</span>
-					파트너 추가
-				</button>
-			</div>
-		</div>
-	</section>
-
-	<section class="search-section">
-		<div class="container">
-			<div class="search-box">
-				<input
-					type="text"
-					placeholder="파트너명, 담당자명, 이메일로 검색..."
-					bind:value={searchQuery}
-					onkeydown={(e) => e.key === 'Enter' && handleSearch()}
-				/>
-				<button type="button" onclick={handleSearch}>검색</button>
+			<AdminPageHeader title="파트너 관리" />
+			<div class="search-filter-wrapper">
+				<!-- Search Box -->
+				<div class="search-box">
+					<input
+						type="text"
+						placeholder="파트너명, 담당자명, 이메일로 검색..."
+						bind:value={searchQuery}
+						onkeydown={(e) => e.key === 'Enter' && handleSearch()}
+					/>
+					<button type="button" onclick={handleSearch}>검색</button>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -187,8 +176,6 @@
 		</div>
 	</section>
 </main>
-
-<Footer />
 
 <style>
 	.partners-page {

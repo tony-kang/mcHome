@@ -11,7 +11,8 @@
 	import '../partner-common.css';
 
 	const apiName = '/s/partner';
-	const partnerUserId = parseInt($page.params.id || 0);
+	const partnerUserId = parseInt($page.url.searchParams.get('id') || 0);
+	console.log('partnerUserId', partnerUserId);
 
     let userInfo = $state(null);
     let sidebarOpen = $state(false);
@@ -20,10 +21,10 @@
 	let submitting = $state(false);
 	let list = $state([]);
 
-	async function loadList() {
+	async function loadTrafficList() {
 		loading = true;
 		try {
-			const r = await ___prj.api.post(apiName, 'get.partner.traffic.list', null, { partnerId: partnerUserId });
+			const r = await ___prj.api.post(apiName, 'get.partner.traffic.list', { partnerId: partnerUserId }, null);
 			if (r.data.result === ___const.OK) {
 				list = r.data.content || [];
 			}
@@ -35,7 +36,7 @@
 	onMount(() => {
         if (___prj.user && $g_logedIn) {
             userInfo = ___prj.user;
-            loadList();
+            loadTrafficList();
         } else {
             window.location.href = '/s/signIn';
         }
@@ -59,8 +60,8 @@
 							<thead>
 								<tr>
 									<th class="text-center">날짜</th>
-									{#if ___prj.isAdmin}
-										<th class="text-center">파트너 아이디</th>
+									{#if ___prj.isAdmin || partnerUserId}
+										<th class="text-center">파트너</th>
 										<th class="text-center">매체</th>
 									{/if}
 									<th class="text-right">방문 수</th>
@@ -73,7 +74,7 @@
 								{#each list as row}
 									<tr>
 										<td class="text-center">{row.visit_date.substring(0, 10) || '-'}</td>
-										{#if ___prj.isAdmin}
+										{#if ___prj.isAdmin || partnerUserId}
 											<td class="text-center">{row.partner_name || ''}</td>
 											<td class="text-center">{row.partner_media || ''}</td>
 										{/if}

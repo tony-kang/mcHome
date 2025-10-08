@@ -13,7 +13,7 @@
 
 	// 기본 설정
 	const apiName = '/s/partner';
-	const partnerUserId = parseInt($page.params.id || 0);
+	const partnerUserId = parseInt($page.url.searchParams.get('id') || 0);
 
 	// 상태
 	let loading = $state(true);
@@ -61,13 +61,13 @@
 		return true;
 	}
 
-	async function loadList() {
+	async function loadMediaList() {
         console.log('___prj.domain.origin',___prj.domain.origin);
 
 		loading = true;
 		try {
 			// 파트너 NO 조회가 필요하면 서버에서 partnerUserId로 NO를 구해 내려주거나, 별도 API를 사용하세요.
-			const r = await ___prj.api.post(apiName, 'get.partner.media.list', null, { partnerId: partnerUserId });
+			const r = await ___prj.api.post(apiName, 'get.partner.media.list', { partnerId: partnerUserId }, null);
 			if (r.data.result === ___const.OK) {
 				list = r.data.content || [];
 			}
@@ -87,7 +87,7 @@
 
 			if (r.data.result === ___const.OK) {
 				alert(editingId ? '수정되었습니다.' : '등록되었습니다.');
-				await loadList();
+				await loadMediaList();
 				resetForm();
 			}
 		} catch (err) {
@@ -115,7 +115,7 @@
 		try {
 			const r = await ___prj.api.post(apiName, 'delete.partner.media', null, { media_code: row.media_code });
 			if (r.data.result === ___const.OK) {
-				await loadList();
+				await loadMediaList();
 				resetForm();
 			}
 		} catch (err) {
@@ -164,7 +164,7 @@
 	onMount(() => {
         if (___prj.user && $g_logedIn) {
             userInfo = ___prj.user;
-            loadList();
+            loadMediaList();
         } else {
             window.location.href = '/s/signIn';
         }
@@ -176,45 +176,47 @@
 {#if (userInfo && (___prj.isAdmin || userInfo.userType === 3)) }
 	<div class="partner-container">
 		<AdminPageHeader title="파트너 매체 관리" />
-		<div class="partner-section">
-			<h2 class="partner-section-title">{editingId ? '매체 수정' : '매체 등록'}</h2>
-			<form class="telepasi-form partner-form" onsubmit={submitForm}>
-				<div class="partner-grid">
-					<div class="partner-form-group">
-						<label for="media_code">매체 코드 *</label>
-						<input id="media_code" type="text" bind:value={form.media_code} placeholder="예) GOOGLE_ADS, META, NAVER" required />
+		{#if !partnerUserId}
+			<div class="partner-section">
+				<h2 class="partner-section-title">{editingId ? '매체 수정' : '매체 등록'}</h2>
+				<form class="telepasi-form partner-form" onsubmit={submitForm}>
+					<div class="partner-grid">
+						<div class="partner-form-group">
+							<label for="media_code">매체 코드 *</label>
+							<input id="media_code" type="text" bind:value={form.media_code} placeholder="예) GOOGLE_ADS, META, NAVER" required />
+						</div>
+						<div class="partner-form-group">
+							<label for="media_name">매체명 *</label>
+							<input id="media_name" type="text" bind:value={form.media_name} placeholder="예) 구글 광고" required />
+						</div>
+						<div class="partner-form-group">
+							<label for="media_url">매체 URL</label>
+							<input id="media_url" type="text" bind:value={form.media_url} placeholder="예) https://ads.google.com" />
+						</div>
+						<div class="partner-form-group">
+							<label for="category">카테고리</label>
+							<input id="category" type="text" bind:value={form.category} placeholder="예) ads, social, search, video" />
+						</div>
+						<div class="partner-form-group">
+							<label for="category">전문가코드</label>
+							<input id="category" type="text" bind:value={form.counselor_code} placeholder="예) MC001" />
+							<div class="text-sm text-[#ff00ff] text-right">전문가님께 의뢰를 받은 경우 입력해 주세요.</div>
+						</div>
+						<div class="partner-form-group">
+							<label for="is_active">상태</label>
+							<select id="is_active" bind:value={form.is_active}>
+								<option value={1}>활성</option>
+								<option value={0}>중지</option>
+							</select>
+						</div>
 					</div>
-					<div class="partner-form-group">
-						<label for="media_name">매체명 *</label>
-						<input id="media_name" type="text" bind:value={form.media_name} placeholder="예) 구글 광고" required />
+					<div class="partner-form-actions">
+						<button type="button" class="partner-btn-secondary" onclick={resetForm} disabled={submitting}>초기화</button>
+						<button type="submit" class="partner-btn-primary" disabled={submitting}>{submitting ? '저장 중...' : (editingId ? '수정 저장' : '저장')}</button>
 					</div>
-					<div class="partner-form-group">
-						<label for="media_url">매체 URL</label>
-						<input id="media_url" type="text" bind:value={form.media_url} placeholder="예) https://ads.google.com" />
-					</div>
-					<div class="partner-form-group">
-						<label for="category">카테고리</label>
-						<input id="category" type="text" bind:value={form.category} placeholder="예) ads, social, search, video" />
-					</div>
-					<div class="partner-form-group">
-						<label for="category">전문가코드</label>
-						<input id="category" type="text" bind:value={form.counselor_code} placeholder="예) MC001" />
-						<div class="text-sm text-[#ff00ff] text-right">전문가님께 의뢰를 받은 경우 입력해 주세요.</div>
-					</div>
-					<div class="partner-form-group">
-						<label for="is_active">상태</label>
-						<select id="is_active" bind:value={form.is_active}>
-							<option value={1}>활성</option>
-							<option value={0}>중지</option>
-						</select>
-					</div>
-				</div>
-				<div class="partner-form-actions">
-					<button type="button" class="partner-btn-secondary" onclick={resetForm} disabled={submitting}>초기화</button>
-					<button type="submit" class="partner-btn-primary" disabled={submitting}>{submitting ? '저장 중...' : (editingId ? '수정 저장' : '저장')}</button>
-				</div>
-			</form>
-		</div>
+				</form>
+			</div>
+		{/if}
 
 		<div class="partner-section">
 			<h2 class="partner-section-title">매체 목록</h2>
@@ -228,18 +230,26 @@
 						<table class="partner-table">
 							<thead>
 								<tr>
+									{#if partnerUserId}
+										<th class="text-left w-[120px]">파트너</th>
+									{/if}
 									<th class="text-left w-[120px]">매체 코드</th>
 									<th class="text-left w-[100px]">매체명</th>
 									<th class="text-left">매체 URL</th>
-									<th class="text-left w-[400px]">파트너 URL</th>
 									<th class="text-left w-[100px]">카테고리</th>
 									<th class="text-center w-[60px]">상태</th>
-									<th class="text-center w-[50px]">작업</th>
+									{#if !partnerUserId}
+										<th class="text-left w-[400px]">파트너 URL</th>
+										<th class="text-center w-[50px]">작업</th>
+									{/if}
 								</tr>
 							</thead>
 							<tbody>
 								{#each list as row}
 									<tr>
+										{#if partnerUserId}
+											<td class="text-left">{row.partner_name}</td>
+										{/if}
 										<td class="text-left">{row.media_code}</td>
 										<td class="text-left">{row.media_name}</td>
 										<td class="text-left">
@@ -247,30 +257,32 @@
 												<a href={row.media_url} target="_blank" rel="noopener noreferrer">{row.media_url}</a>
 											{:else}-{/if}
 										</td>
-										<td class="text-left">
-											<div class="partner-url-cell">
-												<span class="partner-url-text">{makePartnerUrl(row)}</span>
-												<!-- svelte-ignore a11y_consider_explicit_label -->
-												<button class="partner-copy-btn" onclick={() => copyToClipboard(makePartnerUrl(row))} title="URL 복사">
-													<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
-													</svg>
-												</button>
-											</div>
-										</td>
 										<td class="text-left">{row.category || '-'}</td>
 										<td class="text-center">{row.is_active ? '활성' : '중지'}</td>
-										<td class="text-center">
-											<div class="partner-action-cell">
-												<button class="partner-icon-btn" aria-label="액션" onclick={(e) => {
-													e.stopPropagation();
-													const r = e.currentTarget.getBoundingClientRect();
-													menuPos = { x: r.left, y: r.top };
-													menuRow = row;
-													menuOpen = !menuOpen;
-												}}>💎</button>
-											</div>
-										</td>
+										{#if !partnerUserId}
+											<td class="text-left">
+												<div class="partner-url-cell">
+													<span class="partner-url-text">{makePartnerUrl(row)}</span>
+													<!-- svelte-ignore a11y_consider_explicit_label -->
+													<button class="partner-copy-btn" onclick={() => copyToClipboard(makePartnerUrl(row))} title="URL 복사">
+														<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+															<path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+														</svg>
+													</button>
+												</div>
+											</td>
+											<td class="text-center">
+												<div class="partner-action-cell">
+													<button class="partner-icon-btn" aria-label="액션" onclick={(e) => {
+														e.stopPropagation();
+														const r = e.currentTarget.getBoundingClientRect();
+														menuPos = { x: r.left, y: r.top };
+														menuRow = row;
+														menuOpen = !menuOpen;
+													}}>💎</button>
+												</div>
+											</td>
+										{/if}
 									</tr>
 								{/each}
 							</tbody>
