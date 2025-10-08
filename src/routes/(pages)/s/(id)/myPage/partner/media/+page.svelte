@@ -67,7 +67,7 @@
 		loading = true;
 		try {
 			// 파트너 NO 조회가 필요하면 서버에서 partnerUserId로 NO를 구해 내려주거나, 별도 API를 사용하세요.
-			const r = await ___prj.api.post(apiName, 'get.partner.media.list', null, { userId: partnerUserId });
+			const r = await ___prj.api.post(apiName, 'get.partner.media.list', null, { partnerId: partnerUserId });
 			if (r.data.result === ___const.OK) {
 				list = r.data.content || [];
 			}
@@ -99,7 +99,7 @@
 	}
 
 	function editRow(row) {
-    openMenuKey = null;
+    	openMenuKey = null;
 		editingId = row.NO;
 		form.media_code = row.media_code || '';
 		form.media_name = row.media_name || '';
@@ -173,7 +173,7 @@
 
 <svelte:window onclick={() => { openMenuKey = null; menuOpen = false; }} />
 
-{#if (userInfo && userInfo.userType === 3) }
+{#if (userInfo && (___prj.isAdmin || userInfo.userType === 3)) }
 	<div class="partner-container">
 		<AdminPageHeader title="파트너 매체 관리" />
 		<div class="partner-section">

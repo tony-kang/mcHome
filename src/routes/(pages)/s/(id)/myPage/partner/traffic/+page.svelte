@@ -23,7 +23,7 @@
 	async function loadList() {
 		loading = true;
 		try {
-			const r = await ___prj.api.post(apiName, 'get.partner.traffic.list', null, { userId: partnerUserId });
+			const r = await ___prj.api.post(apiName, 'get.partner.traffic.list', null, { partnerId: partnerUserId });
 			if (r.data.result === ___const.OK) {
 				list = r.data.content || [];
 			}
