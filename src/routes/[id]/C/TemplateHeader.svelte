@@ -101,7 +101,7 @@ import ___prj from '$prj/prjMain';
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 1.2rem;
+		font-size: 1rem;
 	}
 
 	.nav-link:hover,

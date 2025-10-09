@@ -27,7 +27,7 @@
 		counselorData = {
             name: '홍길동',
             title: '심리상담 전문가',
-            profile_image: 'https://via.placeholder.com/150',
+            profile_image: 'https://nimage.g-enews.com/phpwas/restmb_allidxmake.php?idx=5&simg=2020060618594303154b8488d322b9220692192.jpg',
             email: 'hong@gmail.com',
             phone: '010-1234-5678'
         };
