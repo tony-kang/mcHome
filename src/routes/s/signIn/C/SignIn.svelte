@@ -75,34 +75,24 @@
 		captchaToken = token;
 		errorMessage = '';
 		captchaSolvedAt = Date.now();
-		// 성공 시 CAPTCHA 영역 잠시 숨김
+		// CAPTCHA 인증 성공 시 UI에서 숨김
 		showCaptcha = false;
-		// TTL 후 자동 재노출
-		setTimeout(() => {
-			if (!captchaToken) return; // 이미 리셋된 경우 무시
-			showCaptcha = true;
-			// 위젯이 재노출되면 다시 초기화
-			setTimeout(() => {
-				if (window.grecaptcha && window.grecaptcha.render) {
-					captchaWidgetId = null; // 새로 렌더링
-					initRecaptcha();
-				}
-			}, 50);
-		}, RECAPTCHA_CONFIG.TOKEN_TTL_MS);
+		console.log('✅ CAPTCHA 인증 성공');
 	}
 
 	// CAPTCHA 만료 콜백
 	function onCaptchaExpired() {
 		captchaToken = '';
 		errorMessage = 'CAPTCHA가 만료되었습니다. 다시 확인해주세요.';
-		// 만료 시 다시 노출 및 초기화
+		// CAPTCHA가 만료되면 다시 표시
 		showCaptcha = true;
+		captchaWidgetId = null;
 		setTimeout(() => {
 			if (window.grecaptcha && window.grecaptcha.render) {
-				captchaWidgetId = null;
 				initRecaptcha();
 			}
-		}, 50);
+		}, 100);
+		console.log('⚠️ CAPTCHA 만료');
 	}
 
 	// CAPTCHA 에러 콜백
@@ -116,6 +106,9 @@
 		if (captchaWidgetId !== null && window.grecaptcha) {
 			window.grecaptcha.reset(captchaWidgetId);
 			captchaToken = '';
+			console.log('✅ CAPTCHA 리셋');
+		} else {
+			console.log('❌ CAPTCHA 리셋 실패');
 		}
 	}
 
@@ -171,6 +164,7 @@
 		loginAttempts = attempts;
 		if (attempts >= LOGIN_FAIL_COUNT) {
 			showCaptcha = true;
+			errorMessage = `로그인 시도가 ${LOGIN_FAIL_COUNT}회 이상 실패했습니다. CAPTCHA 인증을 완료해주세요.`;
 			// grecaptcha가 이미 로드되어 있으면 바로 초기화
 			setTimeout(() => {
 				if (window.grecaptcha && window.grecaptcha.render && captchaWidgetId === null) {
@@ -224,21 +218,24 @@
 			localStorage.setItem('loginAttempts', loginAttempts.toString());
 			
 			// LOGIN_FAIL_COUNT 이상 실패 시 CAPTCHA 표시
-			if (loginAttempts >= LOGIN_FAIL_COUNT && !showCaptcha) {
-				showCaptcha = true;
-				setTimeout(() => {
-					if (window.grecaptcha && window.grecaptcha.render) {
-						initRecaptcha();
-					}
-				}, 100);
-				errorMessage = `로그인 시도가 ${LOGIN_FAIL_COUNT}회 이상 실패했습니다. CAPTCHA 인증을 완료해주세요.`;
+			if (loginAttempts >= LOGIN_FAIL_COUNT) {
+				if (!showCaptcha) {
+					// CAPTCHA를 다시 표시하는 경우 (숨겨졌다가 다시 표시)
+					showCaptcha = true;
+					captchaWidgetId = null; // DOM이 제거되었으므로 위젯 ID 초기화
+					setTimeout(() => {
+						if (window.grecaptcha && window.grecaptcha.render) {
+							initRecaptcha();
+						}
+					}, 100);
+					errorMessage = `로그인 시도가 ${LOGIN_FAIL_COUNT}회 이상 실패했습니다. CAPTCHA 인증을 완료해주세요.`;
+				} else {
+					// 이미 CAPTCHA가 표시된 경우 - 리셋만 수행
+					resetCaptcha();
+					errorMessage = `로그인에 실패했습니다. CAPTCHA 인증을 다시 완료해주세요.`;
+				}
 			} else {
 				errorMessage = `로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요. (${loginAttempts}/${LOGIN_FAIL_COUNT})`;
-			}
-			
-			// CAPTCHA 리셋 (이미 표시된 경우)
-			if (showCaptcha && captchaWidgetId !== null) {
-				resetCaptcha();
 			}
 		} finally {
 			isLoading = false;
@@ -309,6 +306,19 @@
 					</div>
 				{/if}
 
+				<!-- CAPTCHA 영역 -->
+				{#if showCaptcha}
+					<div class="captcha-container">
+						<div class="captcha-info">
+							<svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="info-icon">
+								<path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm1 12H7V7h2v5zm0-6H7V4h2v2z" fill="currentColor"/>
+							</svg>
+							<span>보안을 위해 CAPTCHA 인증이 필요합니다.</span>
+						</div>
+						<div id="recaptcha-container" class="recaptcha-wrapper"></div>
+					</div>
+				{/if}
+				
 				<div class="form-group">
 					<label for="username" class="form-label">
 						{#if userType === 'admin'}
@@ -357,19 +367,6 @@
 						<a href="/s/pwSearch" class="forgot-link">비밀번호를 잊으셨나요?</a>
 					</div>
 				</div>
-
-				<!-- CAPTCHA 영역 -->
-				{#if showCaptcha}
-					<div class="captcha-container">
-						<div class="captcha-info">
-							<svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="info-icon">
-								<path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm1 12H7V7h2v5zm0-6H7V4h2v2z" fill="currentColor"/>
-							</svg>
-							<span>보안을 위해 CAPTCHA 인증이 필요합니다.</span>
-						</div>
-						<div id="recaptcha-container" class="recaptcha-wrapper"></div>
-					</div>
-				{/if}
 
 				<button
 					type="submit"
