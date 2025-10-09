@@ -8,8 +8,8 @@ import { g_logedIn } from './prjStore';
 import { goto } from '$app/navigation';
 import axios from 'axios';
 
-async function signIn(id, pw, keepLoggedIn = false, userType = 0) {
-    ___prj.log.dev('로그인 시작', id, pw, userType, keepLoggedIn);
+async function signIn(loginData) {
+    ___prj.log.dev('로그인 시작', loginData);
     
     const loginApi = axios.create({ baseURL: ___prj.apiUrl });   //별도의 axios 객체를 생성하여 baseURL을 지정함
     try {
@@ -17,11 +17,7 @@ async function signIn(id, pw, keepLoggedIn = false, userType = 0) {
 
         const accessToken = ___prj.storage.getItem(___const.A_TOKEN);
         let apiPara = {
-            username: id,
-            password: pw,
-            curDeviceLogin: false,
-            userType: userType,
-            keepLoggedIn: keepLoggedIn,
+            ...loginData,
             accessToken: accessToken,   // 정상적인 Logout이 아닌 경우에는 accessToken이 있을 수 있음
             //현재기기에서의 로그인을 강제하는 경우 true, 
             // false이면 중복로그인을 금지하는 경우에 중복로그인을 검사하여 응답을 받아서 true로 만들어서 다시 로그인시킴
@@ -43,8 +39,12 @@ async function signIn(id, pw, keepLoggedIn = false, userType = 0) {
             
             ___prj.log.info('로그인 API 멤버 호출결과', r.data.accessToken, r.data.refreshToken);
             g_logedIn.set(true);    // 전역 상태 관리
-            location.href = ___const.START_PAGE;   // goto( ___const.START_PAGE);
             
+            // 로그인 성공 시 시도 횟수 초기화 (페이지 이동 전에 실행)
+            localStorage.removeItem('loginAttempts');
+
+            location.href = ___const.START_PAGE;   // goto( ___const.START_PAGE);
+            return true;
         } else {
             ___prj.log.error('로그인 Fail', r.data);
             if (r.data.alert) {
@@ -65,7 +65,12 @@ async function signIn(id, pw, keepLoggedIn = false, userType = 0) {
                             ___prj.storage.setItem(___const.PACKAGE, r.data.package);  // For debug
 
                             ___prj.log.info('로그인 AccessToken, RefreshToken', r.data.accessToken, r.data.refreshToken);
+                            
+                            // 로그인 성공 시 시도 횟수 초기화 (페이지 이동 전에 실행)
+                            localStorage.removeItem('loginAttempts');
+                            
                             location.href = '/';
+                            return true;
                         }
                     } else {
                         //취소
@@ -85,11 +90,13 @@ async function signIn(id, pw, keepLoggedIn = false, userType = 0) {
         ___prj.log.error(e);
         //console.log('로그인 API Error(1) :',e);
     }
+
+    return false;
 }
 
 async function checkLogedIn() {
     try {
-        ___prj.log.info('checkLogedIn Start');
+        // ___prj.log.info('checkLogedIn Start');
         const accessToken = ___prj.storage.getItem(___const.A_TOKEN);
         const refreshToken = ___prj.storage.getItem(___const.R_TOKEN);
         //console.log('checkLogedIn accessToken', accessToken, accessToken ? '있음' : '없음', accessToken?.length);
@@ -111,7 +118,7 @@ async function checkLogedIn() {
             ___elapsedTime(Math.floor((exp - iat) / 60), ' 설정'), ',',
             ___elapsedTime(elapsedMinutes, ' 지남')
         );
-        ___prj.log.info('로그인 유효기간', ___jwt.jwtTime(exp));
+        // ___prj.log.info('로그인 유효기간', ___jwt.jwtTime(exp));
 
         let tokenExpired = ___jwt.tokenExpired(accessToken);
         if (accessToken && tokenExpired) {

@@ -39,16 +39,16 @@
 			___localStorage.cookies.saveUrlParamsToCookie(currentParams, storageDuration, isTestMode);
 			
 			storedUrlParams = currentParams;
-			console.log('URL 파라미터가 저장되었습니다.');
+			// console.log('URL 파라미터가 저장되었습니다.');
 		} else {
 			storedUrlParams = ___localStorage.urlParams.getParams();
-			console.log('저장된 URL 파라미터 감지:', $state.snapshot(storedUrlParams));
+			// console.log('저장된 URL 파라미터 감지:', $state.snapshot(storedUrlParams));
 			// console.log('복호화:', ___encDec.telepasiDecrypt(storedUrlParams.pP));
 		}
 
 		const r = await ___prj.api.post('/s/system', 'visitor.inflow', { partner: storedUrlParams ? storedUrlParams.pP : null }, null);
 		if (r.data.result === ___const.OK) {
-			console.log('유입 정보 저장:', r.data.content);
+			// console.log('유입 정보 저장:', r.data.content);
 		}
 	}
 
@@ -84,7 +84,7 @@
 
 		// 팝업 목록 조회
 		if (!popupCheck) {
-			console.log('popupCheck', $page.url.pathname);
+			// console.log('popupCheck', $page.url.pathname);
 			if ($page.url.pathname === '/') {
 				await getPopupList();
 				popupCheck = true;

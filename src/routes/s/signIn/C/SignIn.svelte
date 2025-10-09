@@ -3,7 +3,9 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
+	import ___const from '$prj/lib/i_const';
 	import { loginWithKakao, logoutFromKakao, isKakaoLoggedIn, getKakaoUserInfo, initKakaoSDK } from '$lib/utils/kakaoLogin.js';
+	import { RECAPTCHA_SITE_KEY, RECAPTCHA_CONFIG } from '$lib/config/recaptcha.js';
 
 	let username = $state('');
 	let password = $state('');
@@ -11,6 +13,13 @@
 	let keepLoggedIn = $state(false);
 	let isLoading = $state(false);
 	let errorMessage = $state('');
+	let captchaToken = $state('');
+	let captchaWidgetId = $state(null);
+	let showCaptcha = $state(false);
+	let loginAttempts = $state(0);
+	let captchaSolvedAt = $state(0); // 토큰 발급 시각
+
+	const LOGIN_FAIL_COUNT = RECAPTCHA_CONFIG.LOGIN_FAIL_THRESHOLD;
 
 	// URL 파라미터에서 id 가져오기
 	const id = $page.params.id;
@@ -26,6 +35,90 @@
 		return userTypes.find(type => type.value === userType)?.value;
 	}
 
+	// reCAPTCHA 초기화
+	function initRecaptcha() {
+		if (typeof window !== 'undefined' && window.grecaptcha) {
+			try {
+				// 이미 렌더링된 경우 먼저 제거
+				const container = document.getElementById('recaptcha-container');
+				if (container && captchaWidgetId !== null) {
+					// 기존 위젯이 있으면 리셋만 수행
+					window.grecaptcha.reset(captchaWidgetId);
+					console.log('✅ 기존 CAPTCHA 리셋');
+					return;
+				}
+				
+				// 컨테이너 내용 초기화
+				if (container) {
+					container.innerHTML = '';
+				}
+				
+				// 새로 렌더링
+				captchaWidgetId = window.grecaptcha.render('recaptcha-container', {
+					'sitekey': RECAPTCHA_SITE_KEY,
+					'theme': RECAPTCHA_CONFIG.THEME,
+					'size': RECAPTCHA_CONFIG.SIZE,
+					'callback': onCaptchaSuccess,
+					'expired-callback': onCaptchaExpired,
+					'error-callback': onCaptchaError
+				});
+				console.log('✅ CAPTCHA 렌더링 완료, Widget ID:', captchaWidgetId);
+			} catch (error) {
+				console.error('❌ reCAPTCHA 초기화 실패:', error);
+				errorMessage = 'CAPTCHA 로드 중 오류가 발생했습니다. 페이지를 새로고침해주세요.';
+			}
+		}
+	}
+
+	// CAPTCHA 성공 콜백
+	function onCaptchaSuccess(token) {
+		captchaToken = token;
+		errorMessage = '';
+		captchaSolvedAt = Date.now();
+		// 성공 시 CAPTCHA 영역 잠시 숨김
+		showCaptcha = false;
+		// TTL 후 자동 재노출
+		setTimeout(() => {
+			if (!captchaToken) return; // 이미 리셋된 경우 무시
+			showCaptcha = true;
+			// 위젯이 재노출되면 다시 초기화
+			setTimeout(() => {
+				if (window.grecaptcha && window.grecaptcha.render) {
+					captchaWidgetId = null; // 새로 렌더링
+					initRecaptcha();
+				}
+			}, 50);
+		}, RECAPTCHA_CONFIG.TOKEN_TTL_MS);
+	}
+
+	// CAPTCHA 만료 콜백
+	function onCaptchaExpired() {
+		captchaToken = '';
+		errorMessage = 'CAPTCHA가 만료되었습니다. 다시 확인해주세요.';
+		// 만료 시 다시 노출 및 초기화
+		showCaptcha = true;
+		setTimeout(() => {
+			if (window.grecaptcha && window.grecaptcha.render) {
+				captchaWidgetId = null;
+				initRecaptcha();
+			}
+		}, 50);
+	}
+
+	// CAPTCHA 에러 콜백
+	function onCaptchaError() {
+		captchaToken = '';
+		errorMessage = 'CAPTCHA 검증 중 오류가 발생했습니다.';
+	}
+
+	// CAPTCHA 리셋
+	function resetCaptcha() {
+		if (captchaWidgetId !== null && window.grecaptcha) {
+			window.grecaptcha.reset(captchaWidgetId);
+			captchaToken = '';
+		}
+	}
+
 	// 페이지 로드 시 CSS가 완전히 로드되도록 보장
 	onMount(async () => {
 		// CSS 로딩 완료를 확인하고 추가 안정성 보장
@@ -36,7 +129,7 @@
 		// 카카오 SDK 초기화
 		try {
 			await initKakaoSDK();
-			console.log('카카오 SDK 초기화 완료(SignIn)');
+			// console.log('카카오 SDK 초기화 완료(SignIn)');
 		} catch (error) {
 			console.error('카카오 SDK 초기화 실패(SignIn):', error);
 		}
@@ -46,6 +139,45 @@
 			const kakaoUser = getKakaoUserInfo();
 			console.log('카카오 로그인 상태(SignIn):', kakaoUser);
 		}
+
+		// reCAPTCHA 스크립트 로드 (중복 로드 방지)
+		if (!document.querySelector('script[src*="recaptcha"]')) {
+			const script = document.createElement('script');
+			script.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit';
+			script.async = true;
+			script.defer = true;
+			
+			script.onload = () => {
+				// console.log('✅ reCAPTCHA 스크립트 로드 완료');
+			};
+			
+			script.onerror = () => {
+				console.error('❌ reCAPTCHA 스크립트 로드 실패');
+			};
+			
+			document.head.appendChild(script);
+		}
+
+		// reCAPTCHA 로드 완료 콜백
+		window.onRecaptchaLoad = () => {
+			// console.log('✅ reCAPTCHA API 준비 완료');
+			if (showCaptcha && captchaWidgetId === null) {
+				initRecaptcha();
+			}
+		};
+
+		// 로컬 스토리지에서 로그인 시도 횟수 확인
+		const attempts = parseInt(localStorage.getItem('loginAttempts') || '0');
+		loginAttempts = attempts;
+		if (attempts >= LOGIN_FAIL_COUNT) {
+			showCaptcha = true;
+			// grecaptcha가 이미 로드되어 있으면 바로 초기화
+			setTimeout(() => {
+				if (window.grecaptcha && window.grecaptcha.render && captchaWidgetId === null) {
+					initRecaptcha();
+				}
+			}, 500);
+		}
 	});
 
 	async function doLogin(event) {
@@ -54,10 +186,15 @@
 		errorMessage = '';
 
 		try {
-			// 실제 로그인 로직은 여기에 구현
-			// 임시로 간단한 검증만 수행
+			// 기본 검증
 			if (!username || !password) {
-				errorMessage = '아이디와 비밀번호를 입력해주세요.(SignIn)';
+				errorMessage = '아이디와 비밀번호를 입력해주세요.';
+				return;
+			}
+
+			// CAPTCHA 검증 (3회 이상 실패 시)
+			if (showCaptcha && !captchaToken) {
+				errorMessage = 'CAPTCHA 인증을 완료해주세요.';
 				return;
 			}
 
@@ -65,14 +202,44 @@
 			const loginData = {
 				username,
 				password,
-				userType : getUserType(userType),
-				keepLoggedIn
+				userType,
+				keepLoggedIn,
+				captchaToken: showCaptcha ? captchaToken : null
 			};
 
-			// 로그인 성공 시 메인 페이지로 이동
-			signIn(username, password, keepLoggedIn, userType);
+			// 로그인 처리 (성공 시 prjLogin.js에서 페이지 이동 처리)
+			const result = await signIn(loginData);
+			
+			// 로그인 실패 시 에러 발생시켜 catch 블록에서 처리
+			if (!result) {
+				throw new Error('로그인 실패');
+			}
+			
+			// 로그인 성공 시 UI 상태만 초기화 (localStorage는 prjLogin.js에서 처리됨)
+			loginAttempts = 0;
+			errorMessage = '';
 		} catch (error) {
-			errorMessage = '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.(SignIn)';
+			// 로그인 실패 시 시도 횟수 증가
+			loginAttempts++;
+			localStorage.setItem('loginAttempts', loginAttempts.toString());
+			
+			// LOGIN_FAIL_COUNT 이상 실패 시 CAPTCHA 표시
+			if (loginAttempts >= LOGIN_FAIL_COUNT && !showCaptcha) {
+				showCaptcha = true;
+				setTimeout(() => {
+					if (window.grecaptcha && window.grecaptcha.render) {
+						initRecaptcha();
+					}
+				}, 100);
+				errorMessage = `로그인 시도가 ${LOGIN_FAIL_COUNT}회 이상 실패했습니다. CAPTCHA 인증을 완료해주세요.`;
+			} else {
+				errorMessage = `로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요. (${loginAttempts}/${LOGIN_FAIL_COUNT})`;
+			}
+			
+			// CAPTCHA 리셋 (이미 표시된 경우)
+			if (showCaptcha && captchaWidgetId !== null) {
+				resetCaptcha();
+			}
 		} finally {
 			isLoading = false;
 		}
@@ -191,10 +358,23 @@
 					</div>
 				</div>
 
+				<!-- CAPTCHA 영역 -->
+				{#if showCaptcha}
+					<div class="captcha-container">
+						<div class="captcha-info">
+							<svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="info-icon">
+								<path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm1 12H7V7h2v5zm0-6H7V4h2v2z" fill="currentColor"/>
+							</svg>
+							<span>보안을 위해 CAPTCHA 인증이 필요합니다.</span>
+						</div>
+						<div id="recaptcha-container" class="recaptcha-wrapper"></div>
+					</div>
+				{/if}
+
 				<button
 					type="submit"
 					class="login-button"
-					disabled={isLoading}
+					disabled={isLoading || (showCaptcha && !captchaToken)}
 				>
 					{#if isLoading}
 						<span class="loading-spinner"></span>
@@ -206,7 +386,7 @@
 			</form>
 
 			<!-- 소셜 로그인 -->
-			<div class="social-login">
+	<div class="social-login" style={`display:${(showCaptcha && !captchaToken) ? 'none' : 'block'}`}>
 				<div class="divider">
 					<span>또는</span>
 				</div>
@@ -617,6 +797,42 @@
 		transform: translateY(-1px);
 	}
 
+	/* CAPTCHA 스타일 */
+	.captcha-container {
+		margin-bottom: 1.5rem;
+		padding: 1rem;
+		background: #f8f9ff;
+		border: 1px solid #e2e8f0;
+		border-radius: 8px;
+	}
+
+	.captcha-info {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 1rem;
+		color: #4a5568;
+		font-size: 0.875rem;
+	}
+
+	.info-icon {
+		color: #667eea;
+		flex-shrink: 0;
+	}
+
+	.recaptcha-wrapper {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		min-height: 78px;
+	}
+
+	/* reCAPTCHA 반응형 조정 */
+	.recaptcha-wrapper > div {
+		transform: scale(1);
+		transform-origin: center center;
+	}
+
 	/* 모바일 스타일 */
 	@media (max-width: 768px) {
 		.login-page {
@@ -699,6 +915,15 @@
 			flex-direction: row;
 			gap: 0.75rem;
 		}
+
+		.captcha-container {
+			padding: 0.75rem;
+		}
+
+		.recaptcha-wrapper > div {
+			transform: scale(0.95);
+			transform-origin: center center;
+		}
 	}
 
 	@media (max-width: 480px) {
@@ -739,6 +964,19 @@
 
 		.user-type-label {
 			font-size: 1rem;
+		}
+
+		.captcha-container {
+			padding: 0.5rem;
+		}
+
+		.captcha-info {
+			font-size: 0.8rem;
+		}
+
+		.recaptcha-wrapper > div {
+			transform: scale(0.85);
+			transform-origin: center center;
 		}
 	}
 </style>

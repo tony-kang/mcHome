@@ -31,7 +31,7 @@ export function initKakaoSDK() {
             }
 
             const source = sources[index];
-            console.log(`카카오 SDK 로드 시도 ${index + 1}: ${source.name}`);
+            // console.log(`카카오 SDK 로드 시도 ${index + 1}: ${source.name}`);
             
             const script = document.createElement('script');
             script.src = source.url;
@@ -45,11 +45,11 @@ export function initKakaoSDK() {
             }
             
             script.onload = () => {
-                console.log(`✅ 카카오 SDK 로드 성공: ${source.name}`);
+                // console.log(`✅ 카카오 SDK 로드 성공: ${source.name}`);
                 try {
                     if (!window.Kakao.isInitialized()) {
                         window.Kakao.init(KAKAO_JS_KEY);
-                        console.log('카카오 SDK 초기화 완료');
+                        // console.log('카카오 SDK 초기화 완료');
                     }
                     resolve(window.Kakao);
                 } catch (error) {

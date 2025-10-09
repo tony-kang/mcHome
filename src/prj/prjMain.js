@@ -25,7 +25,7 @@ const ___prj = {
     //----------------------------------------------------------
     // 프로젝트 정보
     //----------------------------------------------------------
-    name: 'CODE',
+    name: 'Mind-Coding Homepage',
     framework: 'SvelteKit 5.0.1',
     version: '0.0.9',
     author: 'bluein007',
@@ -89,7 +89,7 @@ const ___prj = {
         this.isMobileDevice = isMobileDevice();
         this.landingDomain = this.window.host;
         this.protocol = this.window.protocol;
-        let connectedDomain = this.window.host;     ___log.dev('window',this.window);
+        let connectedDomain = this.window.host;     // ___log.dev('window',this.window);
         if (connectedDomain?.startsWith('localhost')) connectedDomain = 'localhost';
         if (connectedDomain === undefined) {
             throw new Error('알려지지 않은 도메인의 접근은 허용되지 않습니다.');
@@ -111,7 +111,7 @@ const ___prj = {
 
         this.isLogedIn = await checkLogedIn();
         g_logedIn.set(this.isLogedIn);    // 전역 상태 관리
-        ___log.dev('isLogedIn',this.isLogedIn);
+        // ___log.dev('isLogedIn',this.isLogedIn);
 
         this.user = getTokenUser();
         if (this.user) {
@@ -129,7 +129,7 @@ const ___prj = {
                 ip: null,
             }
         }
-        ___log.dev('Login user',this.user);
+        // ___log.dev('Login user',this.user);
     },
 };
 
