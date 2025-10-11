@@ -46,6 +46,7 @@
 		"froala-editor": "^4.6.2",
 		"jose": "^6.1.0",
 		"kakao-js-sdk": "^1.2.3",
-		"moment": "^2.30.1"
+		"moment": "^2.30.1",
+		"xlsx": "^0.18.5"
 	}
 }
