@@ -12,8 +12,12 @@
 	let selectedRows = $state(new Set());
 	let openMenuRowIndex = $state(null);
 	
-	// Props for custom action button
-	let { onCustomAction = (rowData) => { console.log('Custom action:', rowData); } } = $props();
+	// Props
+	let { 
+		workOption = { 
+			workList: [] 
+		} 
+	} = $props();
 
 	function handleFileUpload(event) {
 		error = '';
@@ -156,7 +160,7 @@
 		openMenuRowIndex = null;
 	}
 	
-	function handleCustomAction(rowIndex) {
+	function executeWork(rowIndex, work) {
 		const rowData = {
 			index: rowIndex,
 			headers: headers,
@@ -166,7 +170,11 @@
 				return obj;
 			}, {})
 		};
-		onCustomAction(rowData);
+		
+		if (work.callback && typeof work.callback === 'function') {
+			work.callback(rowData);
+		}
+		
 		openMenuRowIndex = null;
 	}
 	
@@ -224,6 +232,17 @@
 		{/if}
 	</div>
 
+    <!-- 시트 작업 버튼 -->
+    {#if rows.length > 0}
+        {#if workOption.sheetWorkList && workOption.sheetWorkList.length > 0}
+            <div class="sheet-work-buttons">
+                {#each workOption.sheetWorkList as work}
+                    <button class="sheet-work-btn" onclick={() => executeWork(0, work)}>{work.icon || '⚙️'} {work.name || '작업'}</button>
+                {/each}
+            </div>
+        {/if}
+    {/if}
+    
 	{#if headers.length > 0}
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -280,13 +299,17 @@
 											>
 												🗑️ 삭제
 											</button>
-											<button 
-												class="menu-item custom"
-												onclick={() => handleCustomAction(rowIndex)}
-												role="menuitem"
-											>
-												⚙️ 사용자 작업
-											</button>
+											{#if workOption.workList && workOption.workList.length > 0}
+												{#each workOption.workList as work}
+													<button 
+														class="menu-item custom"
+														onclick={() => executeWork(rowIndex, work)}
+														role="menuitem"
+													>
+														{work.icon || '⚙️'} {work.name || '작업'}
+													</button>
+												{/each}
+											{/if}
 										</div>
 									{/if}
 								</div>
@@ -567,6 +590,28 @@
 	.no-data p {
 		margin: 0;
 		font-size: 1.1rem;
+	}
+
+	.sheet-work-buttons {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 10px;
+		margin-bottom: 10px;
+	}
+
+	.sheet-work-btn {
+		padding: 8px 16px;
+		background-color: #4CAF50;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		font-size: 14px;
+	}
+
+	.sheet-work-btn:hover {
+		background-color: #45a049;
 	}
 </style>
 

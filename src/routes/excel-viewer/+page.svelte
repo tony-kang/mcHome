@@ -1,28 +1,28 @@
 <script>
+	import { page } from '$app/stores';
 	import ExcelLoader from '$lib/components/ExcelLoader.svelte';
+	import ___excelWorkOptions from './excelWorkOptions';
 	
-	function handleCustomAction(rowData) {
-		console.log('사용자 작업 호출:', rowData);
-		alert(`사용자 작업이 호출되었습니다.\n\n행 번호: ${rowData.index + 1}\n\n데이터:\n${JSON.stringify(rowData.data, null, 2)}`);
-		
-		// 여기에서 원하는 작업을 수행할 수 있습니다
-		// 예: API 호출, 다른 페이지로 이동, 모달 열기 등
-	}
+	const work = $page.url.searchParams.get('work');
+	// workOption 설정
+	const workOption = ___excelWorkOptions[work];
 </script>
 
 <svelte:head>
-	<title>엑셀 파일 뷰어</title>
+	<title>엑셀 작업</title>
 </svelte:head>
 
 <div class="container">
 	<div class="header">
-		<h1>엑셀 파일 뷰어</h1>
+		<h1>엑셀작업 ({workOption.workName})</h1>
 		<p class="description">
-			엑셀 파일(.xlsx, .xls, .csv)을 업로드하면 내용을 확인할 수 있습니다.
+			엑셀 파일(.xlsx, .xls, .csv)을 업로드하면 
+			<span class="work-name">{workOption.workName}</span> 
+			작업을 진행할 수 있습니다.
 		</p>
 	</div>
 
-	<ExcelLoader onCustomAction={handleCustomAction} />
+	<ExcelLoader {workOption} />
 
 	<div class="instructions">
 		<h3>사용 방법</h3>
@@ -36,11 +36,18 @@
 		<h3>새로운 기능</h3>
 		<ul>
 			<li>각 행의 체크박스를 클릭하여 행을 선택할 수 있습니다</li>
-			<li>헤더의 체크박스로 전체 행을 선택/해제할 수 있습니다</li>
+			<li>헤더의 체크박스로 전체 행을 토글할 수 있습니다</li>
 			<li>작업 컬럼의 ⋮ 버튼을 클릭하여 메뉴를 열 수 있습니다</li>
 			<li>삭제 버튼으로 특정 행을 삭제할 수 있습니다</li>
-			<li>사용자 작업 버튼으로 커스텀 작업을 수행할 수 있습니다</li>
+			<li>커스텀 작업(수정, 상세보기, 내보내기 등)을 수행할 수 있습니다</li>
 			<li>빈 행과 빈 컬럼은 자동으로 제거됩니다</li>
+		</ul>
+		
+		<h3>workOption 커스터마이징</h3>
+		<ul>
+			<li>workOption props를 통해 사용자 정의 작업을 추가할 수 있습니다</li>
+			<li>각 작업에 name(이름), icon(아이콘), callback(콜백 함수)를 설정할 수 있습니다</li>
+			<li>콜백 함수는 rowData(행 정보)를 파라미터로 받습니다</li>
 		</ul>
 	</div>
 </div>
@@ -97,6 +104,11 @@
 		position: absolute;
 		left: 0;
 		color: #4CAF50;
+		font-weight: bold;
+	}
+
+	.work-name {
+		color: #4012e7;
 		font-weight: bold;
 	}
 </style>
