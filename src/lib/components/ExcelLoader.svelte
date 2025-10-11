@@ -225,9 +225,9 @@
 	
 	function executeWork(rowIndex, work) {
 		const rowData = {
-			index: rowIndex,
-			headers: headers,
-			values: rows[rowIndex],
+			// index: rowIndex,
+			// headers: headers,
+			// values: rows[rowIndex],
 			data: headers.reduce((obj, header, i) => {
 				obj[header] = rows[rowIndex][i];
 				return obj;
@@ -239,6 +239,24 @@
 		}
 		
 		openMenuRowIndex = null;
+	}
+	
+	function executeSheetWork(work) {
+		const selectedRowsData = Array.from(selectedRows).map(rowIndex => {
+			return {
+				// index: rowIndex,
+				// headers: headers,
+				// values: rows[rowIndex],
+				data: headers.reduce((obj, header, i) => {
+					obj[header] = rows[rowIndex][i];
+					return obj;
+				}, {})
+			};
+		});
+		
+		if (work.callback && typeof work.callback === 'function') {
+			work.callback(selectedRowsData);
+		}
 	}
 	
 	function closeMenu() {
@@ -254,8 +272,11 @@
 				accept=".xlsx,.xls,.csv"
 				bind:this={fileInput}
 				onchange={handleFileUpload}
-				class="file-input"
+				class="file-input-hidden"
 			/>
+			<button onclick={() => fileInput?.click()} class="upload-btn">
+				📁 {fileName || '파일 선택'}
+			</button>
 			{#if fileName}
 				<button onclick={clearData} class="clear-btn">
 					초기화
@@ -307,7 +328,7 @@
         {#if workOption.sheetWorkList && workOption.sheetWorkList.length > 0}
             <div class="sheet-work-buttons">
                 {#each workOption.sheetWorkList as work}
-                    <button class="sheet-work-btn" onclick={() => executeWork(0, work)}>{work.icon || '⚙️'} {work.name || '작업'}</button>
+                    <button class="sheet-work-btn" onclick={() => executeSheetWork(work)}>{work.icon || '⚙️'} {work.name || '작업'}</button>
                 {/each}
             </div>
         {/if}
@@ -424,12 +445,27 @@
 		margin-bottom: 10px;
 	}
 
-	.file-input {
-		padding: 10px;
+	.file-input-hidden {
+		display: none;
+	}
+
+	.upload-btn {
+		flex: 1;
+		padding: 10px 20px;
+		background-color: #d4eed5;
+		color: rgb(65, 62, 62);
 		border: 1px solid #ddd;
 		border-radius: 4px;
 		cursor: pointer;
-		flex: 1;
+		font-weight: 500;
+		font-size: 14px;
+		transition: all 0.3s;
+		text-align: left;
+	}
+
+	.upload-btn:hover {
+		background-color: #c5e5c6;
+		border-color: #aaa;
 	}
 
 	.clear-btn {
@@ -441,6 +477,7 @@
 		cursor: pointer;
 		font-weight: 500;
 		transition: background-color 0.3s;
+		font-size: 14px;
 	}
 
 	.clear-btn:hover {
@@ -698,10 +735,10 @@
 
 	.sheet-work-btn {
 		padding: 8px 16px;
-		background-color: #4CAF50;
+		background-color: #27285b;
 		color: white;
 		border: none;
-		border-radius: 4px;
+		border-radius: 10px;
 		cursor: pointer;
 		font-size: 14px;
 	}

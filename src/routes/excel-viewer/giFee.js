@@ -1,23 +1,24 @@
+import ___prj from '$prj/prjMain';
+import ___const from '$prj/lib/i_const';
+import ___ec from './i_excelColumn';
+
 export const giFee = {
     workName: '보증보험 부과',
     columnAlignments: {
-        '전체번호': 'center',
-        'group_no': 'center',
-        '구분번호': 'center',
-        'survey': 'left',
-        'type': 'center',
-        '확인항목': 'center',
-        '확인항목2': 'center'
+        '계약번호': 'center',
+        '동': 'center',
+        '호수': 'center',
+        '금액': 'right',
     },
     sheetWorkList: [
         {
             name: '선택항목 일괄부과',
-            icon: '📤',
+            icon: '✅',
             callback: handleSelectedImpose
         },
         {
-            name: '선택항목 일괄삭제',
-            icon: '📤',
+            name: '선택항목 삭제',
+            icon: '❌',
             callback: handleSelectedDelete
         }
     ],
@@ -38,22 +39,41 @@ export const giFee = {
 // 작업 콜백 함수들
 function handleEdit(rowData) {
     console.log('수정 작업:', rowData);
-    alert(`데이터 수정\n\n행 번호: ${rowData.index + 1}\n\n데이터:\n${JSON.stringify(rowData.data, null, 2)}`);
 }
 
 function handleIndividualImpose(rowData) {
     console.log('개별부과 작업:', rowData);
-    alert(`개별부과\n\n행 번호: ${rowData.index + 1}\n\n데이터:\n${JSON.stringify(rowData.data, null, 2)}`);
+    _giImpose(rowIdx, [...rowData]);
 }
 
 function handleSelectedImpose(selectedRowsData) {
     console.log('선택항목 일괄부과 작업:', selectedRowsData);
-    alert(`선택항목 일괄부과\n\n행 번호: ${rowData.index + 1}\n\n데이터:\n${JSON.stringify(rowData.data, null, 2)}`);
+    _giImpose(selectedRowsData);
 }
 
 function handleSelectedDelete(selectedRowsData) {
     console.log('선택항목 일괄삭제 작업:', selectedRowsData);
-    
+    _giDelete(selectedRowsData);
+}
+
+/**
+ * 보증보험 부과
+ * @param {*} selectedRowsData 
+ */
+function _giImpose(selectedRowsData) {
+    const r = ___prj.api.post('/s/excel', 'gi.impose', null, {
+        giData: selectedRowsData,
+    });
+}
+
+/**
+ * 보증보험 부과 취소
+ * @param {*} selectedRowsData 
+ */
+function _giDelete(selectedRowsData) {
+    const r = ___prj.api.post('/s/excel', 'gi.delete', null, {
+        giData: selectedRowsData,
+    });
 }
 
 export default giFee;
