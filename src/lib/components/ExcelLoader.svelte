@@ -9,13 +9,16 @@
 	let rows = $state([]);
 	let fileName = $state('');
 	let error = $state('');
+	let validationError = $state('');
+	let isValidExcel = $state(false);
 	let selectedRows = $state(new Set());
 	let openMenuRowIndex = $state(null);
 	
 	// Props
 	let { 
 		workOption = { 
-			workList: [] 
+			workList: [],
+			columnAlignments: {} // 헤더명: 정렬(left/center/right) - key가 필수 컬럼
 		} 
 	} = $props();
 
@@ -98,14 +101,72 @@
 			console.log('Headers set:', headers);
 			console.log('Rows set:', rows);
 			console.log('Rows count:', rows.length);
+			
+			// 엑셀 컬럼 검증
+			validateExcelColumns(headers);
 		} else {
 			headers = [];
 			rows = [];
+			validationError = '';
+			isValidExcel = false;
 			console.log('No data after filtering');
 		}
 		
 		// 선택 초기화
 		selectedRows = new Set();
+	}
+	
+	function validateExcelColumns(currentHeaders) {
+		validationError = '';
+		isValidExcel = true;
+		
+		// columnAlignments가 없거나 비어있으면 검증 통과
+		if (!workOption.columnAlignments || Object.keys(workOption.columnAlignments).length === 0) {
+			console.log('필수 컬럼이 지정되지 않았습니다. 검증을 생략합니다.');
+			return;
+		}
+		
+		const requiredColumns = Object.keys(workOption.columnAlignments);
+		
+		console.log('===== 엑셀 컬럼 검증 시작 =====');
+		console.log('필수 컬럼:', requiredColumns);
+		console.log('실제 헤더:', currentHeaders);
+		
+		// 필수 컬럼이 모두 있는지 확인
+		const missingColumns = [];
+		const extraColumns = [];
+		
+		// 대소문자 구분 없이 비교하기 위해 소문자로 변환
+		const requiredLower = requiredColumns.map(col => col.toLowerCase());
+		const headersLower = currentHeaders.map(col => String(col).toLowerCase());
+		
+		// 누락된 컬럼 찾기
+		requiredColumns.forEach((required, index) => {
+			if (!headersLower.includes(requiredLower[index])) {
+				missingColumns.push(required);
+			}
+		});
+		
+		// 추가 컬럼 찾기 (경고용)
+		currentHeaders.forEach((header, index) => {
+			if (!requiredLower.includes(headersLower[index])) {
+				extraColumns.push(header);
+			}
+		});
+		
+		if (missingColumns.length > 0) {
+			isValidExcel = false;
+			validationError = `필수 컬럼이 누락되었습니다.\n\n누락된 컬럼:\n${missingColumns.join(', ')}\n\n올바른 엑셀 파일을 업로드해주세요.`;
+			console.error('검증 실패 - 누락된 컬럼:', missingColumns);
+			alert(validationError);
+		} else {
+			console.log('검증 성공! 모든 필수 컬럼이 존재합니다.');
+			if (extraColumns.length > 0) {
+				console.warn('추가 컬럼:', extraColumns);
+			}
+		}
+		
+		console.log('===== 엑셀 컬럼 검증 완료 =====');
 	}
 
 	function handleSheetChange(event) {
@@ -121,6 +182,8 @@
 		rows = [];
 		fileName = '';
 		error = '';
+		validationError = '';
+		isValidExcel = false;
 		selectedRows = new Set();
 		openMenuRowIndex = null;
 		if (fileInput) {
@@ -230,10 +293,17 @@
 				{/if}
 			</div>
 		{/if}
+		
+		{#if validationError}
+			<div class="validation-error">
+				<strong>⚠️ 엑셀 파일 검증 실패</strong>
+				<p>{validationError}</p>
+			</div>
+		{/if}
 	</div>
 
-    <!-- 시트 작업 버튼 -->
-    {#if rows.length > 0}
+    <!-- 시트 작업 버튼 - 검증 성공 시에만 표시 -->
+    {#if isValidExcel && rows.length > 0}
         {#if workOption.sheetWorkList && workOption.sheetWorkList.length > 0}
             <div class="sheet-work-buttons">
                 {#each workOption.sheetWorkList as work}
@@ -253,69 +323,73 @@
 			<table class="excel-table">
 				<thead>
 					<tr>
-						<th class="checkbox-col">
-							<input 
-								type="checkbox" 
-								checked={selectedRows.size === rows.length && rows.length > 0}
-								onchange={toggleAllRows}
-							/>
-						</th>
-						<th class="menu-col">작업</th>
+						{#if isValidExcel}
+							<th class="checkbox-col">
+								<input 
+									type="checkbox" 
+									checked={selectedRows.size === rows.length && rows.length > 0}
+									onchange={toggleAllRows}
+								/>
+							</th>
+							<th class="menu-col">작업</th>
+						{/if}
 						{#each headers as header}
-							<th>{header}</th>
+							<th style="text-align: {workOption.columnAlignments?.[header] || 'left'}">{header}</th>
 						{/each}
 					</tr>
 				</thead>
 				<tbody>
 					{#each rows as row, rowIndex}
 						<tr class:selected={selectedRows.has(rowIndex)}>
-							<td class="checkbox-col">
-								<input 
-									type="checkbox" 
-									checked={selectedRows.has(rowIndex)}
-									onchange={() => toggleRowSelection(rowIndex)}
-								/>
-							</td>
-							<td class="menu-col">
-								<div class="menu-wrapper">
-									<button 
-										class="menu-btn"
-										onclick={(e) => { e.stopPropagation(); toggleMenu(rowIndex); }}
-										aria-label="메뉴 열기"
-									>
-										⋮
-									</button>
-									{#if openMenuRowIndex === rowIndex}
-										<!-- svelte-ignore a11y_no_static_element_interactions -->
-										<!-- svelte-ignore a11y_click_events_have_key_events -->
-										<div 
-											class="context-menu" 
-											onclick={(e) => e.stopPropagation()}
+							{#if isValidExcel}
+								<td class="checkbox-col">
+									<input 
+										type="checkbox" 
+										checked={selectedRows.has(rowIndex)}
+										onchange={() => toggleRowSelection(rowIndex)}
+									/>
+								</td>
+								<td class="menu-col">
+									<div class="menu-wrapper">
+										<button 
+											class="menu-btn"
+											onclick={(e) => { e.stopPropagation(); toggleMenu(rowIndex); }}
+											aria-label="메뉴 열기"
 										>
-											<button 
-												class="menu-item delete"
-												onclick={() => deleteRow(rowIndex)}
-												role="menuitem"
+											⋮
+										</button>
+										{#if openMenuRowIndex === rowIndex}
+											<!-- svelte-ignore a11y_no_static_element_interactions -->
+											<!-- svelte-ignore a11y_click_events_have_key_events -->
+											<div 
+												class="context-menu" 
+												onclick={(e) => e.stopPropagation()}
 											>
-												🗑️ 삭제
-											</button>
-											{#if workOption.workList && workOption.workList.length > 0}
-												{#each workOption.workList as work}
-													<button 
-														class="menu-item custom"
-														onclick={() => executeWork(rowIndex, work)}
-														role="menuitem"
-													>
-														{work.icon || '⚙️'} {work.name || '작업'}
-													</button>
-												{/each}
-											{/if}
-										</div>
-									{/if}
-								</div>
-							</td>
-							{#each headers as _, colIndex}
-								<td>{row[colIndex] ?? ''}</td>
+												<button 
+													class="menu-item delete"
+													onclick={() => deleteRow(rowIndex)}
+													role="menuitem"
+												>
+													🗑️ 삭제
+												</button>
+												{#if workOption.workList && workOption.workList.length > 0}
+													{#each workOption.workList as work}
+														<button 
+															class="menu-item custom"
+															onclick={() => executeWork(rowIndex, work)}
+															role="menuitem"
+														>
+															{work.icon || '⚙️'} {work.name || '작업'}
+														</button>
+													{/each}
+												{/if}
+											</div>
+										{/if}
+									</div>
+								</td>
+							{/if}
+							{#each headers as header, colIndex}
+								<td style="text-align: {workOption.columnAlignments?.[header] || 'left'}">{row[colIndex] ?? ''}</td>
 							{/each}
 						</tr>
 					{/each}
@@ -400,6 +474,28 @@
 		color: #721c24;
 		margin-top: 10px;
 		border-radius: 4px;
+	}
+
+	.validation-error {
+		padding: 15px;
+		background-color: #fff3cd;
+		border: 2px solid #ff9800;
+		border-radius: 4px;
+		margin-top: 10px;
+		color: #856404;
+	}
+
+	.validation-error strong {
+		display: block;
+		margin-bottom: 10px;
+		font-size: 1.1rem;
+		color: #d84315;
+	}
+
+	.validation-error p {
+		margin: 5px 0;
+		white-space: pre-line;
+		line-height: 1.6;
 	}
 
 	.sheet-selector {

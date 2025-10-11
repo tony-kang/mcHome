@@ -1,5 +1,13 @@
 export const contractRegister = {
     workName: '계약 등록',
+    columnAlignments: {
+        'contract_no': 'center',
+        'contract_name': 'left',
+        'customer_name': 'left',
+        'start_date': 'center',
+        'end_date': 'center',
+        'amount': 'right'
+    },
     sheetWorkList: [
         {
             name: '선택항목 일괄등록',

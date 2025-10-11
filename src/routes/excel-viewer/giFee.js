@@ -1,5 +1,14 @@
 export const giFee = {
     workName: '보증보험 부과',
+    columnAlignments: {
+        '전체번호': 'center',
+        'group_no': 'center',
+        '구분번호': 'center',
+        'survey': 'left',
+        'type': 'center',
+        '확인항목': 'center',
+        '확인항목2': 'center'
+    },
     sheetWorkList: [
         {
             name: '선택항목 일괄부과',
