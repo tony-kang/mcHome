@@ -2,8 +2,8 @@
     import { page } from '$app/stores';
     import { onMount } from 'svelte';
     import Header from '$lib/components/Header.svelte';
-    import TemplateHeader from '$src/routes/[id]/C/TemplateHeader.svelte';
-    import TemplateFooter from '$src/routes/[id]/C/TemplateFooter.svelte';
+    import TemplateHeader from '$src/routes/coders/[id]/C/TemplateHeader.svelte';
+    import TemplateFooter from '$src/routes/coders/[id]/C/TemplateFooter.svelte';
     import ___prj from '$prj/prjMain';
     import ___const from '$prj/lib/i_const';
     import './template.css';
