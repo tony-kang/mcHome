@@ -1,9 +1,9 @@
 import giFee from './giFee';
-import contractRegister from './contractRegister';
+import pccCheck from './pccCheck';
 
 export const ___excelWorkOptions = {
     giFee : giFee,
-    contractRegister : contractRegister
+    pccCheck: pccCheck,
 };
 
 export default ___excelWorkOptions;

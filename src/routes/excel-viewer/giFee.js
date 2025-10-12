@@ -1,10 +1,11 @@
 import ___prj from '$prj/prjMain';
 import ___const from '$prj/lib/i_const';
-import ___ec from './i_excelColumn';
 
 export const giFee = {
     workName: '보증보험 부과',
-    columnAlignments: {
+    requiredColumns: {
+        // 필수 컬럼 검증을 비활성화하려면 비워두세요
+        // 활성화하려면 아래 주석을 해제하세요
         '계약번호': 'center',
         '동': 'center',
         '호수': 'center',

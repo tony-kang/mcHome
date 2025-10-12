@@ -14,7 +14,7 @@
 
 <div class="container">
 	<div class="header">
-		<h1>엑셀작업 ({workOption.workName})</h1>
+		<h1>{workOption.workName}</h1>
 		<p class="description">
 			엑셀 파일(.xlsx, .xls, .csv)을 업로드하면 
 			<span class="work-name">{workOption.workName}</span> 
