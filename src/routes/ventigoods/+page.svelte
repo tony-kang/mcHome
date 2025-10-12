@@ -3,6 +3,7 @@
 
     let currentSlide = $state(0);
     let isScrolled = $state(false);
+    let mobileMenuOpen = $state(false);
 
     const slides = [
         {
@@ -105,6 +106,14 @@
     function goToSlide(index) {
         currentSlide = index;
     }
+
+    function toggleMobileMenu() {
+        mobileMenuOpen = !mobileMenuOpen;
+    }
+
+    function closeMobileMenu() {
+        mobileMenuOpen = false;
+    }
 </script>
 
 <svelte:head>
@@ -120,7 +129,7 @@
                 <h1>🛍️ VentiGoods</h1>
             </a>
         </div>
-        <nav class="nav">
+        <nav class="nav desktop-nav">
             <a href="/ventigoods">홈</a>
             <a href="/ventigoods/products">상품</a>
             <a href="/ventigoods/about">소개</a>
@@ -128,12 +137,38 @@
             <a href="/ventigoods/admin" class="admin-link">관리자</a>
         </nav>
         <div class="header-actions">
-            <button class="icon-btn" aria-label="검색">🔍</button>
+            <button class="icon-btn desktop-only" aria-label="검색">🔍</button>
             <button class="icon-btn" aria-label="장바구니">🛒</button>
-            <button class="icon-btn" aria-label="내 정보">👤</button>
+            <button class="icon-btn desktop-only" aria-label="내 정보">👤</button>
+            <button class="icon-btn mobile-menu-btn" onclick={toggleMobileMenu} aria-label="메뉴">
+                {#if mobileMenuOpen}
+                    ✕
+                {:else}
+                    ☰
+                {/if}
+            </button>
         </div>
     </div>
 </header>
+
+<!-- 모바일 메뉴 -->
+{#if mobileMenuOpen}
+    <div 
+        class="mobile-menu-overlay" 
+        onclick={closeMobileMenu}
+        onkeydown={(e) => e.key === 'Escape' && closeMobileMenu()}
+        role="button"
+        tabindex="0"
+        aria-label="메뉴 닫기"
+    ></div>
+    <nav class="mobile-menu" class:open={mobileMenuOpen}>
+        <a href="/ventigoods" onclick={closeMobileMenu}>홈</a>
+        <a href="/ventigoods/products" onclick={closeMobileMenu}>상품</a>
+        <a href="/ventigoods/about" onclick={closeMobileMenu}>소개</a>
+        <a href="/ventigoods/contact" onclick={closeMobileMenu}>문의</a>
+        <a href="/ventigoods/admin" class="admin-link" onclick={closeMobileMenu}>⚙️ 관리자</a>
+    </nav>
+{/if}
 
 <!-- 히어로 섹션 -->
 <section class="hero">
@@ -323,7 +358,7 @@
     .header-content {
         max-width: 1400px;
         margin: 0 auto;
-        padding: 20px 40px;
+        padding: 5px 40px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -377,20 +412,24 @@
     }
 
     .icon-btn {
-        background: transparent;
+        background: rgba(255, 255, 255, 0.9);
         border: 2px solid white;
-        color: white;
+        color: #333;
         width: 40px;
         height: 40px;
         border-radius: 50%;
         cursor: pointer;
         font-size: 1.2rem;
         transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
 
     .header.scrolled .icon-btn {
+        background: white;
         border-color: #333;
         color: #333;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     .icon-btn:hover {
@@ -398,6 +437,99 @@
         border-color: #ff6b6b;
         color: white;
         transform: translateY(-2px);
+    }
+
+    /* 모바일 메뉴 버튼 - 기본 숨김 */
+    .mobile-menu-btn {
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* 데스크톱 전용 버튼 */
+    .desktop-only {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* 모바일에서 햄버거 메뉴 버튼 강조 */
+    .mobile-menu-btn {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%) !important;
+        border-color: #ff6b6b !important;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4) !important;
+        font-weight: 700;
+    }
+
+    .mobile-menu-btn:hover {
+        background: linear-gradient(135deg, #ff8e53 0%, #ff6b6b 100%) !important;
+        transform: translateY(-2px) scale(1.05) !important;
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5) !important;
+    }
+
+    /* 모바일 메뉴 오버레이 */
+    .mobile-menu-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        backdrop-filter: blur(4px);
+    }
+
+    /* 모바일 메뉴 */
+    .mobile-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: white;
+        z-index: 1001;
+        padding: 80px 30px 30px;
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
+        transition: right 0.3s ease;
+        overflow-y: auto;
+    }
+
+    .mobile-menu.open {
+        right: 0;
+    }
+
+    .mobile-menu a {
+        display: block;
+        padding: 15px 20px;
+        color: #333;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 1.1rem;
+        border-bottom: 1px solid #f0f0f0;
+        transition: all 0.3s ease;
+    }
+
+    .mobile-menu a:hover {
+        background: #f9f9f9;
+        padding-left: 30px;
+        color: #ff6b6b;
+    }
+
+    .mobile-menu a.admin-link {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 8px;
+        margin-top: 20px;
+        text-align: center;
+        font-weight: 700;
+        border: none;
+    }
+
+    .mobile-menu a.admin-link:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        padding-left: 20px;
+        transform: translateX(-5px);
     }
 
     /* 히어로 섹션 */
@@ -546,10 +678,6 @@
         max-width: 1400px;
         margin: 0 auto;
         padding: 0 40px;
-    }
-
-    section {
-        padding: 80px 0;
     }
 
     .section-title {
@@ -881,11 +1009,40 @@
     /* 반응형 */
     @media (max-width: 768px) {
         .header-content {
-            padding: 15px 20px;
+            padding: 5px 20px;
         }
 
-        .nav {
+        /* 데스크톱 네비게이션 숨기기 */
+        .desktop-nav {
             display: none;
+        }
+
+        /* 데스크톱 전용 버튼 숨기기 */
+        .desktop-only {
+            display: none !important;
+        }
+
+        /* 모바일 메뉴 버튼 표시 */
+        .mobile-menu-btn {
+            display: flex !important;
+            font-size: 1.5rem;
+            /* 이미 위에서 강조 스타일이 적용됨 */
+        }
+
+        /* 로고 크기 조정 */
+        .logo h1 {
+            font-size: 1.3rem;
+        }
+
+        /* 헤더 액션 버튼 간격 조정 */
+        .header-actions {
+            gap: 10px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 1.1rem;
         }
 
         .hero {
