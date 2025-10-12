@@ -125,7 +125,7 @@ async function handlePcccCheck(selectedRowsData) {
             // 오류 결과 반환 (HTML로 표시)
             return {
                 type: 'error',
-                title: `✅ 검증 완료! 총 ${results.length - errorItems.length}건 정상, ⚠️ 통관번호 검증 오류 ${errorItems.length}건 / 전체 ${results.length}건`,
+                title: `✅ 검증 완료! 총 ${results.length - errorItems.length}건 정상, ⚠️ 검증 오류 ${errorItems.length}건 / 전체 ${results.length}건`,
                 items: errorItems
             };
         } else {
