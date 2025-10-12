@@ -13,6 +13,8 @@
 	let isValidExcel = $state(false);
 	let selectedRows = $state(new Set());
 	let openMenuRowIndex = $state(null);
+	let workResultMessage = $state(null); // 작업 결과 메시지 { type: 'success'|'error', title: '', items: [] }
+	let isLoading = $state(false); // 작업 진행 중 로딩 상태
 	
 	// Props
 	let { 
@@ -125,6 +127,7 @@
 		
 		// 선택 초기화
 		selectedRows = new Set();
+		workResultMessage = null;
 	}
 	
 	function validateExcelColumns(currentHeaders) {
@@ -197,6 +200,7 @@
 		isValidExcel = false;
 		selectedRows = new Set();
 		openMenuRowIndex = null;
+		workResultMessage = null;
 		if (fileInput) {
 			fileInput.value = '';
 		}
@@ -234,60 +238,78 @@
 		openMenuRowIndex = null;
 	}
 	
-	function executeWork(rowIndex, work) {
-		const rowData = {
-			// index: rowIndex,
-			// headers: headers,
-			// values: rows[rowIndex],
-			data: headers.reduce((obj, header, i) => {
-				obj[header] = rows[rowIndex][i];
-				return obj;
-			}, {})
-		};
-		
-		if (work.callback && typeof work.callback === 'function') {
-			work.callback(rowData);
-		}
-		
-		openMenuRowIndex = null;
-	}
-	
-	function executeSheetWork(work) {
-		let selectedRowsData;
-		
-		// 선택된 row가 없으면 전체 데이터로 진행할지 확인
-		if (selectedRows.size === 0) {
-			const confirmed = confirm('전체 데이터에 대해서 작업을 진행할까요?');
-			if (!confirmed) {
-				return; // 취소하면 작업 중단
+	async function executeWork(rowIndex, work) {
+		try {
+			isLoading = true;
+			const rowData = {
+				// index: rowIndex,
+				// headers: headers,
+				// values: rows[rowIndex],
+				data: headers.reduce((obj, header, i) => {
+					obj[header] = rows[rowIndex][i];
+					return obj;
+				}, {})
+			};
+			
+			if (work.callback && typeof work.callback === 'function') {
+				await work.callback(rowData);
 			}
 			
-			// 전체 rows 데이터 생성
-			selectedRowsData = rows.map((rowData, rowIndex) => {
-				return {
-					data: headers.reduce((obj, header, i) => {
-						obj[header] = rowData[i];
-						return obj;
-					}, {})
-				};
-			});
-		} else {
-			// 선택된 rows만 데이터 생성
-			selectedRowsData = Array.from(selectedRows).map(rowIndex => {
-				return {
-					// index: rowIndex,
-					// headers: headers,
-					// values: rows[rowIndex],
-					data: headers.reduce((obj, header, i) => {
-						obj[header] = rows[rowIndex][i];
-						return obj;
-					}, {})
-				};
-			});
+			openMenuRowIndex = null;
+		} finally {
+			isLoading = false;
 		}
-		
-		if (work.callback && typeof work.callback === 'function') {
-			work.callback(selectedRowsData);
+	}
+	
+	async function executeSheetWork(work) {
+		try {
+			isLoading = true;
+			let selectedRowsData;
+			
+			// 이전 작업 결과 메시지 초기화
+			workResultMessage = null;
+			
+			// 선택된 row가 없으면 전체 데이터로 진행할지 확인
+			if (selectedRows.size === 0) {
+				const confirmed = confirm('전체 데이터에 대해서 작업을 진행할까요?');
+				if (!confirmed) {
+					return; // 취소하면 작업 중단
+				}
+				
+				// 전체 rows 데이터 생성
+				selectedRowsData = rows.map((rowData, rowIndex) => {
+					return {
+						data: headers.reduce((obj, header, i) => {
+							obj[header] = rowData[i];
+							return obj;
+						}, {})
+					};
+				});
+			} else {
+				// 선택된 rows만 데이터 생성
+				selectedRowsData = Array.from(selectedRows).map(rowIndex => {
+					return {
+						// index: rowIndex,
+						// headers: headers,
+						// values: rows[rowIndex],
+						data: headers.reduce((obj, header, i) => {
+							obj[header] = rows[rowIndex][i];
+							return obj;
+						}, {})
+					};
+				});
+			}
+			
+			if (work.callback && typeof work.callback === 'function') {
+				const result = await work.callback(selectedRowsData);
+				
+				// callback이 결과를 반환하면 저장
+				if (result) {
+					workResultMessage = result;
+				}
+			}
+		} finally {
+			isLoading = false;
 		}
 	}
 	
@@ -353,6 +375,41 @@
 				<p>{validationError}</p>
 			</div>
 		{/if}
+		
+		{#if isLoading}
+			<div class="loading-message">
+				<div class="loading-spinner"></div>
+				<strong>작업 진행 중입니다...</strong>
+				<p>잠시만 기다려주세요.</p>
+			</div>
+		{/if}
+		
+		{#if workResultMessage}
+			<div class="work-result-message {workResultMessage.type}">
+				<div class="result-header">
+					<strong>{workResultMessage.title}</strong>
+					<button class="close-result-btn" onclick={() => workResultMessage = null}>✕</button>
+				</div>
+				{#if workResultMessage.items && workResultMessage.items.length > 0}
+					<div class="result-items">
+						{#each workResultMessage.items as item, index}
+							<div class="result-item">
+								<div class="item-number">{index + 1}.</div>
+								<div class="item-content">
+									<div class="item-main">{item.name} ({item.pccNumber})</div>
+									{#if item.result}
+										<div class="item-status">상태: {item.result}</div>
+									{/if}
+									{#if item.error}
+										<div class="item-error">사유: {item.error}</div>
+									{/if}
+								</div>
+							</div>
+						{/each}
+					</div>
+				{/if}
+			</div>
+		{/if}
 	</div>
 
     <!-- 시트 작업 버튼 - 검증 성공 시에만 표시 -->
@@ -360,7 +417,13 @@
         {#if workOption.sheetWorkList && workOption.sheetWorkList.length > 0}
             <div class="sheet-work-buttons">
                 {#each workOption.sheetWorkList as work}
-                    <button class="sheet-work-btn" onclick={() => executeSheetWork(work)}>{work.icon || '⚙️'} {work.name || '작업'}</button>
+                    <button 
+                        class="sheet-work-btn" 
+                        onclick={() => executeSheetWork(work)}
+                        disabled={isLoading}
+                    >
+                        {work.icon || '⚙️'} {work.name || '작업'}
+                    </button>
                 {/each}
             </div>
         {/if}
@@ -408,10 +471,11 @@
 										class="menu-btn"
 										onclick={(e) => { e.stopPropagation(); toggleMenu(rowIndex); }}
 										aria-label="메뉴 열기"
+										disabled={isLoading}
 									>
 										⋮
 									</button>
-									{#if openMenuRowIndex === rowIndex}
+									{#if openMenuRowIndex === rowIndex && !isLoading}
 										<!-- svelte-ignore a11y_no_static_element_interactions -->
 										<!-- svelte-ignore a11y_click_events_have_key_events -->
 										<div 
@@ -573,6 +637,136 @@
 		line-height: 1.6;
 	}
 
+	.loading-message {
+		padding: 20px;
+		background-color: #e3f2fd;
+		border: 2px solid #2196F3;
+		border-radius: 4px;
+		margin-top: 10px;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.loading-message strong {
+		font-size: 1.1rem;
+		color: #1565c0;
+	}
+
+	.loading-message p {
+		margin: 0;
+		color: #1976d2;
+	}
+
+	.loading-spinner {
+		width: 40px;
+		height: 40px;
+		border: 4px solid #bbdefb;
+		border-top-color: #2196F3;
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	.work-result-message {
+		padding: 15px;
+		border-radius: 4px;
+		margin-top: 10px;
+		position: relative;
+	}
+
+	.work-result-message.success {
+		background-color: #d4edda;
+		border: 2px solid #28a745;
+		color: #155724;
+	}
+
+	.work-result-message.error {
+		background-color: #f8d7da;
+		border: 2px solid #dc3545;
+		color: #721c24;
+	}
+
+	.result-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 15px;
+	}
+
+	.result-header strong {
+		font-size: 1.1rem;
+		display: block;
+	}
+
+	.close-result-btn {
+		background: none;
+		border: none;
+		font-size: 1.3rem;
+		cursor: pointer;
+		padding: 0;
+		width: 24px;
+		height: 24px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		transition: background-color 0.2s;
+	}
+
+	.close-result-btn:hover {
+		background-color: rgba(0, 0, 0, 0.1);
+	}
+
+	.result-items {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.result-item {
+		display: flex;
+		gap: 8px;
+		padding: 10px;
+		background-color: rgba(255, 255, 255, 0.5);
+		border-radius: 4px;
+	}
+
+	.item-number {
+		font-weight: 600;
+		flex-shrink: 0;
+	}
+
+	.item-content {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.item-main {
+		font-weight: 600;
+		font-size: 1rem;
+	}
+
+	.item-status {
+		font-size: 0.9rem;
+		color: inherit;
+	}
+
+	.item-error {
+		font-size: 0.9rem;
+		color: inherit;
+		padding-left: 10px;
+	}
+
 	.sheet-selector {
 		display: flex;
 		align-items: center;
@@ -699,8 +893,13 @@
 		line-height: 1;
 	}
 
-	.menu-btn:hover {
+	.menu-btn:hover:not(:disabled) {
 		background-color: #e0e0e0;
+	}
+
+	.menu-btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
 
 	.context-menu {
@@ -798,8 +997,14 @@
 		font-size: 14px;
 	}
 
-	.sheet-work-btn:hover {
+	.sheet-work-btn:hover:not(:disabled) {
 		background-color: #45a049;
+	}
+
+	.sheet-work-btn:disabled {
+		background-color: #9e9e9e;
+		cursor: not-allowed;
+		opacity: 0.6;
 	}
 </style>
 
