@@ -1,4 +1,5 @@
 import moment from 'moment';
+import * as XLSX from 'xlsx';
 
 export function telepasiTimeToDate(time,tail) {
     const date = new Date(time); // 밀리초 단위의 시간을 Date 객체로 변환
@@ -235,6 +236,13 @@ export function ___downloadExcel(data, headerArr,filename = 'download') {
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
     let downloadFileName = `${filename}_${year}${month}${day}.xlsx`;
+    
+    // headerArr가 null이거나 빈 배열이면 첫 번째 data의 key를 사용
+    if (!headerArr || headerArr.length === 0) {
+        if (data && data.length > 0) {
+            headerArr = Object.keys(data[0]);
+        }
+    }
     
     const wb = XLSX.utils.book_new();   // 워크북 생성
     const ws = XLSX.utils.json_to_sheet(data, { header: headerArr });  // JSON 데이터를 시트로 변환
