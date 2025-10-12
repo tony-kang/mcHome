@@ -11,6 +11,12 @@ export const giFee = {
         '호수': 'center',
         '금액': 'right',
     },
+    columnWidths: {
+        // '금액': '100px',
+        // '호수': '100px',
+    },
+    ignoreColumns: [
+    ], // 엑셀에 있어도 화면에 표시하지 않을 컬럼
     sheetWorkList: [
         {
             name: '선택항목 일괄부과',

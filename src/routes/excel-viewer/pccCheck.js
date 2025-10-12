@@ -1,3 +1,4 @@
+import ___const from '$prj/lib/i_const';
 import ___prj from '$prj/prjMain';
 import { ___downloadExcel } from '$prj/lib/i_telepasi';
 
@@ -104,14 +105,51 @@ async function handlePcccCheck(selectedRowsData) {
             return;
         }
 
-        // const results = await ___prj.api.post('/s/excel', 'pcc.check', null, {
-        //     pccDataList: pccDataList
-        // });
-
         console.log('검증할 데이터:', pccDataList);
+
+        // API 호출
+        const r = await ___prj.api.post('/s/etc', 'check.pccc', null, {
+            pccDataList: pccDataList
+        });
+
+        if (r.data.result !== ___const.OK) {
+            throw new Error('통관번호 검증 오류');
+        }
+
+        const results = r.data.content;
+
+        // 오류가 있는 항목만 필터링
+        const errorItems = results.filter(item => item.result !== '정상');
+
+        if (errorItems.length > 0) {
+            // 오류 결과 반환 (HTML로 표시)
+            return {
+                type: 'error',
+                title: `✅ 검증 완료! 총 ${results.length - errorItems.length}건 정상, ⚠️ 통관번호 검증 오류 ${errorItems.length}건 / 전체 ${results.length}건`,
+                items: errorItems
+            };
+        } else {
+            // 성공 결과 반환
+            return {
+                type: 'success',
+                title: `✅ 검증 완료! 총 ${results.length}건 모두 정상입니다.`,
+                items: []
+            };
+        }
+
     } catch (error) {
         console.error('일괄 검증 오류:', error);
-        alert('일괄 검증 중 오류가 발생했습니다.\n' + error.message);
+        // 에러 결과 반환
+        return {
+            type: 'error',
+            title: '⚠️ 일괄 검증 중 오류가 발생했습니다',
+            items: [{
+                name: 'API 오류',
+                pccNumber: '',
+                result: '오류',
+                error: error.message
+            }]
+        };
     }
 }
 
