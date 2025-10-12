@@ -18,7 +18,9 @@
 	let { 
 		workOption = { 
 			workList: [],
-			columnAlignments: {} // 헤더명: 정렬(left/center/right) - key가 필수 컬럼
+			requiredColumns: {}, // 필수 컬럼 객체 { 컬럼명: 정렬(left/center/right) }
+			columnWidths: {}, // 헤더명: 폭(예: '150px', '20%')
+			ignoreColumns: [] // 화면에 출력하지 않을 컬럼명 배열
 		} 
 	} = $props();
 
@@ -30,7 +32,7 @@
 			return;
 		}
 
-		console.log('File selected:', file.name);
+		// console.log('File selected:', file.name);
 		fileName = file.name;
 		const reader = new FileReader();
 
@@ -40,7 +42,7 @@
 				workbook = XLSX.read(data, { type: 'array' });
 				sheetNames = workbook.SheetNames;
 				
-				console.log('Workbook loaded, sheets:', sheetNames);
+				// console.log('Workbook loaded, sheets:', sheetNames);
 				
 				if (sheetNames.length > 0) {
 					selectedSheet = sheetNames[0];
@@ -65,8 +67,8 @@
 		const worksheet = workbook.Sheets[sheetName];
 		const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
 
-		console.log('Sheet loaded:', sheetName);
-		console.log('JSON Data:', jsonData);
+		// console.log('Sheet loaded:', sheetName);
+		// console.log('JSON Data:', jsonData);
 
 		// 빈 행 제거 함수
 		const isRowEmpty = (row) => {
@@ -77,30 +79,39 @@
 		// 빈 행이 아닌 데이터만 필터링
 		const filteredData = jsonData.filter(row => !isRowEmpty(row));
 		
-		console.log('Filtered Data:', filteredData);
+		// console.log('Filtered Data:', filteredData);
 
 		if (filteredData.length > 0) {
 			const tempHeaders = filteredData[0] || [];
 			const tempRows = filteredData.slice(1);
 			
-			// 빈 컬럼 식별 (헤더가 비어있고 모든 행이 해당 컬럼에서 비어있는 경우)
+			// ignoreColumns 목록 (대소문자 구분 없이)
+			const ignoreColumnsLower = (workOption.ignoreColumns || []).map(col => col.toLowerCase());
+			
+			// 빈 컬럼 식별 및 ignoreColumns 필터링
 			const nonEmptyColumnIndices = [];
 			tempHeaders.forEach((header, index) => {
 				const isColumnEmpty = (header === '' || header === null || header === undefined) &&
 					tempRows.every(row => !row[index] || row[index] === '' || row[index] === null || row[index] === undefined);
 				
-				if (!isColumnEmpty) {
+				// ignoreColumns에 포함된 컬럼인지 확인 (대소문자 구분 없이)
+				const isIgnoredColumn = ignoreColumnsLower.includes(String(header).toLowerCase());
+				
+				if (!isColumnEmpty && !isIgnoredColumn) {
 					nonEmptyColumnIndices.push(index);
 				}
 			});
 			
-			// 빈 컬럼 제거
+			// 빈 컬럼 및 ignoreColumns 제거
 			headers = nonEmptyColumnIndices.map(i => tempHeaders[i]);
 			rows = tempRows.map(row => nonEmptyColumnIndices.map(i => row[i]));
 			
-			console.log('Headers set:', headers);
-			console.log('Rows set:', rows);
-			console.log('Rows count:', rows.length);
+			// console.log('Headers set:', headers);
+			// console.log('Rows set:', $state.snapshot(rows));
+			// console.log('Rows count:', rows.length);
+			// if (ignoreColumnsLower.length > 0) {
+			// 	console.log('Ignored columns:', workOption.ignoreColumns);
+			// }
 			
 			// 엑셀 컬럼 검증
 			validateExcelColumns(headers);
@@ -120,28 +131,32 @@
 		validationError = '';
 		isValidExcel = true;
 		
-		// columnAlignments가 없거나 비어있으면 검증 통과
-		if (!workOption.columnAlignments || Object.keys(workOption.columnAlignments).length === 0) {
-			console.log('필수 컬럼이 지정되지 않았습니다. 검증을 생략합니다.');
+		// requiredColumns가 없거나 비어있으면 검증 생략하고 통과
+		if (!workOption.requiredColumns || 
+			typeof workOption.requiredColumns !== 'object' || 
+			Array.isArray(workOption.requiredColumns) ||
+			Object.keys(workOption.requiredColumns).length === 0) {
+			console.log('필수 컬럼이 지정되지 않았거나 올바른 형식이 아닙니다. 검증을 생략합니다.');
+			console.log('requiredColumns:', workOption.requiredColumns);
 			return;
 		}
 		
-		const requiredColumns = Object.keys(workOption.columnAlignments);
+		const requiredColumnNames = Object.keys(workOption.requiredColumns);
 		
-		console.log('===== 엑셀 컬럼 검증 시작 =====');
-		console.log('필수 컬럼:', requiredColumns);
-		console.log('실제 헤더:', currentHeaders);
+		// console.log('===== 엑셀 컬럼 검증 시작 =====');
+		// console.log('필수 컬럼:', requiredColumnNames);
+		// console.log('실제 헤더:', $state.snapshot(currentHeaders));
 		
 		// 필수 컬럼이 모두 있는지 확인
 		const missingColumns = [];
 		const extraColumns = [];
 		
 		// 대소문자 구분 없이 비교하기 위해 소문자로 변환
-		const requiredLower = requiredColumns.map(col => col.toLowerCase());
+		const requiredLower = requiredColumnNames.map(col => col.toLowerCase());
 		const headersLower = currentHeaders.map(col => String(col).toLowerCase());
 		
 		// 누락된 컬럼 찾기
-		requiredColumns.forEach((required, index) => {
+		requiredColumnNames.forEach((required, index) => {
 			if (!headersLower.includes(requiredLower[index])) {
 				missingColumns.push(required);
 			}
@@ -159,14 +174,10 @@
 			validationError = `필수 컬럼이 누락되었습니다.\n\n누락된 컬럼:\n${missingColumns.join(', ')}\n\n올바른 엑셀 파일을 업로드해주세요.`;
 			console.error('검증 실패 - 누락된 컬럼:', missingColumns);
 			alert(validationError);
-		} else {
-			console.log('검증 성공! 모든 필수 컬럼이 존재합니다.');
-			if (extraColumns.length > 0) {
-				console.warn('추가 컬럼:', extraColumns);
-			}
 		}
-		
-		console.log('===== 엑셀 컬럼 검증 완료 =====');
+		// else {
+		// 	console.log('검증 성공! 모든 필수 컬럼이 존재합니다.');
+		// }
 	}
 
 	function handleSheetChange(event) {
@@ -242,17 +253,38 @@
 	}
 	
 	function executeSheetWork(work) {
-		const selectedRowsData = Array.from(selectedRows).map(rowIndex => {
-			return {
-				// index: rowIndex,
-				// headers: headers,
-				// values: rows[rowIndex],
-				data: headers.reduce((obj, header, i) => {
-					obj[header] = rows[rowIndex][i];
-					return obj;
-				}, {})
-			};
-		});
+		let selectedRowsData;
+		
+		// 선택된 row가 없으면 전체 데이터로 진행할지 확인
+		if (selectedRows.size === 0) {
+			const confirmed = confirm('전체 데이터에 대해서 작업을 진행할까요?');
+			if (!confirmed) {
+				return; // 취소하면 작업 중단
+			}
+			
+			// 전체 rows 데이터 생성
+			selectedRowsData = rows.map((rowData, rowIndex) => {
+				return {
+					data: headers.reduce((obj, header, i) => {
+						obj[header] = rowData[i];
+						return obj;
+					}, {})
+				};
+			});
+		} else {
+			// 선택된 rows만 데이터 생성
+			selectedRowsData = Array.from(selectedRows).map(rowIndex => {
+				return {
+					// index: rowIndex,
+					// headers: headers,
+					// values: rows[rowIndex],
+					data: headers.reduce((obj, header, i) => {
+						obj[header] = rows[rowIndex][i];
+						return obj;
+					}, {})
+				};
+			});
+		}
 		
 		if (work.callback && typeof work.callback === 'function') {
 			work.callback(selectedRowsData);
@@ -355,63 +387,69 @@
 							<th class="menu-col">작업</th>
 						{/if}
 						{#each headers as header}
-							<th style="text-align: {workOption.columnAlignments?.[header] || 'left'}">{header}</th>
+							<th style="text-align: {workOption.requiredColumns?.[header] || 'left'}; {workOption.columnWidths?.[header] ? `width: ${workOption.columnWidths[header]};` : ''}">{header}</th>
 						{/each}
 					</tr>
 				</thead>
 				<tbody>
 					{#each rows as row, rowIndex}
 						<tr class:selected={selectedRows.has(rowIndex)}>
-							{#if isValidExcel}
-								<td class="checkbox-col">
-									<input 
-										type="checkbox" 
-										checked={selectedRows.has(rowIndex)}
-										onchange={() => toggleRowSelection(rowIndex)}
-									/>
-								</td>
-								<td class="menu-col">
-									<div class="menu-wrapper">
-										<button 
-											class="menu-btn"
-											onclick={(e) => { e.stopPropagation(); toggleMenu(rowIndex); }}
-											aria-label="메뉴 열기"
+						{#if isValidExcel}
+							<td class="checkbox-col">
+								<input 
+									type="checkbox" 
+									checked={selectedRows.has(rowIndex)}
+									onchange={() => toggleRowSelection(rowIndex)}
+								/>
+							</td>
+							<td class="menu-col">
+								<div class="menu-wrapper">
+									<button 
+										class="menu-btn"
+										onclick={(e) => { e.stopPropagation(); toggleMenu(rowIndex); }}
+										aria-label="메뉴 열기"
+									>
+										⋮
+									</button>
+									{#if openMenuRowIndex === rowIndex}
+										<!-- svelte-ignore a11y_no_static_element_interactions -->
+										<!-- svelte-ignore a11y_click_events_have_key_events -->
+										<div 
+											class="context-menu" 
+											onclick={(e) => e.stopPropagation()}
 										>
-											⋮
-										</button>
-										{#if openMenuRowIndex === rowIndex}
-											<!-- svelte-ignore a11y_no_static_element_interactions -->
-											<!-- svelte-ignore a11y_click_events_have_key_events -->
-											<div 
-												class="context-menu" 
-												onclick={(e) => e.stopPropagation()}
+											<button 
+												class="menu-item delete"
+												onclick={() => deleteRow(rowIndex)}
+												role="menuitem"
 											>
-												<button 
-													class="menu-item delete"
-													onclick={() => deleteRow(rowIndex)}
-													role="menuitem"
-												>
-													🗑️ 삭제
-												</button>
-												{#if workOption.workList && workOption.workList.length > 0}
-													{#each workOption.workList as work}
-														<button 
-															class="menu-item custom"
-															onclick={() => executeWork(rowIndex, work)}
-															role="menuitem"
-														>
-															{work.icon || '⚙️'} {work.name || '작업'}
-														</button>
-													{/each}
-												{/if}
-											</div>
-										{/if}
-									</div>
-								</td>
-							{/if}
-							{#each headers as header, colIndex}
-								<td style="text-align: {workOption.columnAlignments?.[header] || 'left'}">{row[colIndex] ?? ''}</td>
-							{/each}
+												🗑️ 삭제
+											</button>
+											{#if workOption.workList && workOption.workList.length > 0}
+												{#each workOption.workList as work}
+													<button 
+														class="menu-item custom"
+														onclick={() => executeWork(rowIndex, work)}
+														role="menuitem"
+													>
+														{work.icon || '⚙️'} {work.name || '작업'}
+													</button>
+												{/each}
+											{/if}
+										</div>
+									{/if}
+								</div>
+							</td>
+						{/if}
+						{#each headers as header, colIndex}
+							<td 
+								class="cell-content"
+								style="text-align: {workOption.requiredColumns?.[header] || 'left'}; {workOption.columnWidths?.[header] ? `width: ${workOption.columnWidths[header]};` : ''}"
+								title={row[colIndex] ?? ''}
+							>
+								{row[colIndex] ?? ''}
+							</td>
+						{/each}
 						</tr>
 					{/each}
 				</tbody>
@@ -588,12 +626,29 @@
 		background-color: #4CAF50;
 		color: white;
 		line-height: 1.2;
+		min-width: 80px;
 	}
 
 	.excel-table td {
 		padding: 3px 8px;
 		border: 1px solid #ddd;
 		line-height: 1.3;
+		max-width: 300px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	
+	.excel-table td.cell-content {
+		position: relative;
+	}
+	
+	.excel-table td.cell-content:hover {
+		overflow: visible;
+		white-space: normal;
+		background-color: #fff9e6;
+		z-index: 100;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 	}
 
 	.excel-table tbody tr:hover {
