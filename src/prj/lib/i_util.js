@@ -19,9 +19,27 @@ export function getTokenUser(aToken) {
 }
 
 export function base64Decode(encodedString) {
-    const decodedString = atob(encodedString);
-    const utf8Decoder = new TextDecoder("utf-8");
-    return utf8Decoder.decode(new Uint8Array(decodedString.split("").map(c => c.charCodeAt(0))));
+    // 입력값 검증
+    if (!encodedString || typeof encodedString !== 'string') {
+        console.warn('base64Decode: 유효하지 않은 입력값:', encodedString);
+        return '';
+    }
+    
+    // Base64 형식 검증 (정규식으로 기본적인 형식 확인)
+    const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
+    if (!base64Regex.test(encodedString)) {
+        console.warn('base64Decode: 유효하지 않은 Base64 형식:', encodedString);
+        return encodedString; // 원본 문자열 반환
+    }
+    
+    try {
+        const decodedString = atob(encodedString);
+        const utf8Decoder = new TextDecoder("utf-8");
+        return utf8Decoder.decode(new Uint8Array(decodedString.split("").map(c => c.charCodeAt(0))));
+    } catch (error) {
+        console.warn('base64Decode: 디코딩 실패:', error.message, '입력값:', encodedString);
+        return encodedString; // 디코딩 실패 시 원본 문자열 반환
+    }
 }
 
 export function extractBaseUrl(url) {
