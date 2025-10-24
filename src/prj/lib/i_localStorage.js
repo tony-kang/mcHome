@@ -13,7 +13,10 @@ const i_localStorage = {
     
     clear() {
         if (!browser) return;
-        localStorage.clear();
+        const removedItems = ['accessToken','refreshToken','package','apiVersion','aCount','keepLoggedIn'];
+        removedItems.forEach(item => {
+            localStorage.removeItem(item);
+        });
     },
     
     deleteAllCookies() {
